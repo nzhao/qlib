@@ -1,2 +1,2 @@
 # qlib
-matlab lib for quantum dynamics
+Matlab Lib for Quantum Dynamics
