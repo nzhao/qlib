@@ -3,6 +3,7 @@ classdef SpinCollectionStrategy
     %   Detailed explanation goes here
     
     properties
+        strategy_name
     end
     
     methods (Abstract)

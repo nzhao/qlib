@@ -9,11 +9,11 @@ classdef SpinCollection < handle
     
     methods
         function obj=SpinCollection()
-            obj.spin_list = [];
+            obj.spin_list = {};
         end
         
         function generate(obj)
-            obj.strategy.generate_spin_collection();
+            obj.spin_list = obj.strategy.generate_spin_collection();
         end
     end
     

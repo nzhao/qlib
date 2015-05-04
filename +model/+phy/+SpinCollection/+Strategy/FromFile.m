@@ -7,10 +7,16 @@ classdef FromFile < model.phy.SpinCollection.SpinCollectionStrategy
     end
     
     methods
-        function generate_spin_collection(obj, filename)
+        function obj = FromFile(filename)
             obj.filename = filename;
-            disp('spin collection is generated from a file');
+            obj.strategy_name = 'FromeFile';
         end
+        
+        function spin_list = generate_spin_collection(obj)
+            fprintf('Importing spins from %s ...\n', obj.filename);
+            spin_list=controller.input.xyz.xyzFileParser(obj.filename);
+        end
+                
     end
     
 end
