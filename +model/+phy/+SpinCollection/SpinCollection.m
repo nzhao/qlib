@@ -15,6 +15,10 @@ classdef SpinCollection < handle
         function generate(obj)
             obj.spin_list = obj.strategy.generate_spin_collection();
         end
+        
+        function len=getLength(obj)
+            len = length(obj.spin_list);
+        end
     end
     
 end
