@@ -6,6 +6,13 @@ classdef SingleSpinIterator < model.phy.SpinCollection.SpinCollectionIterator
     end
     
     methods
+        function obj = SingleSpinIterator(spin_collection)
+            obj@model.phy.SpinCollection.SpinCollectionIterator(spin_collection);
+        end
+        function res = index_gen(obj)
+            res = 1:obj.spin_collection.getLength();
+            res = res';
+        end
     end
     
 end

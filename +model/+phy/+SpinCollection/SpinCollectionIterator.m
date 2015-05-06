@@ -3,36 +3,76 @@ classdef SpinCollectionIterator < handle
     %   Detailed explanation goes here
     
     properties
-        spin_list
+        spin_collection
         index_list
-        current
+        cursor
     end
     
     methods
         function obj=SpinCollectionIterator(spin_collection)
-            obj.spin_list = spin_collection.spin_list;
-            obj.index_list = obj.index_gen(spin_collection);
-            obj.current = 1;
+            obj.cursor = 1;
+            obj.spin_collection = spin_collection;
+            obj.index_list = obj.index_gen();
         end
         
-        function res = index_gen(obj, spin_collection)
-            res=1: spin_collection.getLength;
+        function index = currentIndex(obj)
+            index = obj.index_list(obj.cursor, :);
         end
         
-        function res = first(obj)
-            first_index = obj.index_list(1);
-            res = obj.spin_list{first_index};
+        function item = currentItem(obj)
+            spin_list=obj.spin_collection.spin_list;
+            item = spin_list(obj.currentIndex());
         end
-        function res = next(obj)
-            next_index = obj.index_list(obj.current+1);
-            res = obj.spin_list{next_index};
+                
+        function item = firstItem(obj)
+            obj.cursor = 1;
+            item = obj.currentItem();
         end
-        function res = currentItem(obj)
-            res =  obj.spin_list{obj.current};
+        function item = LastItem(obj)
+            obj.cursor = length(obj.index_list);
+            item = obj.currentItem();
         end
-        function res = hasNext(obj)
-            res = (obj.current==length(obj.index_list));
+        
+        function item = nextItem(obj)
+            if ~obj.isLast()
+                obj.cursor = obj.cursor + 1;
+                item = obj.currentItem();
+            else
+                error('already last item');
+            end
         end
+        function item = prevItem(obj)
+            if obj.curser > 1
+                obj.cursor = obj.cursor - 1;
+                item = obj.currentItem();
+            else
+                error('already first item.');
+            end
+        end
+        function item=getItem(obj, k)
+            obj.setCusor(k);
+            item=obj.currentItem();
+        end
+        
+        function res = isLast(obj)
+            res = (obj.cursor==obj.getLength());
+        end
+        function res = isFirst(obj)
+            res = (obj.cursor==1);
+        end
+        function setCursor(obj, k)
+            obj.cursor = k;
+        end
+        function c=getCursor(obj)
+            c=obj.cursor;
+        end
+        function l=getLength(obj)
+            l=length(obj.index_list);
+        end
+    end
+    
+    methods (Abstract)
+        res=index_gen(obj);
     end
     
 end
