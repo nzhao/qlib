@@ -15,6 +15,22 @@ classdef SpinCollectionIterator < handle
             obj.index_list = obj.index_gen();
         end
         
+        function moveForward(obj)
+            if ~obj.isLast()
+                obj.cursor = obj.cursor+1;
+            else
+                error('already last');
+            end
+        end
+        function moveBackward(obj)
+            if obj.cursor > 1
+                obj.cursor = obj.cursor-1;
+            else
+                error('already first');
+            end
+        end
+        
+        
         function index = currentIndex(obj)
             index = obj.index_list(obj.cursor, :);
         end
@@ -34,20 +50,12 @@ classdef SpinCollectionIterator < handle
         end
         
         function item = nextItem(obj)
-            if ~obj.isLast()
-                obj.cursor = obj.cursor + 1;
-                item = obj.currentItem();
-            else
-                error('already last item');
-            end
+            obj.moveForward();
+            item = obj.currentItem();
         end
         function item = prevItem(obj)
-            if obj.curser > 1
-                obj.cursor = obj.cursor - 1;
-                item = obj.currentItem();
-            else
-                error('already first item.');
-            end
+            obj.moveBackward();
+            item = obj.currentItem();
         end
         function item=getItem(obj, k)
             obj.setCusor(k);
@@ -60,6 +68,7 @@ classdef SpinCollectionIterator < handle
         function res = isFirst(obj)
             res = (obj.cursor==1);
         end
+        
         function setCursor(obj, k)
             obj.cursor = k;
         end
