@@ -3,7 +3,7 @@ clc;
 %% FromFile
 spin_collection1=model.phy.SpinCollection.SpinCollection();
 
-xyzfile='/Users/nzhao/code/lib/active/qlib/+controller/+input/+xyz/RoyCoord.xyz';
+xyzfile='/Users/nzhao/code/lib/active/qlib/+controller/+input/+xyz/RoyCoord_UTF.xyz';
 strategy1=model.phy.SpinCollection.Strategy.FromFile(xyzfile);
 
 spin_collection1.strategy=strategy1;
