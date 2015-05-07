@@ -14,6 +14,10 @@ classdef AbstractSpinInteraction < handle
             obj.iter=iter;
         end
         
+        function res=isConsistent(spin_collection)
+            res=(spin_collection==obj.iter.spincollection);
+        end
+        
 %         function matrix=matrix(obj)
 %             matrix=sparse(0);
 %             

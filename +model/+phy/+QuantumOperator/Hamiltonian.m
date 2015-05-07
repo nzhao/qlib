@@ -3,13 +3,26 @@ classdef Hamiltonian < model.phy.QuantumOperator.AbstractQuantumOperator
     %   Detailed explanation goes here
     
     properties
-        strategy
+        spin_collection
+        interaction_list
     end
     
     methods
-        function generate_matrix(obj)
-            obj.matrix=obj.strategy.calculate_matrix();
+        function obj=Hamiltonian(spin_collection)
+            obj.spin_collection=spin_collection;
+            obj.interaction_list=[];
         end
+        
+        function addInteraction(obj, interaction)
+            if interaction.isConsistent(obj.spin_collection);
+                obj.interaction_list = [obj.interaction_list, interaction];
+            else
+                error('inconsistency detected.')
+            end
+        end
+        
+
+        
     end
     
 end

@@ -8,15 +8,15 @@ classdef FromProductSpace < model.phy.QuantumOperator.HamiltonianStrategy
     end
     
     methods
-        function obj=FromProductSpace(spin_collection)
-            obj.interaction_list=[];
-            obj.space=spin_collection.getSpace();
+        function initialize(obj, qOperator)
+            obj.space=qOperator.spin_collection.getSpace();
+            obj.interaction_list=qOperator.interaction_list;
         end
-        
-        function addInteraction(obj, interaction)
-            obj.interaction_list = [obj.interaction_list, interaction];
-        end
-        
+%         function obj=FromProductSpace(spin_collection)
+%             obj.interaction_list=[];
+%             obj.space=spin_collection.getSpace();
+%         end
+                
         function matrix=compute_interaction_matrix(interaction)
             row=[]; col=[]; val=[];
             iter=interaction.iter;

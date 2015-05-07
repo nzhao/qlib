@@ -6,6 +6,7 @@ classdef MatrixStrategy < handle
     end
     
     methods (Abstract)
+        initialize(obj, qOperator);
         calculate_matrix(obj);
     end
     

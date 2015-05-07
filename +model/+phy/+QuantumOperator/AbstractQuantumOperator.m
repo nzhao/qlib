@@ -5,10 +5,14 @@ classdef AbstractQuantumOperator
     properties
         dim
         matrix
+        strategy
     end
     
-    methods (Abstract)
-        generate_matrix(obj);
+    methods
+        function generate_matrix(obj)
+            obj.strategy.initilization();
+            obj.matrix=obj.strategy.calculate_matrix();
+        end
     end
     
 end
