@@ -19,14 +19,19 @@ classdef ProductLinearSpace < math.LinearSpace
             obj.dim_list=dim_list;            
             obj.dim=prod(obj.dim_list);
             obj.nbody = length(obj.dim_list);
+            
+            if obj.dim < MAX_MATRIX_DIMENSION
 
-            obj.basenum=obj.get_basenum();
+                obj.basenum=obj.get_basenum();
 
-            is_bin=0;
-            if all( dim_list==2*ones(1,obj.nbody) )
-                is_bin=1;
+                is_bin=0;
+                if all( dim_list==2*ones(1,obj.nbody) )
+                    is_bin=1;
+                end
+                obj.full_basis=obj.get_full_basis(is_bin);
+            else
+                fprintf('Too large space with dim=%d. Space is not created.', obj.dim);
             end
-            obj.full_basis=obj.get_full_basis(is_bin);
             
         end
         

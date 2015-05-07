@@ -25,7 +25,7 @@ classdef SpinCollection < handle
             
             dim_list=zeros(1, len);
             for k=1:len
-                dim_list(k)=obj.spin_list(k).dim;
+                dim_list(k)=obj.spin_list{k}.dim;
             end
             
             space=model.math.ProductLinearSpace(dim_list);
