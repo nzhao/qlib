@@ -19,6 +19,17 @@ classdef SpinCollection < handle
         function len=getLength(obj)
             len = length(obj.spin_list);
         end
+        
+        function space=getSpace(obj)
+            len=obj.getLength();
+            
+            dim_list=zeros(1, len);
+            for k=1:len
+                dim_list(k)=obj.spin_list(k).dim;
+            end
+            
+            space=model.math.ProductLinearSpace(dim_list);
+        end
     end
     
 end
