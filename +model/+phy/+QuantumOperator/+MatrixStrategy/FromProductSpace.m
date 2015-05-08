@@ -1,4 +1,4 @@
-classdef FromProductSpace < model.phy.QuantumOperator.HamiltonianStrategy
+classdef FromProductSpace < model.phy.QuantumOperator.MatrixStrategy
     %FROMINTERACTION Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -12,10 +12,6 @@ classdef FromProductSpace < model.phy.QuantumOperator.HamiltonianStrategy
             obj.space=qOperator.spin_collection.getSpace();
             obj.interaction_list=qOperator.interaction_list;
         end
-%         function obj=FromProductSpace(spin_collection)
-%             obj.interaction_list=[];
-%             obj.space=spin_collection.getSpace();
-%         end
                 
         function matrix=compute_interaction_matrix(interaction)
             row=[]; col=[]; val=[];

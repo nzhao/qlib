@@ -1,3 +1,4 @@
+clear;clc;
 %% FromSpinList 
 spin_collection=model.phy.SpinCollection.SpinCollection();
 
@@ -13,9 +14,11 @@ spin_collection.generate();
 para.B=100.0;
 
 iter=model.phy.SpinCollection.Iterator.SingleSpinIterator(spin_collection);
+hami=model.phy.QuantumOperator.Hamiltonian(spin_collection);
 
 interaction=model.phy.SpinInteraction.ZeemanInteraction(iter, para);
+hami.addInteraction(interaction);
 
-hami=model.phy.QuantumOperator.Hamiltonian();
-hami.strategy=model.phy.QuantumOperator.MatrixStrategy.FromProductSpace(spin_collection);
+
+hami.strategy=model.phy.QuantumOperator.MatrixStrategy.FromProductSpace();
 hami.generate_matrix();
