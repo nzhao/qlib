@@ -1,4 +1,4 @@
-classdef Spin < phy.stuff.PhysicalObject
+classdef Spin < model.phy.PhysicalObject.PhysicalObject
     %SPIN Summary of this class goes here
     %   Detailed explanation goes here
     

@@ -1,4 +1,4 @@
-clc;
+clc;clear;
 
 %% FromFile
 spin_collection1=model.phy.SpinCollection.SpinCollection();
@@ -12,9 +12,9 @@ spin_collection1.generate();
 %% FromSpinList 
 spin_collection2=model.phy.SpinCollection.SpinCollection();
 
-slist=[model.phy.Spin('13C', [1,1,1]), ...
-       model.phy.Spin('13C', [10,10,10]), ...
-       model.phy.Spin('13C', [20,20,20])];
+slist=[model.phy.PhysicalObject.Spin('13C', [1,1,1]), ...
+       model.phy.PhysicalObject.Spin('13C', [10,10,10]), ...
+       model.phy.PhysicalObject.Spin('13C', [20,20,20])];
 strategy2 = model.phy.SpinCollection.Strategy.FromSpinList(slist);
 
 spin_collection2.strategy=strategy2;

@@ -10,7 +10,7 @@ function spin_list = xyzFileParser( filename )
     for n=1:nspin
         name=data{1,1}{n};
         coord=[data{1,2}(n),data{1,3}(n),data{1,4}(n)];
-        spin_list{n}=model.phy.Spin(name,coord);
+        spin_list{n}=model.phy.PhysicalObject.Spin(name,coord);
     end
 
 end

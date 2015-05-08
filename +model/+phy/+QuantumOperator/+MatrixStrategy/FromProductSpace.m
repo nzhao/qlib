@@ -13,9 +13,10 @@ classdef FromProductSpace < model.phy.QuantumOperator.MatrixStrategy
             obj.interaction_list=qOperator.interaction_list;
         end
                 
-        function matrix=compute_interaction_matrix(interaction)
+        function matrix=compute_interaction_matrix(obj, interaction)
             row=[]; col=[]; val=[];
             iter=interaction.iter;
+            iter.setCursor(1);
             while ~iter.isLast()
                 obj.space.create_subspace( iter.currentIndex() );
 
@@ -37,7 +38,7 @@ classdef FromProductSpace < model.phy.QuantumOperator.MatrixStrategy
                         val=[val sub_matrix(j,k)*ones(1,dimQuot)];
                     end
                 end                
-                
+                iter.moveForward();
             end
             
             matrix=sparse(row, col, val);
@@ -48,7 +49,7 @@ classdef FromProductSpace < model.phy.QuantumOperator.MatrixStrategy
             nInteraction=length(obj.interaction_list);
             
             for k=1:nInteraction
-                interaction_k=obj.interaction_list(k);
+                interaction_k=obj.interaction_list{k};
                 interaction_matrix=obj.compute_interaction_matrix(interaction_k);
                 matrix=matrix+interaction_matrix;
             end
