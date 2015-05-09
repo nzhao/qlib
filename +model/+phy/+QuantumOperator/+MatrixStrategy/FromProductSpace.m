@@ -16,27 +16,8 @@ classdef FromProductSpace < model.phy.QuantumOperator.MatrixStrategy
         function matrix=compute_interaction_matrix(obj, interaction)
             iter=interaction.iter;
             iter.setCursor(1);
-            while ~iter.isLast()
-                obj.space.create_subspace( iter.currentIndex() );
-
-                dimSub=obj.space.subspace.dim;
-                dimQuot=obj.space.quotspace.dim;
-                sub_in_full_table=zeros(dimSub,dimQuot);
-
-                for j=1:dimSub
-                    sub_in_full_table(j,:)=obj.space.locate_sub_basis(j);
-                end
-
-                spins=iter.currentItem();
-                sub_matrix=interaction.calculate_matrix(spins);
-                
-                for j=1:dimSub
-                    for k=1:dimSub
-                        row=[row sub_in_full_table(j,:)]; %#ok<*AGROW>
-                        col=[col sub_in_full_table(k,:)];
-                        val=[val sub_matrix(j,k)*ones(1,dimQuot)];
-                    end
-                end                
+            [row, col, val] = obj.calculate_term_matrix(interaction);
+            while ~interaction.iter.isLast()   
                 iter.moveForward();
                 [nr, nc, nv] = obj.calculate_term_matrix(interaction);
                 row=[row, nr]; col=[col, nc]; val=[val, nv];
