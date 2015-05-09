@@ -9,7 +9,7 @@ classdef AbstractSpinInteraction < handle
     end
     
     methods
-        function obj=AbstractSpinInteraction(iter, para)
+        function obj=AbstractSpinInteraction(para, iter)
             obj.parameter=para;
             obj.iter=iter;
         end
@@ -22,7 +22,7 @@ classdef AbstractSpinInteraction < handle
     
     methods (Abstract)
         calculate_coeff(obj, item);
-        calculate_matrix(obj, item);
+        calculate_matrix(obj);
     end
     
 end

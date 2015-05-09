@@ -11,7 +11,7 @@ classdef DipolarInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
             if nargin < 3
                 iter=model.phy.SpinCollection.Iterator.PairSpinIterator(spin_collection);
             end
-            obj@model.phy.SpinInteraction.AbstractSpinInteraction(iter, para);
+            obj@model.phy.SpinInteraction.AbstractSpinInteraction(para, iter);
             
             try 
                 obj.axis=para.axis;
@@ -42,7 +42,8 @@ classdef DipolarInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
             coeff = obj.axis * coeff_mat * obj.axis';
         end
         
-        function mat=calculate_matrix(obj, spins)
+        function mat=calculate_matrix(obj)
+            spins=obj.iter.currentItem();
             spin1=spins{1}; spin2=spins{2};
             dip=obj.calculate_coeff(spins);
             mat= dip(1,1)*kron(spin1.sx,spin2.sx)...

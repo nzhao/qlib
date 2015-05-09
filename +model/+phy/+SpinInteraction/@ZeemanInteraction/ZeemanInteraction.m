@@ -6,21 +6,20 @@ classdef ZeemanInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
     end
     
     methods
-        function obj=ZeemanInteraction(spin_collection, para, iter)
+        function obj=ZeemanInteraction(spin_collection, parameter, iter)
             if nargin < 3
                 iter=model.phy.SpinCollection.Iterator.SingleSpinIterator(spin_collection);
             end
-            obj@model.phy.SpinInteraction.AbstractSpinInteraction(iter, para);
+            obj@model.phy.SpinInteraction.AbstractSpinInteraction(parameter, iter);
             obj.nbody=1;
         end
         
-        function coeff=calculate_coeff(obj, spins)
-            spin=spins{1};
+        function coeff=calculate_coeff(obj, spin)
             coeff=obj.parameter.B * spin.gamma;
         end
-        function mat=calculate_matrix(obj, spins)
-            spin=spins{1};
-            coeff=obj.calculate_coeff(spins);
+        function mat=calculate_matrix(obj)
+            spin=obj.iter.currentItem{1};
+            coeff=obj.calculate_coeff(spin);
             mat=coeff*spin.sz;
         end
     end

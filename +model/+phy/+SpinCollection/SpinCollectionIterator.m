@@ -19,14 +19,16 @@ classdef SpinCollectionIterator < handle
             if ~obj.isLast()
                 obj.cursor = obj.cursor+1;
             else
-                error('already last');
+                disp('already last. Return to the first.');
+                obj.cursor = 1;
             end
         end
         function moveBackward(obj)
-            if obj.cursor > 1
+            if ~obj.isFirst()
                 obj.cursor = obj.cursor-1;
             else
-                error('already first');
+                disp('already first. Return to the last.');
+                obj.cursor = obj.getLength();
             end
         end
         

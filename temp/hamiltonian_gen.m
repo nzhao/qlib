@@ -18,5 +18,15 @@ interaction2=model.phy.SpinInteraction.DipolarInteraction(spin_collection, para)
 hami.addInteraction(interaction1);
 hami.addInteraction(interaction2);
 
-hami.strategy=model.phy.QuantumOperator.MatrixStrategy.FromProductSpace();
+strategy=model.phy.QuantumOperator.MatrixStrategy.FromProductSpace();
+hami.strategy=strategy;
 hami.generate_matrix();
+
+%% DensityMatrix
+
+denseMat=model.phy.QuantumOperator.DensityMatrix(spin_collection);
+spin_order=model.phy.SpinInteraction.SpinOrder(spin_collection, [1], {[1,0; 0,0]});
+denseMat.addSpinOrder(spin_order);
+
+denseMat.strategy=strategy;
+denseMat.generate_matrix();
