@@ -6,6 +6,7 @@ classdef AbstractDynamics < handle
         state_in
         state_out
         kernel
+        
     end
     
     methods
