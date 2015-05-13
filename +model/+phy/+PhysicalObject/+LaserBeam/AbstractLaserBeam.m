@@ -12,6 +12,7 @@ classdef AbstractLaserBeam < model.phy.PhysicalObject.PhysicalObject
         
     end
     
+    
     methods (Abstract)
         wavefunction(obj, x, y, z)
         getVSWFcoeff
