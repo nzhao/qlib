@@ -5,6 +5,7 @@ classdef AbstractLaserBeam < model.phy.PhysicalObject.PhysicalObject
     properties
     end
     
+    
     methods
         function obj=AbstractLaserBeam(name)
             obj.name=name;
