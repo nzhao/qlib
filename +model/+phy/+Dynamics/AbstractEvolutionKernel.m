@@ -5,7 +5,8 @@ classdef AbstractEvolutionKernel
     properties
     end
     
-    methods
+    methods (Abstract)
+        state_out=calculate_evolution(obj, state_in, time_list)
     end
     
 end
