@@ -6,8 +6,11 @@ classdef DensityMatrix < model.phy.QuantumOperator.Hamiltonian
     end
     
     methods
-        function obj=DensityMatrix(spin_collection)
-            obj@model.phy.QuantumOperator.Hamiltonian(spin_collection);
+        function obj=DensityMatrix(spin_collection, matrix_strategy)
+            if nargin < 2
+                matrix_strategy=model.phy.QuantumOperator.MatrixStrategy.FromProductSpace();
+            end
+            obj@model.phy.QuantumOperator.Hamiltonian(spin_collection, matrix_strategy);
         end
         
         function addSpinOrder(obj, spinOrder)

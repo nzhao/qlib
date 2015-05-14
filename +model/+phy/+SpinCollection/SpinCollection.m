@@ -4,7 +4,7 @@ classdef SpinCollection < handle
     
     properties
         spin_list
-        strategy
+        spin_source
     end
     
     methods
@@ -13,7 +13,7 @@ classdef SpinCollection < handle
         end
         
         function generate(obj)
-            obj.spin_list = obj.strategy.generate_spin_collection();
+            obj.spin_list = obj.spin_source.generate_spin_collection();
         end
         
         function len=getLength(obj)
@@ -21,15 +21,19 @@ classdef SpinCollection < handle
         end
         
         function space=getSpace(obj)
+            dim_list=obj.getDimList;
+            space=model.math.ProductLinearSpace(dim_list);
+        end
+        
+        function dim_list=getDimList(obj)
             len=obj.getLength();
             
             dim_list=zeros(1, len);
             for k=1:len
                 dim_list(k)=obj.spin_list{k}.dim;
             end
-            
-            space=model.math.ProductLinearSpace(dim_list);
         end
+            
     end
     
 end

@@ -33,6 +33,7 @@ classdef MatrixVectorEvolution < model.phy.Dynamics.AbstractEvolutionKernel
             
             state=state_in;
             for k=1:nInterval
+                fprintf('calculating evolution from t=%e to t=%e...\n', time_list(k), time_list(k+1));
                 dt=time_list(k+1)-time_list(k);
                 state_out=obj.evolve_step(state, dt);                
                 state=state_out;
