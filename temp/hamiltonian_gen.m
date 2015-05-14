@@ -22,6 +22,10 @@ strategy=model.phy.QuantumOperator.MatrixStrategy.FromProductSpace();
 hami.strategy=strategy;
 hami.generate_matrix();
 
+lv=model.phy.QuantumOperator.Liouvillian(spin_collection);
+lv.strategy=model.phy.QuantumOperator.MatrixStrategy.FromHamiltonianToLiouvillian(hami);
+lv.generate_matrix();
+
 %% DensityMatrix
 
 denseMat=model.phy.QuantumOperator.DensityMatrix(spin_collection);
@@ -30,3 +34,10 @@ denseMat.addSpinOrder(spin_order);
 
 denseMat.strategy=strategy;
 denseMat.generate_matrix();
+
+%% Evolution
+ker=model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution(lv);
+dynamics=model.phy.Dynamics.QuantumDynamics(ker);
+dynamics.set_initial_state(denseMat);
+dynamics.set_time_sequence(1:10);
+dynamics.evolve();

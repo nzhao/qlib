@@ -19,7 +19,11 @@ classdef AbstractDynamics < handle
         end
         
         function set_initial_state(obj, state)
-            obj.state_in=state;
+            try
+                obj.state_in=state.vector;
+            catch
+               error([class(state), 'does not have a property of vector.']);
+            end
         end
         
         function set_time_sequence(obj, time_list)

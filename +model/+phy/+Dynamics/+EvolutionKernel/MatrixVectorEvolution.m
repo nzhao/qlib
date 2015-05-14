@@ -3,15 +3,16 @@ classdef MatrixVectorEvolution < model.phy.Dynamics.AbstractEvolutionKernel
     %   Detailed explanation goes here
     
     properties
+        matrix
         result=[]
     end
     
     methods
         function obj=MatrixVectorEvolution(qOperator)
-            if isprop(qOperator,'matrix')
-               obj.matrix=qOperator.matrix;
-            else
-               error([class(qOperator), 'does not have a property of matrix']);
+            try
+                obj.matrix=qOperator.matrix;
+            catch
+                error([class(qOperator), 'does not have a property of matrix']);
             end
         end
         

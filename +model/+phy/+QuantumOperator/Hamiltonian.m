@@ -21,9 +21,7 @@ classdef Hamiltonian < model.phy.QuantumOperator.AbstractQuantumOperator
                 error('inconsistency detected.')
             end
         end
-        
-
-        
+                
     end
     
 end

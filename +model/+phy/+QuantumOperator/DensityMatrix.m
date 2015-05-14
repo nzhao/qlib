@@ -13,6 +13,10 @@ classdef DensityMatrix < model.phy.QuantumOperator.Hamiltonian
         function addSpinOrder(obj, spinOrder)
             obj.addInteraction(spinOrder);
         end
+        
+        function v=vector(obj)
+            v=obj.matrix(:);
+        end
     end
     
 end

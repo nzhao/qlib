@@ -11,6 +11,7 @@ classdef FromProductSpace < model.phy.QuantumOperator.MatrixStrategy
         function initialize(obj, qOperator)
             obj.space=qOperator.spin_collection.getSpace();
             obj.interaction_list=qOperator.interaction_list;
+            qOperator.dim=obj.space.dim;
         end
                 
         function matrix=compute_interaction_matrix(obj, interaction)
