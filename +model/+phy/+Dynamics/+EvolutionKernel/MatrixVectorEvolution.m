@@ -4,20 +4,28 @@ classdef MatrixVectorEvolution < model.phy.Dynamics.AbstractEvolutionKernel
     
     properties
         matrix
-        result=[]
+        result
+        matrix_prefactor
     end
     
     methods
-        function obj=MatrixVectorEvolution(qOperator)
+        function obj=MatrixVectorEvolution(qOperator, prefactor)
             try
                 obj.matrix=qOperator.matrix;
             catch
                 error([class(qOperator), 'does not have a property of matrix']);
             end
+            obj.result=[];
+            
+            if nargin > 1
+                obj.matrix_prefactor= prefactor;
+            else
+                obj.matrix_prefactor= -1.j;
+            end
         end
         
         function state_out=evolve_step(obj, state_in, dt)
-            state_out=expv(dt, -1.j*obj.matrix, state_in);
+            state_out=expv(dt, obj.matrix_prefactor*obj.matrix, state_in);
         end
         
         function state_out=calculate_evolution(obj, state_in, time_list)

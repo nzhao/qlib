@@ -11,8 +11,10 @@ classdef FromHamiltonianToLiouvillian < model.phy.QuantumOperator.MatrixStrategy
             obj.hamiltonian=hami;
         end
         
-        function initialize(obj, qOperator)
-            qOperator.dim=obj.hamiltonian.dim;
+        function initialize(obj, lv)
+            obj.hamiltonian.interaction_list=lv.interaction_list;
+            obj.hamiltonian.generate_matrix();
+            lv.dim=obj.hamiltonian.dim;
         end
         
         function matrix=calculate_matrix(obj)
