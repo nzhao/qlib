@@ -1,32 +1,30 @@
-classdef SpinOrder < model.phy.SpinInteraction.AbstractSpinInteraction
-    %INDIVIDUALSPINORDER Summary of this class goes here
+classdef SpinOrder < model.phy.SpinInteraction.SpinInteraction
+    %SPINORDER Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
-        dim_list
     end
     
     methods
-        function obj=SpinOrder(spin_collection, spin_index_list, spin_order_list)
-            para.spin_index=spin_index_list;
-            para.spin_order=spin_order_list;
-            iter=model.phy.SpinCollection.Iterator.SpinIterator(spin_collection, spin_index_list);
-            obj@model.phy.SpinInteraction.AbstractSpinInteraction(para, iter);
-            obj.dim_list=obj.iter.spin_collection.getDimList;
+        function obj=SpinOrder(spin_collection, spin_index, spin_mat_str, spin_coeff)
+            if nargin < 4
+                spin_coeff = num2cell(ones(1, length(spin_index)));
+            end
+            
+            new_coeff=coeff_normalization(spin_coeff);            
+            obj@model.phy.SpinInteraction.SpinInteraction(spin_collection, spin_index, spin_mat_str, new_coeff)
         end
         
-        function coeff=calculate_coeff(obj)
-            sel=obj.parameter.spin_index(obj.iter.currentIndex);
-            total_dim=prod(obj.dim_list);
-            coeff=1.0 / (total_dim/obj.dim_list(sel));
-        end
-        
-        function mat=calculate_matrix(obj)
-            coeff=obj.calculate_coeff();
-            mat1=obj.parameter.spin_order{obj.iter.currentIndex};
-            mat=coeff*mat1/trace(mat1);
-        end
     end
     
+end
+
+function norm_coeff=coeff_normalization(spin_coeff)
+    coeffmat=cell2mat(spin_coeff);
+    norm=sum(coeffmat);
+    if norm~=1.
+        fprintf('Sum of coefficients=%d are normalizaed automatically.', norm);
+    end
+    norm_coeff=num2cell(coeffmat/norm);
 end
 

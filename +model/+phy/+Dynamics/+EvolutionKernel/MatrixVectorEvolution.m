@@ -42,6 +42,17 @@ classdef MatrixVectorEvolution < model.phy.Dynamics.AbstractEvolutionKernel
             end
         end
         
+        function mean_val=mean_value(obj, obs_list)
+            [len_res_dim, ~]=size(obj.result);
+            len_obs=length(obs_list);
+            
+            obs_mat=zeros(len_obs, len_res_dim);
+            for k=1:len_obs
+                obs_mat(k,:)=obs_list(k).vector';
+            end
+            mean_val=obs_mat*obj.result;
+        end
+        
     end
     
 end

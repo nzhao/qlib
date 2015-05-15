@@ -11,7 +11,7 @@ classdef SingleSpinIterator < model.phy.SpinCollection.SpinCollectionIterator
         end
         function res = index_gen(obj)
             res = 1:obj.spin_collection.getLength();
-            res = res';
+            res = num2cell(res');
         end
     end
     

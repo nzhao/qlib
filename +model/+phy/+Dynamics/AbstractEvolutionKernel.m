@@ -7,6 +7,7 @@ classdef AbstractEvolutionKernel < handle
     
     methods (Abstract)
         state_out=calculate_evolution(obj, state_in, time_list)
+        mean_val=mean_value(obj, obs);
     end
     
 end

@@ -6,10 +6,12 @@ import model.phy.SpinCollection.SpinCollection
 import model.phy.QuantumOperator.Hamiltonian
 import model.phy.QuantumOperator.Liouvillian
 import model.phy.QuantumOperator.DensityMatrix
+import model.phy.QuantumOperator.Observable
 import model.phy.Dynamics.QuantumDynamics
 
 import model.phy.SpinInteraction.ZeemanInteraction
 import model.phy.SpinInteraction.DipolarInteraction
+import model.phy.SpinInteraction.SpinInteraction
 import model.phy.SpinInteraction.SpinOrder
 
 import model.phy.SpinCollection.Strategy.FromFile
@@ -37,12 +39,30 @@ liou.generate_matrix();
 %% DensityMatrix
 
 denseMat=DensityMatrix(spin_collection);
-denseMat.addSpinOrder( SpinOrder(spin_collection, 1, {[1,0; 0,0]}) );
+denseMat.addSpinOrder( SpinOrder(spin_collection, {[1, 2], [2,3]}, { {'sz', 'sx'}, {'sx', 'sy'} }, {0.5, 0.5}) );
+%denseMat.addSpinOrder( SpinOrder(spin_collection, {1}, { {'sz'} }) );
 denseMat.generate_matrix();
+
+%% Observable
+
+obs1=Observable(spin_collection);
+obs1.setName('s1z');
+obs1.addInteraction( SpinInteraction(spin_collection, {1}, { {'sz'} }) );
+obs1.generate_matrix();
+
+obs2=Observable(spin_collection);
+obs2.addInteraction( SpinInteraction(spin_collection, {2}, { {'sx'} }) );
+obs2.setName('s2x');
+obs2.generate_matrix();
 
 %% Evolution
 
 dynamics=QuantumDynamics( MatrixVectorEvolution(liou) );
 dynamics.set_initial_state(denseMat);
 dynamics.set_time_sequence(0:1e-5:1e-4);
-dynamics.evolve();
+dynamics.addObervable(obs1);
+dynamics.addObervable(obs2);
+dynamics.calculate_mean_values();
+
+%% plot
+plt=dynamics.render.plot('s1z', @real);
