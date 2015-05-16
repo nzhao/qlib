@@ -1,4 +1,4 @@
-classdef ProductLinearSpace < math.LinearSpace
+classdef ProductLinearSpace < model.math.LinearSpace
     %PRODCUTLINEARSPACE Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -14,7 +14,7 @@ classdef ProductLinearSpace < math.LinearSpace
     
     methods
         function obj=ProductLinearSpace(dim_list)
-            obj=obj@math.LinearSpace();
+            obj=obj@model.math.LinearSpace();
             
             obj.dim_list=dim_list;            
             obj.dim=prod(obj.dim_list);
@@ -38,11 +38,11 @@ classdef ProductLinearSpace < math.LinearSpace
         function create_subspace(obj, sub_idx)
             obj.sub_idx=sub_idx;
             sub_dims=obj.dim_list(sub_idx);
-            obj.subspace=math.ProductLinearSpace(sub_dims);
+            obj.subspace=model.math.ProductLinearSpace(sub_dims);
             
             quot_idx=setdiff(1:obj.nbody, obj.sub_idx);
             quot_dims=obj.dim_list(quot_idx);
-            obj.quotspace=math.ProductLinearSpace(quot_dims);
+            obj.quotspace=model.math.ProductLinearSpace(quot_dims);
         end
         
 
