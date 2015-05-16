@@ -28,8 +28,8 @@ import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
 
 spin_collection=SpinCollection();
 spin_collection.spin_source = FromSpinList(...
-    [Spin('1H', [1,1,0]),...
-     Spin('1H', [0 0 0])]...
+    [Spin('13C', [0 0 1.54]),...
+     Spin('13C', [0 0 0])]...
      );
 spin_collection.generate();
 
@@ -47,21 +47,21 @@ liou.generate_matrix();
 %% DensityMatrix
 
 denseMat=DensityMatrix(spin_collection);
-denseMat.addSpinOrder( SpinOrder(spin_collection, {[1,2]}, { {'sz', 'sz'} }) );
-%denseMat.addSpinOrder( GeneralSpinInteraction(spin_collection, {[1,2]}, { {[1 0; 0 1], [0 0; 0 1]} }, {1.}) );
+%denseMat.addSpinOrder( SpinOrder(spin_collection, {[1,2]}, { {'sz', 'sz'} }) );
+denseMat.addSpinOrder( GeneralSpinInteraction(spin_collection, {[1,2],}, { {[1 0; 0 0], [0 0; 0 1]}, }, {1.0,}) );
 denseMat.generate_matrix();
 
 %% Observable
 
 obs1=Observable(spin_collection);
-obs1.setName('s1x');
-obs1.addInteraction( SpinInteraction(spin_collection, {1}, { {'sx'} }) );
+obs1.setName('s1z');
+obs1.addInteraction( SpinInteraction(spin_collection, {1}, { {'sz'} }) );
 obs1.generate_matrix();
 
 
 obs2=Observable(spin_collection);
-obs2.setName('s1z');
-obs2.addInteraction( SpinInteraction(spin_collection, {1}, { {'sz'} }) );
+obs2.setName('s2z');
+obs2.addInteraction( SpinInteraction(spin_collection, {2}, { {'sz'} }) );
 obs2.generate_matrix();
 
 %% Evolution
@@ -74,6 +74,6 @@ dynamics.addObervable(obs2);
 dynamics.calculate_mean_values();
 
 %% plot
-dynamics.render.plot('s1x');
+dynamics.render.plot('s1z');
 hold on;
-dynamics.render.plot('s1z', 'b*-');
+dynamics.render.plot('s2z', 'b*-');
