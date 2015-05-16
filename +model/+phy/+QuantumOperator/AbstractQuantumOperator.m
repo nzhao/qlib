@@ -21,6 +21,16 @@ classdef AbstractQuantumOperator < handle
         function name=getName(obj)
             name=obj.name;
         end
+        
+        function addInteraction(obj, interaction)
+            if interaction.isConsistent(obj.spin_collection);
+                l=length(obj.interaction_list);
+                obj.interaction_list{l+1} = interaction;
+            else
+                error('inconsistency detected.')
+            end
+        end
+        
     end
     
 end
