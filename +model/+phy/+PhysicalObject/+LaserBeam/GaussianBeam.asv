@@ -23,7 +23,7 @@ classdef GaussianBeam < model.phy.PhysicalObject.LaserBeam.AbstractLaserBeam
             k=2.0*pi/obj.wavelength;
             val=exp(-((x-x0)*(x-x0)+(y-y0)*(y-y0))/obj.w0^2 + 1.j*k*(z-z0));
         end
-        
+            
         function [a, b]=getVSWFcoeff(maxN)
             a=zeros(1, maxN);
             b=zeros(1, maxN);
