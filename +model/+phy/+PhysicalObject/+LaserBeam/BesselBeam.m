@@ -1,4 +1,4 @@
-classdef BesselBeam
+classdef BesselBeam < model.phy.PhysicalObject.LaserBeam.AbstractLaserBeam
     %BESSELBEAM Summary of this class goes here
     %   Detailed explanation goes here
     

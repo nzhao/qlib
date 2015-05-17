@@ -3,6 +3,7 @@ classdef AbstractLaserBeam < model.phy.PhysicalObject.PhysicalObject
     %   Detailed explanation goes here
     
     properties
+        name
     end
     
     
