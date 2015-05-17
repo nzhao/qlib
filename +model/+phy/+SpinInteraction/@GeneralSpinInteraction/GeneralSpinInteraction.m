@@ -25,7 +25,13 @@ classdef GeneralSpinInteraction < model.phy.SpinInteraction.AbstractSpinInteract
         
         function mat=calculate_matrix(obj)
             coeff=obj.calculate_coeff();
-            mat1=obj.parameter.spin_mat{obj.iter.getCursor};
+            matCell=obj.parameter.spin_mat{obj.iter.getCursor};
+            lenMat=length(matCell);
+            
+            mat1=1;
+            for k=1:lenMat
+                mat1=kron(mat1, matCell{k});
+            end
             mat=coeff*mat1;
         end
     end

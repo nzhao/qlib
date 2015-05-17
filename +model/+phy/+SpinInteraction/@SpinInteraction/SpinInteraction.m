@@ -39,7 +39,7 @@ function mat=calc_mat(spin_collection, spin_index, spin_mat_str)
             mat_q=eval(['ss{q}.',spin_mat_str{k}{q}]);
             mat1=kron(mat1, mat_q);
         end
-        mat{k}=mat1;
+        mat{k}={mat1};
     end
 
 end
