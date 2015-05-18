@@ -38,6 +38,11 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
             zmat=Sz(obj.dim);
         end
         
+        function projMat=p(obj, k)
+            projMat=zeros(obj.dim);
+            projMat(k, k)=1;
+        end
+        
         function ISTmat=IST(obj,state) %irreducible spherical tensors
             basis=SphericalTensor(obj.dim);
             ISTmat=basis{state+1};

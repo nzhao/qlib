@@ -46,9 +46,8 @@ liou.generate_matrix();
 %% DensityMatrix
 
 denseMat=DensityMatrix(spin_collection);
-%denseMat.addSpinOrder( SpinOrder(spin_collection, {[1,2]}, { {'sz', 'sz'} }) );
-%denseMat.addSpinOrder( GeneralSpinInteraction(spin_collection, {[1,2],}, { {[1 0; 0 0], [0.5 0; 0 0.5]}, }, {1.0,}) );
-denseMat.addSpinOrder( GeneralSpinInteraction(spin_collection, {1,}, { {[1 0; 0 0]}, }, {1.0,}) );
+denseMat.addSpinOrder( SpinOrder(spin_collection, {[1,2], }, { {'p(1)', 'p(2)'}, }) );
+%denseMat.addSpinOrder( GeneralSpinInteraction(spin_collection, {1,}, { {[1 0; 0 0]}, }, {1.0,}) );
 denseMat.generate_matrix();
 
 %% Observable

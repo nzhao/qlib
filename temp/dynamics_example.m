@@ -14,6 +14,7 @@ import model.phy.SpinInteraction.SpinOrder
 
 import model.phy.SpinCollection.Strategy.FromSpinList
 import model.phy.QuantumOperator.MatrixStrategy.FromProductSpace
+import model.phy.QuantumOperator.MatrixStrategy.FromProductSpaceProjection
 import model.phy.QuantumOperator.MatrixStrategy.FromHamiltonianToLiouvillian
 import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
 
@@ -21,7 +22,7 @@ import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
 
 spin_collection=SpinCollection();
 
-spin_collection.strategy = FromSpinList(...
+spin_collection.spin_source = FromSpinList(...
     [Spin('13C', [1,1,1]),...
      Spin('13C', [10,10,10]),...
      Spin('13C', [20,20,20])...
@@ -30,33 +31,10 @@ spin_collection.generate();
 
 %% SpinInteraction
 
-para.B=1e-3;
-hami=Hamiltonian(spin_collection);
-hami.strategy= FromProductSpace();
+para.B=1e-4*[0 0 0];
+hami=Hamiltonian(spin_collection, FromProductSpaceProjection(1, eye(2)) );
 
-lv=Liouvillian(spin_collection);
-lv.strategy=FromHamiltonianToLiouvillian(hami);
+hami.addInteraction( ZeemanInteraction(spin_collection, para) );
+hami.addInteraction( DipolarInteraction(spin_collection, para) );
 
-interaction1=ZeemanInteraction(spin_collection, para);
-interaction2=DipolarInteraction(spin_collection, para);
-lv.addInteraction(interaction1);
-lv.addInteraction(interaction2);
-
-lv.generate_matrix();
-
-%% DensityMatrix
-
-denseMat=DensityMatrix(spin_collection);
-denseMat.strategy=FromProductSpace();
-
-spin_order=SpinOrder(spin_collection, 1, {[1,0; 0,0]});
-denseMat.addSpinOrder(spin_order);
-
-denseMat.generate_matrix();
-
-%% Evolution
-
-dynamics=QuantumDynamics( MatrixVectorEvolution(lv) );
-dynamics.set_initial_state(denseMat);
-dynamics.set_time_sequence(1:10);
-dynamics.evolve();
+hami.generate_matrix();
