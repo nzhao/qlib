@@ -1,4 +1,4 @@
-classdef SingleSpinUnitary < model.phy.QuantumOperator.AbstractQuantumOperator
+classdef SingleSpinUnitary < model.phy.QuantumOperator.MultiSpinOperator
     %SINGLESPINUNITARY Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -7,16 +7,8 @@ classdef SingleSpinUnitary < model.phy.QuantumOperator.AbstractQuantumOperator
     end
     
     methods
-        function obj=SingleSpinUnitary(spin_collection, matrix_strategy, unitary_matrix)
-            obj@model.phy.QuantumOperator.AbstractQuantumOperator();
-            obj.spin_collection=spin_collection;
-            obj.interaction_list={}; 
-            
-            if nargin < 2
-                obj.matrix_strategy= model.phy.QuantumOperator.MatrixStrategy.FromProductSpace();
-            else
-                obj.matrix_strategy=matrix_strategy;
-            end
+        function obj=SingleSpinUnitary(spin_collection, unitary_matrix)
+            obj@model.phy.QuantumOperator.MultiSpinOperator(spin_collection);
             
             dim=length(unitary_matrix);
             diff=norm(unitary_matrix'*unitary_matrix-eye(dim), Inf);
@@ -30,7 +22,6 @@ classdef SingleSpinUnitary < model.phy.QuantumOperator.AbstractQuantumOperator
                 spin_collection, { proj_spin_idx,}, { {unitary_matrix}, }, { 1.0,});
             
             obj.addInteraction(uni_inte);
-            
         end
     end
     

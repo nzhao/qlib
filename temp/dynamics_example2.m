@@ -5,10 +5,10 @@ import model.phy.PhysicalObject.Spin
 import model.phy.SpinCollection.SpinCollection
 
 %quantum operators
-import model.phy.QuantumOperator.Hamiltonian
-import model.phy.QuantumOperator.Liouvillian
-import model.phy.QuantumOperator.DensityMatrix
-import model.phy.QuantumOperator.Observable
+import model.phy.QuantumOperator.SpinOperator.Hamiltonian
+import model.phy.QuantumOperator.SpinOperator.Liouvillian
+import model.phy.QuantumOperator.SpinOperator.DensityMatrix
+import model.phy.QuantumOperator.SpinOperator.Observable
 import model.phy.Dynamics.QuantumDynamics
 
 %interactoins
