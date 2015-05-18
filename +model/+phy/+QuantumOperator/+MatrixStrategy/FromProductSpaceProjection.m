@@ -8,6 +8,7 @@ classdef FromProductSpaceProjection < model.phy.QuantumOperator.MatrixStrategy.F
         projection_matrix
         orthognoal_states
         
+        unitary_op
         conditional_matrix
     end
     
@@ -15,28 +16,24 @@ classdef FromProductSpaceProjection < model.phy.QuantumOperator.MatrixStrategy.F
         function obj=FromProductSpaceProjection(proj_spin_idx, orthognoal_states)
             obj.projection_index=proj_spin_idx;
             obj.orthognoal_states=orthognoal_states;
-            [~, obj.nProj]=size(obj.orthognoal_states);
-            obj.projection_matrix=cell(1, obj.nProj);
-            obj.conditional_matrix=cell(1, obj.nProj);
+            
         end
         
         function initialize(obj, qOperator)
             initialize@model.phy.QuantumOperator.MatrixStrategy.FromProductSpace(obj, qOperator);
-            
-            for k=1:obj.nProj
-                state=obj.orthognoal_states(:, k);
-                proj_op=model.phy.QuantumOperator.SingleSpinProjector(qOperator.spin_collection, obj.projection_index, state);
-                proj_op.generate_matrix();
-                obj.projection_matrix{k}=proj_op.matrix;
-            end
+            obj.unitary_op=model.phy.QuantumOperator.SingleSpinUnitary(qOperator.spin_collection, obj.projection_index, obj.orthognoal_states);
+            obj.unitary_op.generate_matrix();
         end
+        
         
         function matrix=calculate_matrix(obj)
             full_mat=calculate_matrix@model.phy.QuantumOperator.MatrixStrategy.FromProductSpace(obj);
-            
+            u_mat=obj.unitary_op.matrix;
+            u_full_mat= u_mat'*full_mat*u_mat;
             matrix=0;
             for k=1:obj.nProj
-                obj.conditional_matrix{k}=obj.projection_matrix{k}*full_mat*obj.projection_matrix{k};
+                index_list=obj.getIndex(obj.projection_index, state_k);
+                obj.conditional_matrix{k}=u_full_mat(index_list, index_list);
                 matrix=matrix+obj.conditional_matrix{k};
             end
         end
