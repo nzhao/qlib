@@ -3,9 +3,9 @@ clear;clc;
 import model.phy.PhysicalObject.Spin
 import model.phy.SpinCollection.SpinCollection
 
-import model.phy.QuantumOperator.Hamiltonian
-import model.phy.QuantumOperator.Liouvillian
-import model.phy.QuantumOperator.DensityMatrix
+import model.phy.QuantumOperator.SpinOperator.Hamiltonian
+import model.phy.QuantumOperator.SpinOperator.Liouvillian
+import model.phy.QuantumOperator.SpinOperator.DensityMatrix
 import model.phy.Dynamics.QuantumDynamics
 
 import model.phy.SpinInteraction.ZeemanInteraction
@@ -32,7 +32,7 @@ spin_collection.generate();
 %% SpinInteraction
 
 para.B=1e-4*[0 0 0];
-hami=Hamiltonian(spin_collection, FromProductSpaceProjection(1, eye(2)) );
+hami=Hamiltonian(spin_collection );
 
 hami.addInteraction( ZeemanInteraction(spin_collection, para) );
 hami.addInteraction( DipolarInteraction(spin_collection, para) );

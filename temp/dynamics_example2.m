@@ -21,7 +21,7 @@ import model.phy.SpinInteraction.GeneralSpinInteraction
 %strategies
 import model.phy.SpinCollection.Strategy.FromFile
 import model.phy.QuantumOperator.MatrixStrategy.FromProductSpace
-import model.phy.QuantumOperator.MatrixStrategy.FromHamiltonianToLiouvillian
+import model.phy.QuantumOperator.MatrixStrategy.SuperOperatorCommutator
 import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
 
 %% FromSpinList 
@@ -36,8 +36,7 @@ spin_collection.generate();
 
 para.B=1e-4*[0 0 100];
 hami=Hamiltonian(spin_collection);
-liou=Liouvillian(spin_collection);
-liou.matrix_strategy=FromHamiltonianToLiouvillian(hami);
+liou=Liouvillian(spin_collection, SuperOperatorCommutator(hami));
 
 liou.addInteraction( ZeemanInteraction(spin_collection, para) );
 liou.addInteraction( DipolarInteraction(spin_collection, para) );
