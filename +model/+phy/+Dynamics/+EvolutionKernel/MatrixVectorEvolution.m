@@ -11,7 +11,7 @@ classdef MatrixVectorEvolution < model.phy.Dynamics.AbstractEvolutionKernel
     methods
         function obj=MatrixVectorEvolution(qOperator, prefactor)
             try
-                obj.matrix=qOperator.matrix;
+                obj.matrix=qOperator.getMatrix();
             catch
                 error([class(qOperator), 'does not have a property of matrix']);
             end

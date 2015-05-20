@@ -8,23 +8,12 @@ classdef MultiSpinSuperOperator < model.phy.QuantumOperator.AbstractQuantumOpera
     end
     
     methods
-        function obj=MultiSpinSuperOperator(spin_collection, matrix_strategy)
+        function obj=MultiSpinSuperOperator(spin_collection, interaction_list)
             obj.spin_collection=spin_collection;
-            obj.interaction_list={};
-            
-            if nargin < 2
-                obj.matrix_strategy= model.phy.QuantumOperator.MatrixStrategy.FromProductSpace();
+            if nargin > 1
+                obj.interaction_list=interaction_list;
             else
-                obj.matrix_strategy=matrix_strategy;
-            end
-        end
-        
-        function addInteraction(obj, interaction)
-            if interaction.isConsistent(obj.spin_collection);
-                l=length(obj.interaction_list);
-                obj.interaction_list{l+1} = interaction;
-            else
-                error('inconsistency detected.')
+                obj.interaction_list={};
             end
         end
 

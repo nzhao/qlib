@@ -33,6 +33,31 @@ classdef SpinCollection < handle
                 dim_list(k)=obj.spin_list{k}.dim;
             end
         end
+        
+        
+        function mat=calc_mat(obj, spin_index, spin_mat_str)
+            if length(spin_index)~=length(spin_mat_str)
+                error('index and mat are not equal length.');
+            end
+
+            len=length(spin_index);
+            mat=cell(1, len);
+            for k=1:len
+                ss=obj.spin_list(spin_index{k});
+
+                if length(ss) ~= length(spin_mat_str{k})
+                    error('size does not match.');
+                end
+
+                mat1=1;
+                for q=1:length(ss)
+                    mat_q=eval(['ss{q}.',spin_mat_str{k}{q}]);
+                    mat1=kron(mat1, mat_q);
+                end
+                mat{k}={mat1};
+            end
+
+        end
             
     end
     

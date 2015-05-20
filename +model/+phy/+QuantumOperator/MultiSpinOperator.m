@@ -1,4 +1,4 @@
-classdef MultiSpinOperator < model.phy.QuantumOperator.AbstractQuantumOperator
+ classdef MultiSpinOperator < model.phy.QuantumOperator.AbstractQuantumOperator
     %MULTISPINOPERATOR Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -28,19 +28,81 @@ classdef MultiSpinOperator < model.phy.QuantumOperator.AbstractQuantumOperator
             end
         end
         
-        function res_mat=transform(obj, transform_operator)
-            transform_operator.generate_matrix();
-            tMat=transform_operator.matrix;
-            res_mat=tMat'*obj.matrix*tMat;
+        function v=vector(obj)
+            mat=obj.getMatrix();
+            v=mat(:);
         end
         
-        function proj_mat=projection_matrix(obj, spin_sub_index, state)
+        function res_mat=transform(obj, transform_operator)
+            transform_operator.generate_matrix();
+            tMat=transform_operator.getMatrix();
+            res_mat=tMat'*obj.getMatrix()*tMat;
+        end
+        
+        
+        
+        
+        function proj_mat=project_matrix(obj, spin_sub_index, state)
             space=obj.spin_collection.getSpace();
             space.create_subspace(spin_sub_index);
             proj_index=space.locate_sub_basis(state);
-            proj_mat=obj.matrix(proj_index, proj_index);
+            mat=obj.getMatrix();
+            proj_mat=mat(proj_index, proj_index);
         end
         
+        function proj_operator=project_operator(obj, spin_sub_index, state)
+            mat=obj.project_matrix(spin_sub_index, state);
+            proj_operator=model.phy.QuantumOperator.MultiSpinOperator(obj.spin_collection);
+            proj_operator.setMatrix(mat);
+        end
+        
+        
+        
+        
+        function super_operator=sharp(obj)
+            super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
+            
+            Bmat=obj.getMatrix(); eyeMat=speye(obj.dim);
+            super_operator.setMatrix(kron(Bmat.', eyeMat));
+        end
+        
+        function super_operator=flat(obj)
+            super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
+            
+            Amat=obj.getMatrix(); eyeMat=speye(obj.dim);
+            super_operator.setMatrix(kron(eyeMat, Amat));
+        end
+        
+        function super_operator=circleC(obj)
+            super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
+            
+            Cmat=obj.getMatrix(); eyeMat=speye(obj.dim);
+            super_operator.setMatrix(kron(eyeMat, Cmat)-kron(conj(Cmat), eyeMat));
+        end
+        
+        function super_operator=flat_sharp(obj, sharp_op)
+            super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
+            
+            Amat=obj.getMatrix(); Bmat=sharp_op.getMatrix();
+            super_operator.setMatrix(kron(Bmat.', Amat));
+        end
+        
+        
+        function [spin_index, spin_mat_str, spin_coeff]=strCell2spinMatrix(strCell)
+            len=length(strCell);
+            spin_index=cell(1, len);
+            spin_mat_str=cell(1, len);
+            spin_coeff=cell(1, len);
+            
+            for k=1:len
+                [idx, str, coeff]=str2mat(strCell{k});
+                spin_index{k}=idx;
+                spin_mat_str{k}=str;
+                spin_coeff{k}=coeff;
+            end
+        end
+        
+
     end
     
 end

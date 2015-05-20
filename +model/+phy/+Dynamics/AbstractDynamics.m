@@ -51,9 +51,14 @@ classdef AbstractDynamics < handle
             obj.time_list=time_list;
         end
         
-        function addObervable(obj, obs)
-            obj.observable_list=[obj.observable_list, obs];
-            obj.observable_keys=[obj.observable_keys, obs.name];
+        function addObervable(obj, obs_list)
+            obj.observable_list=[obj.observable_list, obs_list];
+            obs_num=length(obj.observable_list);
+            
+            obj.observable_keys=cell(1, obs_num);
+            for k=1:obs_num
+                obj.observable_keys{k}=obs_list(k).name;
+            end
         end
         
         
