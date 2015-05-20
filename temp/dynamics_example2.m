@@ -36,13 +36,12 @@ liou=hami.circleC();
 
 %% DensityMatrix
 
-denseMat=DensityMatrix(spin_collection, {[1,2], }, { {'p(1)', 'p(2)'}, });
-denseMat=DensityMatrix(spin_collection, 'sx_1 * sz_2');
+denseMat=DensityMatrix(spin_collection, {'1.0 * p(1)_1 * p(2)_2'});
 
 %% Observable
 
-obs1=Observable('s1z', spin_collection, {1}, { {'sz'} });
-obs2=Observable('s2z', spin_collection, {2}, { {'sz'} });
+obs1=Observable('sz1', spin_collection, {'1.0 * sz_1'});
+obs2=Observable('sz2', spin_collection, {'1.0 * sz_2'});
 
 %% Evolution
 
@@ -54,5 +53,5 @@ dynamics.calculate_mean_values();
 
 %% plot
 hold on;
-dynamics.render.plot('s1z', @real);
-dynamics.render.plot('s2z', 'b*-', @real);
+dynamics.render.plot('sz1', @real);
+dynamics.render.plot('sz2', 'b*-', @real);

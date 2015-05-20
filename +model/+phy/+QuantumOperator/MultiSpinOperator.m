@@ -86,22 +86,6 @@
             Amat=obj.getMatrix(); Bmat=sharp_op.getMatrix();
             super_operator.setMatrix(kron(Bmat.', Amat));
         end
-        
-        
-        function [spin_index, spin_mat_str, spin_coeff]=strCell2spinMatrix(strCell)
-            len=length(strCell);
-            spin_index=cell(1, len);
-            spin_mat_str=cell(1, len);
-            spin_coeff=cell(1, len);
-            
-            for k=1:len
-                [idx, str, coeff]=str2mat(strCell{k});
-                spin_index{k}=idx;
-                spin_mat_str{k}=str;
-                spin_coeff{k}=coeff;
-            end
-        end
-        
 
     end
     
