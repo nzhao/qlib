@@ -12,6 +12,14 @@ classdef Hamiltonian < model.phy.QuantumOperator.MultiSpinOperator
                 obj.matrix_strategy = matrix_strategy;
             end
         end
+        
+        function remove_identity(obj, freq)
+            if nargin < 2
+                freq = trace(obj.getMatrix());
+            end
+            mat=obj.getMatrix()-freq/obj.dim*speye(obj.dim);
+            obj.setMatrix(mat);
+        end
     end
     
 end

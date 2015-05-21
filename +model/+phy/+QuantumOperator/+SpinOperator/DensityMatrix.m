@@ -8,12 +8,18 @@ classdef DensityMatrix < model.phy.QuantumOperator.MultiSpinOperator
     methods
         function obj=DensityMatrix(spin_collection, str)
             obj@model.phy.QuantumOperator.MultiSpinOperator(spin_collection);
-            
-            interaction_string=model.phy.SpinInteraction.InteractionString(spin_collection, str);
-            spin_interaction=interaction_string.getInteraction();
-            obj.addInteraction(spin_interaction);
+            if nargin > 1
+                obj.addInteraction(model.phy.SpinInteraction.InteractionString(spin_collection, str));
+            end
             
         end
+        
+        function generate_matrix(obj)
+            generate_matrix@model.phy.QuantumOperator.MultiSpinOperator(obj);
+            
+            mat=obj.getMatrix();
+            obj.setMatrix(mat/trace(mat));
+        end        
                 
     end
     

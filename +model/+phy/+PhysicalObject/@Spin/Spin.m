@@ -43,6 +43,14 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
             projMat(k, k)=1;
         end
         
+        function generalMat=mat(obj, m)
+            if length(m)==obj.dim
+                generalMat=m;
+            else
+                error('dimension mismatch. matrix_dim=%d is assigned, but spin_dimension=%d is needed.', length(m), obj.dim);
+            end
+        end
+        
         function ISTmat=IST(obj,state) %irreducible spherical tensors
             basis=SphericalTensor(obj.dim);
             ISTmat=basis{state+1};

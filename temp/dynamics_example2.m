@@ -40,8 +40,8 @@ denseMat=DensityMatrix(spin_collection, {'1.0 * p(1)_1 * p(2)_2'});
 
 %% Observable
 
-obs1=Observable('sz1', spin_collection, {'1.0 * sz_1'});
-obs2=Observable('sz2', spin_collection, {'1.0 * sz_2'});
+obs1=Observable(spin_collection, 'sz1', {'1.0 * sz_1'});
+obs2=Observable(spin_collection, 'sz2', {'1.0 * sz_2'});
 
 %% Evolution
 
@@ -52,6 +52,7 @@ dynamics.addObervable([obs1, obs2]);
 dynamics.calculate_mean_values();
 
 %% plot
+figure();
 hold on;
 dynamics.render.plot('sz1', @real);
 dynamics.render.plot('sz2', 'b*-', @real);

@@ -15,7 +15,13 @@ classdef ZeemanInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
         end
         
         function coeff=calculate_coeff(obj, spin)
-            coeff=obj.parameter.B * spin.gamma;
+            try
+                rot_freq=obj.parameter.rotation_frequency;
+            catch
+                rot_freq=0;
+            end
+            
+            coeff=obj.parameter.B * spin.gamma - rot_freq;
         end
         function mat=calculate_matrix(obj)
             spin=obj.iter.currentItem{1};

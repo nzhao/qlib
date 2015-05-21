@@ -40,8 +40,8 @@ classdef AbstractDynamics < handle
         
         function set_initial_state(obj, state)
             try
-                obj.state_in=state.vector;
-                obj.kernel.result=state.vector;
+                obj.state_in=state.getVector();
+                obj.kernel.result=state.getVector();
             catch
                error([class(state), 'does not have a property of vector.']);
             end
