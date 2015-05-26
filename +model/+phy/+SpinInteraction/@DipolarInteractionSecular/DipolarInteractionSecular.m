@@ -18,10 +18,15 @@ classdef DipolarInteractionSecular < model.phy.SpinInteraction.DipolarInteractio
             spins=obj.iter.currentItem();
             spin1=spins{1}; spin2=spins{2};
             dip=obj.calculate_coeff(spins);
-            mat= dip(3, 3)*...
-                (-0.5*kron(spin1.sx,spin2.sx)...
-                 -0.5*kron(spin1.sy,spin2.sy)...
-                     +kron(spin1.sz,spin2.sz));
+            
+            if strcmp(spin1.name, spin2.name)
+                mat= dip(3, 3)*...
+                    (-0.5*kron(spin1.sx,spin2.sx)...
+                     -0.5*kron(spin1.sy,spin2.sy)...
+                         +kron(spin1.sz,spin2.sz));
+            else
+                mat= dip(3, 3)*kron(spin1.sz,spin2.sz);
+            end
         end
 
     end

@@ -38,6 +38,39 @@ classdef DynamicsRender < view.SolutionRender.AbstractSolutionRender
             plt=plot(x,y,style);
         end
         
+        function plt=fft(obj, name, varargin)
+            res=obj.get_result();
+            
+            x=res('time');
+            y=res(name);
+            
+            dx_list=diff(x);
+            dx=union(dx_list, dx_list);
+            if length(dx) > 1
+                warning('time list is not equidistant.')
+                dx=dx(1);
+            end
+            df=1/dx;
+            
+            nfet=2^nextpow2(length(y));% Next power of 2 from length of y
+            flist=df/2*linspace(0,1, nfet/2+1);
+            ylist_all=fft(y, nfet)/length(y);
+            ylist=ylist_all(1:nfet/2+1);
+
+            style='ro-';
+            for k=1:length(varargin)
+                switch class(varargin{k})
+                    case 'function_handle'
+                        f=varargin{k};
+                        ylist=f(ylist);
+                    case 'char'
+                        style=varargin{k};
+                end
+            end
+            
+            plt=plot(flist,ylist,style);
+        end
+        
     end
     
 end

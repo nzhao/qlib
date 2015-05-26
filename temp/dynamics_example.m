@@ -48,13 +48,13 @@ obs=obs1.project_operator(1, 1);
 %% dynamics
 dynamics=QuantumDynamics( MatrixVectorEvolution(lv) );
 dynamics.set_initial_state(denseMat);
-dynamics.set_time_sequence(0:50e-6:10e-3);
+dynamics.set_time_sequence(0:50e-6:100e-3);
 dynamics.addObervable(obs);
 dynamics.calculate_mean_values();
 
 
 %%
 figure();
-hold on;
-dynamics.render.plot('coherence_1_1', @real);
-dynamics.render.plot('coherence_1_1', 'b*-', @imag);
+dynamics.render.plot('coherence_1_1', @abs);
+figure();
+dynamics.render.fft('coherence_1_1', @abs);
