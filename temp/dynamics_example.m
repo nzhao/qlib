@@ -5,6 +5,7 @@ import model.phy.SpinCollection.SpinCollection
 
 import model.phy.QuantumOperator.SpinOperator.Hamiltonian
 import model.phy.QuantumOperator.SpinOperator.DensityMatrix
+import model.phy.QuantumOperator.SpinOperator.Observable
 import model.phy.Dynamics.QuantumDynamics
 
 import model.phy.SpinInteraction.ZeemanInteraction

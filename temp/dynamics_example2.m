@@ -38,7 +38,7 @@ liou=hami.circleC();
 
 %% DensityMatrix
 
-denseMat=DensityMatrix(spin_collection, {'1.0 * p(1)_1 * p(2)_2'});
+denseMat=DensityMatrix(spin_collection, {'1.0 * p(2)_1'});
 
 %% Observable
 
@@ -53,6 +53,11 @@ dynamics.addObervable([obs1]);
 dynamics.calculate_mean_values();
 
 %% plot
+para.rm_average=1;
 figure();
 hold on;
-dynamics.render.fft('sz1', @abs);
+dynamics.render.fft('sz1', @abs, para);
+
+figure();
+hold on;
+dynamics.render.plot('sz1', @abs);

@@ -39,10 +39,31 @@ classdef DynamicsRender < view.SolutionRender.AbstractSolutionRender
         end
         
         function plt=fft(obj, name, varargin)
-            res=obj.get_result();
+            style='ro-'; f=@(x) x; isRemoveAverage=0;
+            for k=1:length(varargin)
+                switch class(varargin{k})
+                    case 'function_handle'
+                        f=varargin{k};
+%                        ylist=f(ylist);
+                    case 'char'
+                        style=varargin{k};
+                    case 'struct'
+                        para=varargin{k};
+                        try
+                            isRemoveAverage=para.rm_average;
+                        catch
+                            isRemoveAverage=0;
+                        end
+                end
+            end
             
+            res=obj.get_result();
             x=res('time');
             y=res(name);
+            
+            if isRemoveAverage
+                y=y-mean(y);
+            end
             
             dx_list=diff(x);
             dx=union(dx_list, dx_list);
@@ -57,17 +78,7 @@ classdef DynamicsRender < view.SolutionRender.AbstractSolutionRender
             ylist_all=fft(y, nfet)/length(y);
             ylist=ylist_all(1:nfet/2+1);
 
-            style='ro-';
-            for k=1:length(varargin)
-                switch class(varargin{k})
-                    case 'function_handle'
-                        f=varargin{k};
-                        ylist=f(ylist);
-                    case 'char'
-                        style=varargin{k};
-                end
-            end
-            
+            ylist=f(ylist);
             plt=plot(flist,ylist,style);
         end
         
