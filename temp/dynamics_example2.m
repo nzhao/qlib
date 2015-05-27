@@ -38,7 +38,7 @@ liou=hami.circleC();
 
 %% DensityMatrix
 
-denseMat=DensityMatrix(spin_collection, {'1.0 * p(2)_1'});
+denseMat=DensityMatrix(spin_collection, {'1.0 * p(1)_1 * p(2)_2 * p(2)_3 * p(2)_4 * p(2)_5 * p(2)_6'});
 
 %% Observable
 
