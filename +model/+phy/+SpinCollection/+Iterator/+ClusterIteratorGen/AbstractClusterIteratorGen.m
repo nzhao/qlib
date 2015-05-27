@@ -7,12 +7,14 @@ classdef AbstractClusterIteratorGen < handle
         spin_collection
         connection_matrix
         cluster_matrix
+        cluster_info
     end
     
     methods
         function obj=AbstractClusterIteratorGen(spin_collection, parameters)
             obj.spin_collection=spin_collection;
             obj.parameters=parameters;
+            obj.generate_connection_matrix();
         end
         
         function generate_connection_matrix(obj)
@@ -44,5 +46,7 @@ classdef AbstractClusterIteratorGen < handle
         generate_clusters(obj)
     end
     
+
+%         
 end
 

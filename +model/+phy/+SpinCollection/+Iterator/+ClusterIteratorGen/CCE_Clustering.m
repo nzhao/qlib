@@ -8,6 +8,8 @@ classdef CCE_Clustering < model.phy.SpinCollection.Iterator.ClusterIteratorGen.A
     methods
         function obj=CCE_Clustering(spin_collection, parameters)
             obj@model.phy.SpinCollection.Iterator.ClusterIteratorGen.AbstractClusterIteratorGen(spin_collection, parameters);
+            obj.generate_clusters();
+            obj.sort_cluster();          
         end
         
         function generate_clusters(obj)
@@ -38,8 +40,38 @@ classdef CCE_Clustering < model.phy.SpinCollection.Iterator.ClusterIteratorGen.A
 
                    cluster_list=unique([cluster_list;new_cluster_list],'rows');
             end
+            obj.cluster_matrix=cluster_list;
+            disp('cluster matrix generated');
         end
+        function sort_cluster(obj)
+            cluster_list=obj.cluster_matrix;
+            [nrow,ncol]=size(cluster_list);
+            nz_list=zeros(nrow,1);%none zero list of state list
+            for n=1:nrow
+                nz_list(n,1)=nnz(cluster_list(n,:));
+            end
+
+            A=[cluster_list,nz_list];
+            cols=fliplr(1:(ncol+1));
+            A=sortrows(A,cols);
+            cluster_list=A(:,1:ncol);
+            obj.cluster_matrix=sparse(logical(cluster_list));
+            obj.cluster_info.cluster_number=nrow;
+
+            max_order=obj.parameters.max_order;
+            nclu=cell(max_order,2);
+            for n=1:max_order
+            ncluster=length(find(nz_list==n));
+            nclu{n,1}=['CCE-' num2str(n)];
+            nclu{n,2}=ncluster;
+            disp(['The number of ' num2str(n) '-spin clusters is: ' num2str(ncluster) '.']);               
+            end
+            obj.cluster_info.cluster_number_list=nclu; 
+        end
+        
+        
     end
+
     
 end
 
