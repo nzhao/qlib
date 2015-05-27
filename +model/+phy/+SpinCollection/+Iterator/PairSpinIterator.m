@@ -11,7 +11,10 @@ classdef PairSpinIterator < model.phy.SpinCollection.SpinCollectionIterator
         end
         function res = index_gen(obj)
             singleIdx = 1:obj.spin_collection.getLength();
-            res=flipud(combnk(singleIdx, 2));
+            resMat=flipud(combnk(singleIdx, 2));
+            
+            [size1, ~]=size(resMat);
+            res=mat2cell(resMat, ones(1, size1), 2);
         end
     end
     

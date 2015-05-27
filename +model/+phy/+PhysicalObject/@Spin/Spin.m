@@ -17,7 +17,7 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
     methods
         function obj = Spin(name, coord)
             obj.name=name;
-            [obj.dim, obj.gamma, obj.chizz, obj.eta] = data.NMRData.get_spin(name);
+            [obj.dim, obj.gamma, obj.chizz, obj.eta] = model.phy.data.NMRData.get_spin(name);
             if nargin > 1
                 obj.coordinate=coord;
             end
@@ -36,6 +36,19 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
         
         function zmat=sz(obj)
             zmat=Sz(obj.dim);
+        end
+        
+        function projMat=p(obj, k)
+            projMat=zeros(obj.dim);
+            projMat(k, k)=1;
+        end
+        
+        function generalMat=mat(obj, m)
+            if length(m)==obj.dim
+                generalMat=m;
+            else
+                error('dimension mismatch. matrix_dim=%d is assigned, but spin_dimension=%d is needed.', length(m), obj.dim);
+            end
         end
         
         function ISTmat=IST(obj,state) %irreducible spherical tensors

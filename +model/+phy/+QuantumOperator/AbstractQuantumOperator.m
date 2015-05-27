@@ -3,16 +3,39 @@ classdef AbstractQuantumOperator < handle
     %   Detailed explanation goes here
     
     properties
+        name
         dim
         matrix
-        strategy
+        matrix_strategy
+        
+        hasMatrix=0
     end
     
     methods
         function generate_matrix(obj)
-            obj.strategy.initialize(obj);
-            obj.matrix=obj.strategy.calculate_matrix();
+            obj.matrix_strategy.initialize(obj);
+            obj.matrix=obj.matrix_strategy.calculate_matrix();
+            obj.hasMatrix=1;
         end
+        
+        function setName(obj, name)
+            obj.name=name;
+        end
+        function name=getName(obj)
+            name=obj.name;
+        end
+        
+        function mat=getMatrix(obj)
+            if ~obj.hasMatrix
+                obj.generate_matrix();
+            end
+            mat=obj.matrix;
+        end
+        
+        function setMatrix(obj, mat)
+            obj.matrix=mat;
+            obj.hasMatrix=1;
+        end        
     end
     
 end
