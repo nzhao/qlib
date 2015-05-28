@@ -1,8 +1,7 @@
 clear;clc;
 %% Package import
 %physical objects
-cd /Users/ylp/Documents/code/qlib;
-addpath(genpath('./'));
+
 import model.phy.SpinCollection.SpinCollection
 %import model.phy.SpinCollection.SpinCollection.Iterator.ClusterIteratorGen.AbstractClusterIteratorGen
 %quantum operators
@@ -20,20 +19,32 @@ import model.phy.SpinCollection.Strategy.FromFile
 import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
 
 
+import model.phy.SpinCollection.Iterator.ClusterIterator
 import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
+
+import model.phy.PhysicalObject.NV
 %% FromSpinList 
 tic
 
-spin_coord_file_path='./+controller/+input/';
-spin_collection=SpinCollection();
-spin_collection.spin_source = FromFile(...
-    [spin_coord_file_path, '+xyz/RoyCoord.xyz']...
+%spin_coord_file_path='./+controller/+input/';
+cluster=SpinCollection();
+cluster.spin_source = FromFile(...
+    [INPUT_FILE_PATH, '+xyz/RoyCoord.xyz']...
      );
-spin_collection.generate();
+cluster.generate();
 %% Generate Cluster using CCE clustering
 clu_para.cutoff=8;
 clu_para.max_order=4;
-cluster_collection=CCE_Clustering(spin_collection,clu_para);
+cce=CCE_Clustering(cluster, clu_para);
 
+all_clusters=ClusterIterator(cluster,cce);
+
+NVcenter=NV();
+NVe={NVcenter.espin};
+bath_cluster=all_clusters.currentItem();
+
+cluster=SpinCollection();
+cluster.spin_source = FromSpinList([NVe, bath_cluster]);
+cluster.generate();
 toc
 

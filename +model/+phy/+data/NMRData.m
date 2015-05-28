@@ -13,7 +13,7 @@ classdef NMRData
             chizz=0;
             eta=0;
             switch char(name)
-                case 'NV'
+                case 'NVespin'
                     dim=3;
                     gamma=-1.760859708e11; 
                 case 'J1/2'

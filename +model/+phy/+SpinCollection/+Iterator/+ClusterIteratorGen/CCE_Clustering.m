@@ -8,11 +8,9 @@ classdef CCE_Clustering < model.phy.SpinCollection.Iterator.ClusterIteratorGen.A
     methods
         function obj=CCE_Clustering(spin_collection, parameters)
             obj@model.phy.SpinCollection.Iterator.ClusterIteratorGen.AbstractClusterIteratorGen(spin_collection, parameters);
-            obj.generate_clusters();
-            obj.sort_cluster();          
         end
         
-        function generate_clusters(obj)
+        function idx_list=generate_clusters(obj)
             disp('cluster_matrix_gen: building the clusters...');
             nspin=obj.spin_collection.getLength();
             maxorder=obj.parameters.max_order;
@@ -42,6 +40,13 @@ classdef CCE_Clustering < model.phy.SpinCollection.Iterator.ClusterIteratorGen.A
             end
             obj.cluster_matrix=cluster_list;
             disp('cluster matrix generated');
+            [nc, ~]=size(obj.cluster_matrix);
+            
+            obj.sort_cluster();
+            idx_list=cell(nc, 1);
+            for k=1:nc
+                idx_list{k}=find(obj.cluster_matrix(k,:));
+            end
         end
         function sort_cluster(obj)
             cluster_list=obj.cluster_matrix;

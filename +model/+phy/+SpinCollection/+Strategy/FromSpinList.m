@@ -8,12 +8,16 @@ classdef FromSpinList < model.phy.SpinCollection.SpinCollectionStrategy
     
     methods
         function obj = FromSpinList(spin_list)
-            obj.spin_list = spin_list;
+            if ~iscell(spin_list)
+                obj.spin_list = num2cell(spin_list);
+            else
+                obj.spin_list = spin_list;
+            end
             obj.strategy_name = 'FromSpinList';
         end
         
         function spin_list = generate_spin_collection(obj)
-            spin_list = num2cell(obj.spin_list);
+            spin_list = obj.spin_list;
         end        
     end
     
