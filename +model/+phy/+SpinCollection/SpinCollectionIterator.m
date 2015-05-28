@@ -6,12 +6,18 @@ classdef SpinCollectionIterator < handle
         spin_collection
         index_list
         cursor
+        
+        index_generator
     end
     
     methods
-        function obj=SpinCollectionIterator(spin_collection)
+        function obj=SpinCollectionIterator(spin_collection, index_generator)
             obj.cursor = 1;
             obj.spin_collection = spin_collection;
+            
+            if nargin > 1
+                obj.index_generator=index_generator;
+            end
             obj.index_list = obj.index_gen();
         end
         
