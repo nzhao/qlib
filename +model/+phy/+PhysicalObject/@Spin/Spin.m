@@ -5,9 +5,11 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
     properties
         gamma
         chizz=0; %electric quadrupole interaction constant
-        eta=0;   %asymmetry parameter
+        ZFS=0;% zero field splitting result from the inhomogeneous electric field ,i.e., electric quadrupole interaction, ZFS for NV etc
+        eta=0;   %asymmetry parameter of ZFS
         coordinate=[];
         local_field=[0 0 0]';
+        orientation=[0,0,1];%the orientation of the principal axis
         qAxis=[1 0 0; 0 1 0; 0 0 1];
         
         S

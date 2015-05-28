@@ -27,6 +27,15 @@ classdef ZeemanInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
             spin=obj.iter.currentItem{1};
             coeff=obj.calculate_coeff(spin);
             mat=coeff(1)*spin.sx + coeff(2)*spin.sy + coeff(3)*spin.sz;
+            
+            % add the zero-field splitting term
+            if spin.ZFS
+                orientation=spin.orientation;
+                orientation=orientation/norm(orientation);
+                mat1=orientation(1)*spin.sx+orientation(2)*spin.sy+orientation(3)*spin.sz;
+                mat2=spin.ZFS*mat1*mat1;
+                mat=mat+mat2;
+            end
         end
     end
     

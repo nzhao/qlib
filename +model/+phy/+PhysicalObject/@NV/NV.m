@@ -5,6 +5,7 @@ classdef NV < model.phy.PhysicalObject.PhysicalObject
     properties
         espin
         nspin
+        
     end
     
     methods
@@ -29,6 +30,8 @@ classdef NV < model.phy.PhysicalObject.PhysicalObject
             
             obj.nspin=model.phy.PhysicalObject.Spin(isotope, coordinate);
             obj.espin=model.phy.PhysicalObject.Spin('NVespin', coordinate + orientation*DIAMOND_LATTICE_CONST/4);
+            obj.espin.ZFS=2*pi*2.87e9;
+            obj.espin.orientation=orientation;
         end
         
     end
