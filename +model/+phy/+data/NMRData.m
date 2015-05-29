@@ -9,9 +9,9 @@ classdef NMRData
     end
     
     methods (Static)
-        function [dim, gamma, chizz, eta] = get_spin(name)
-             chizz=0;
-             eta=0;
+        function [dim, gamma] = get_spin(name)
+%              ZFS=0;
+%              eta=0;
             switch char(name)
                 case 'NVespin'
                     dim=3;
@@ -61,13 +61,13 @@ classdef NMRData
                 case '10B'
                     dim=7;
                     gamma= 2.8746786e7;    % NMR Enc. 1996
-                    chizz= 2*pi*2.96e6;   % PRB 72, 085307
-                    eta= 0;
+%                     ZFS= 2*pi*2.96e6;   % PRB 72, 085307
+%                     eta= 0;
                 case '11B'
                     dim=4;
                     gamma= 8.5847044e7;    % NMR Enc. 1996
-                    chizz= 2*pi*2.9069e6;  % PRB 72, 085307 (2005).
-                    eta=0;
+%                     ZFS= 2*pi*2.9069e6;  % PRB 72, 085307 (2005).
+%                     eta=0;
                 case '12C'
                     dim=1;        
                     gamma=0;               % Spin 0 nucleus
@@ -77,8 +77,8 @@ classdef NMRData
                 case '14N'
                     dim=3;
                     gamma= 1.9337792e7;    % NMR Enc. 1996
-                    chizz= 2*pi*0.14e6;    %Solid State Nuclear Magnetic Resonance 10, 241 (1998).
-                    eta=0;
+%                     ZFS= 2*pi*0.14e6;    %Solid State Nuclear Magnetic Resonance 10, 241 (1998).
+%                     eta=0;
                 case '15N'
                     dim=2;
                     gamma=-2.71261804e7;   % NMR Enc. 1996

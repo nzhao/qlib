@@ -4,7 +4,6 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
     
     properties
         gamma
-        chizz=0; %electric quadrupole interaction constant
         ZFS=0;% zero field splitting result from the inhomogeneous electric field ,i.e., electric quadrupole interaction, ZFS for NV etc
         eta=0;   %asymmetry parameter of ZFS
         coordinate=[];
@@ -19,7 +18,7 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
     methods
         function obj = Spin(name, coord)
             obj.name=name;
-            [obj.dim, obj.gamma, obj.chizz, obj.eta] = model.phy.data.NMRData.get_spin(name);
+            [obj.dim, obj.gamma] = model.phy.data.NMRData.get_spin(name);
             if nargin > 1
                 obj.coordinate=coord;
             end
