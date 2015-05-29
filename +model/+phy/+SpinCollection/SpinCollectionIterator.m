@@ -67,7 +67,7 @@ classdef SpinCollectionIterator < handle
             item = obj.currentItem();
         end
         function item=getItem(obj, k)
-            obj.setCusor(k);
+            obj.setCursor(k);
             item=obj.currentItem();
         end
         
