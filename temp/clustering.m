@@ -16,6 +16,7 @@ import model.phy.SpinInteraction.DipolarInteractionSecular
 
 %strategies
 import model.phy.SpinCollection.Strategy.FromFile
+import model.phy.SpinCollection.Strategy.FromSpinList
 import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
 
 

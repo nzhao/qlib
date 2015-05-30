@@ -21,7 +21,7 @@ import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
 
 spin_collection=SpinCollection();
 spin_collection.spin_source = FromFile(...
-    [INPUT_FILE_PATH, '+xyz/BenzeneProtonZPlane.xyz']...
+    [INPUT_FILE_PATH, '+xyz/butaneProton.xyz']...
      );
 spin_collection.generate();
 
@@ -38,7 +38,7 @@ liou=hami.circleC();
 
 %% DensityMatrix
 
-denseMat=DensityMatrix(spin_collection, {'1.0 * p(1)_1 * p(2)_2 * p(2)_3 * p(2)_4 * p(2)_5 * p(2)_6'});
+denseMat=DensityMatrix(spin_collection, {'1.0 * p(2)_1 * p(1)_2 * p(1)_3 * p(1)_4 * p(1)_5 * p(1)_6 * p(1)_7 * p(1)_8 * p(1)_9 * p(1)_10'});
 
 %% Observable
 
@@ -48,7 +48,7 @@ obs1=Observable(spin_collection, 'sz1', {'1.0 * sz_1'});
 
 dynamics=QuantumDynamics( MatrixVectorEvolution(liou) );
 dynamics.set_initial_state(denseMat);
-dynamics.set_time_sequence(0:20e-6:100e-3);
+dynamics.set_time_sequence(0:20e-6:20e-3);
 dynamics.addObervable([obs1]);
 dynamics.calculate_mean_values();
 
