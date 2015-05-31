@@ -8,8 +8,12 @@ classdef SpinCollection < handle
     end
     
     methods
-        function obj=SpinCollection()
+        function obj=SpinCollection(spin_source)
             obj.spin_list = {};
+            if nargin > 0
+                obj.spin_source=spin_source;
+                obj.generate()
+            end
         end
         
         function generate(obj)

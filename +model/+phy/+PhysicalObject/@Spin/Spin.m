@@ -6,9 +6,10 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
         gamma
         ZFS=0;% zero field splitting result from the inhomogeneous electric field ,i.e., electric quadrupole interaction, ZFS for NV etc
         eta=0;   %asymmetry parameter of ZFS
+        principle_axis=[0,0,1];%the orientation of the principal axis
+        
         coordinate=[];
-        local_field=[0 0 0]';
-        orientation=[0,0,1];%the orientation of the principal axis
+        local_field=[0 0 0];
         qAxis=[1 0 0; 0 1 0; 0 0 1];
         
         S
@@ -58,6 +59,23 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
             else
                 error('dimension mismatch. matrix_dim=%d is assigned, but spin_dimension=%d is needed.', length(m), obj.dim);
             end
+        end
+        
+        function mat=eigen(obj)
+            hami=obj.selfHamiltonian();
+            [mat, ~]=eig(full(hami.getMatrix));
+        end
+        
+        function hami=selfHamiltonian(obj)
+            import model.phy.SpinInteraction.ZeemanInteraction
+            
+            sc=model.phy.SpinCollection.SpinCollection();
+            sc.spin_source = model.phy.SpinCollection.Strategy.FromSpinList({obj});
+            sc.generate();
+
+            hami=model.phy.QuantumOperator.SpinOperator.Hamiltonian(sc);
+            hami.addInteraction( ZeemanInteraction(sc) );
+            hami.generate_matrix();
         end
         
         function ISTmat=IST(obj,state) %irreducible spherical tensors
