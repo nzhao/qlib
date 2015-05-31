@@ -34,14 +34,26 @@
             v=mat(:);
         end
         
-        function res_mat=transform(obj, transform_operator)
+        function transform(obj, transform_operator)
             transform_operator.generate_matrix();
             tMat=transform_operator.getMatrix();
             res_mat=tMat'*obj.getMatrix()*tMat;
+            obj.setMatrix(res_mat);
         end
         
-        
-        
+        function transform_SelfEigenBases(obj)
+            oldStr='1.0 * ';
+            for k=1:obj.spin_collection.getLength
+                newStr=[oldStr, 'eigen()_', num2str(k)];
+                if k==obj.spin_collection.getLength
+                    oldStr=newStr;
+                else
+                    oldStr=[newStr, ' * '];
+                end
+            end
+            ts=model.phy.QuantumOperator.SpinOperator.TransformOperator(obj.spin_collection,{newStr});
+            obj.transform(ts);
+        end
         
         function proj_mat=project_matrix(obj, spin_sub_index, state)
             space=obj.spin_collection.getSpace();

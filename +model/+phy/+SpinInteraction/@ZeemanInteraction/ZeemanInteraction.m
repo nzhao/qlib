@@ -6,22 +6,23 @@ classdef ZeemanInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
     end
     
     methods
-        function obj=ZeemanInteraction(spin_collection, parameter, iter)
-            if nargin < 3
-                iter=model.phy.SpinCollection.Iterator.SingleSpinIterator(spin_collection);
+        function obj=ZeemanInteraction(spin_collection, varargin)
+            iter_class=@model.phy.SpinCollection.Iterator.SingleSpinIterator;
+            for k=1:length(varargin)
+                if isa(varargin{k}, 'model.phy.SpinCollection.SpinCollectionIterator')
+                    iter_class=varargin{k};
+                end
             end
+            iter=iter_class(spin_collection);
+            
+            condition=model.phy.LabCondition.getCondition;
+            parameter.B=condition.getValue('magnetic_field');
             obj@model.phy.SpinInteraction.AbstractSpinInteraction(parameter, iter);
             obj.nbody=1;
         end
         
         function coeff=calculate_coeff(obj, spin)
-            try
-                rot_freq=obj.parameter.rotation_frequency;
-            catch
-                rot_freq=0;
-            end
-            
-            coeff=obj.parameter.B * spin.gamma - rot_freq;
+            coeff=obj.parameter.B * spin.gamma;
         end
         function mat=calculate_matrix(obj)
             spin=obj.iter.currentItem{1};
@@ -30,9 +31,9 @@ classdef ZeemanInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
             
             % add the zero-field splitting term
             if spin.ZFS
-                orientation=spin.orientation;
-                orientation=orientation/norm(orientation);
-                mat1=orientation(1)*spin.sx+orientation(2)*spin.sy+orientation(3)*spin.sz;
+                principle_axis=spin.principle_axis;
+                principle_axis=principle_axis/norm(principle_axis);
+                mat1=principle_axis(1)*spin.sx+principle_axis(2)*spin.sy+principle_axis(3)*spin.sz;
                 mat2=spin.ZFS*mat1*mat1;
                 mat=mat+mat2;
             end
