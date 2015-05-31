@@ -7,17 +7,10 @@ classdef DipolarInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
     end
     
     methods
-        function obj=DipolarInteraction(spin_collection, varargin)
-            para=struct;
-            iter_class=@model.phy.SpinCollection.Iterator.PairSpinIterator;
-            for k=1:length(varargin)
-                if isa(varargin{k}, 'struct')
-                    para=varargin{k};
-                elseif isa(varargin{k}, 'model.phy.SpinCollection.SpinCollectionIterator')
-                    iter_class=varargin{k};
-                end
+        function obj=DipolarInteraction(spin_collection, para, iter)
+            if nargin < 3
+                iter=model.phy.SpinCollection.Iterator.PairSpinIterator(spin_collection);
             end
-            iter=iter_class(spin_collection);
             obj@model.phy.SpinInteraction.AbstractSpinInteraction(para, iter);
             
             try 

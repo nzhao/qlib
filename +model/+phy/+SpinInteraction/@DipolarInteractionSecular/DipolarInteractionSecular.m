@@ -6,8 +6,12 @@ classdef DipolarInteractionSecular < model.phy.SpinInteraction.DipolarInteractio
     end
     
     methods
-        function obj=DipolarInteractionSecular(spin_collection, varargin)
-            obj@model.phy.SpinInteraction.DipolarInteraction(spin_collection, varargin);
+        function obj=DipolarInteractionSecular(spin_collection, para, iter)
+            if nargin < 3
+                iter=model.phy.SpinCollection.Iterator.PairSpinIterator(spin_collection);
+            end
+
+            obj@model.phy.SpinInteraction.DipolarInteraction(spin_collection, para, iter);
         end
                 
         function mat=calculate_matrix(obj)
