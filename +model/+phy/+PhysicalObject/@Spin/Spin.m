@@ -9,7 +9,7 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
         principle_axis=[0,0,1];%the orientation of the principal axis
         
         coordinate=[];
-        local_field=[0 0 0]';
+        local_field=[0 0 0];
         qAxis=[1 0 0; 0 1 0; 0 0 1];
         
         S

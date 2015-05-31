@@ -6,10 +6,14 @@ classdef ZeemanInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
     end
     
     methods
-        function obj=ZeemanInteraction(spin_collection, iter)
-            if nargin < 3
-                iter=model.phy.SpinCollection.Iterator.SingleSpinIterator(spin_collection);
+        function obj=ZeemanInteraction(spin_collection, varargin)
+            iter_class=@model.phy.SpinCollection.Iterator.SingleSpinIterator;
+            for k=1:length(varargin)
+                if isa(varargin{k}, 'model.phy.SpinCollection.SpinCollectionIterator')
+                    iter_class=varargin{k};
+                end
             end
+            iter=iter_class(spin_collection);
             
             condition=model.phy.LabCondition.getCondition;
             parameter.B=condition.getValue('magnetic_field');
@@ -18,13 +22,7 @@ classdef ZeemanInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
         end
         
         function coeff=calculate_coeff(obj, spin)
-            try
-                rot_freq=obj.parameter.rotation_frequency;
-            catch
-                rot_freq=0;
-            end
-            
-            coeff=obj.parameter.B * spin.gamma - rot_freq;
+            coeff=obj.parameter.B * spin.gamma;
         end
         function mat=calculate_matrix(obj)
             spin=obj.iter.currentItem{1};
