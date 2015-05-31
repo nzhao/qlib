@@ -6,10 +6,13 @@ classdef ZeemanInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
     end
     
     methods
-        function obj=ZeemanInteraction(spin_collection, parameter, iter)
+        function obj=ZeemanInteraction(spin_collection, iter)
             if nargin < 3
                 iter=model.phy.SpinCollection.Iterator.SingleSpinIterator(spin_collection);
             end
+            
+            condition=model.phy.LabCondition.getCondition;
+            parameter.B=condition.getValue('magnetic_field');
             obj@model.phy.SpinInteraction.AbstractSpinInteraction(parameter, iter);
             obj.nbody=1;
         end
@@ -30,9 +33,9 @@ classdef ZeemanInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
             
             % add the zero-field splitting term
             if spin.ZFS
-                orientation=spin.orientation;
-                orientation=orientation/norm(orientation);
-                mat1=orientation(1)*spin.sx+orientation(2)*spin.sy+orientation(3)*spin.sz;
+                principle_axis=spin.principle_axis;
+                principle_axis=principle_axis/norm(principle_axis);
+                mat1=principle_axis(1)*spin.sx+principle_axis(2)*spin.sy+principle_axis(3)*spin.sz;
                 mat2=spin.ZFS*mat1*mat1;
                 mat=mat+mat2;
             end

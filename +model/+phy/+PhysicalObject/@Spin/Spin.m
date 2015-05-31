@@ -61,6 +61,23 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
             end
         end
         
+        function mat=eigen(obj)
+            hami=obj.selfHamiltonian();
+            [mat, ~]=eig(full(hami.getMatrix));
+        end
+        
+        function hami=selfHamiltonian(obj)
+            import model.phy.SpinInteraction.ZeemanInteraction
+            
+            sc=model.phy.SpinCollection.SpinCollection();
+            sc.spin_source = model.phy.SpinCollection.Strategy.FromSpinList({obj});
+            sc.generate();
+
+            hami=model.phy.QuantumOperator.SpinOperator.Hamiltonian(sc);
+            hami.addInteraction( ZeemanInteraction(sc) );
+            hami.generate_matrix();
+        end
+        
         function ISTmat=IST(obj,state) %irreducible spherical tensors
             basis=SphericalTensor(obj.dim);
             ISTmat=basis{state+1};
