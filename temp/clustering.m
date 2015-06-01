@@ -13,8 +13,7 @@ import model.phy.Dynamics.QuantumDynamics
 
 %interactoins
 import model.phy.SpinInteraction.ZeemanInteraction
-import model.phy.SpinInteraction.DipolarInteractionSecular
-
+import model.phy.SpinInteraction.DipolarInteraction
 %strategies
 import model.phy.SpinCollection.Strategy.FromFile
 import model.phy.SpinCollection.Strategy.FromSpinList
@@ -23,6 +22,7 @@ import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
 import model.phy.SpinCollection.Iterator.ClusterIterator
 import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
 
+import model.phy.SpinApproximation.SpinSecularApproximation
 %% Condition
 
 Condition=LabCondition.getCondition;
@@ -43,14 +43,48 @@ all_clusters=ClusterIterator(cluster,cce);
 NVcenter=NV();
 
 %%
+
+tic
+
 NVe={NVcenter.espin};
 bath_cluster=all_clusters.getItem(600);
 cluster=SpinCollection( FromSpinList([NVe, bath_cluster]) );
 
 hami_cluster=Hamiltonian(cluster);
 hami_cluster.addInteraction( ZeemanInteraction(cluster) );
-hami_cluster.addInteraction( DipolarInteractionSecular(cluster) );
+hami_cluster.addInteraction( DipolarInteraction(cluster) );
 
-hami_cluster.transform_SelfEigenBases();
+hami_cluster.transform2selfEigenBases();
 hami1=hami_cluster.project_operator(1, 1);
 hami2=hami_cluster.project_operator(1, 2);
+hami1.remove_identity();
+hami2.remove_identity();
+
+
+hami1.apply_approximation( SpinSecularApproximation(hami1.spin_collection) );
+hami2.apply_approximation( SpinSecularApproximation(hami2.spin_collection) );
+
+lv=hami1.flat_sharp_circleC(hami2);
+
+%% state
+
+denseMat1=DensityMatrix(cluster, {'1.0 * mat([1 0 0; 0 1 0; 0 0 1])_1'});
+denseMat=denseMat1.project_operator(1, 1);
+
+%% obs
+obs1=Observable(cluster, 'coherence', {'1.0 * p(1)_1'});
+obs=obs1.project_operator(1, 1);
+
+%% dynamics
+dynamics=QuantumDynamics( MatrixVectorEvolution(lv) );
+dynamics.set_initial_state(denseMat);
+dynamics.set_time_sequence(0:5e-6:5e-3);
+dynamics.addObervable(obs);
+dynamics.calculate_mean_values();
+
+toc
+%%
+figure();
+dynamics.render.plot('coherence_1_1', @abs);
+figure();
+dynamics.render.fft('coherence_1_1', @abs);

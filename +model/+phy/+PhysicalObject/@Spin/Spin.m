@@ -14,6 +14,10 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
         
         S
         S2
+        
+        self_hamiltonian
+        eigen_vect
+        eigen_val
     end
     
     methods
@@ -26,6 +30,9 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
             
             obj.S= 0.5*(obj.dim-1);
             obj.S2= obj.S*(obj.S+1);
+            
+            obj.self_hamiltonian=obj.selfHamiltonian();
+            [obj.eigen_vect, obj.eigen_val]=eig(full(obj.self_hamiltonian.getMatrix));
         end
         
         function xmat=sx(obj)
@@ -61,10 +68,14 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
             end
         end
         
-        function mat=eigen(obj)
-            hami=obj.selfHamiltonian();
-            [mat, ~]=eig(full(hami.getMatrix));
+        function mat=eigenVectors(obj)
+            mat=obj.eigen_vect;
         end
+        
+        function mat=eigenValues(obj)
+            mat=obj.eigen_val;
+        end
+
         
         function hami=selfHamiltonian(obj)
             import model.phy.SpinInteraction.ZeemanInteraction

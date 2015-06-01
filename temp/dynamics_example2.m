@@ -1,6 +1,7 @@
 clear;clc;
 %% Package import
 %physical objects
+import model.phy.LabCondition
 import model.phy.SpinCollection.SpinCollection
 
 %quantum operators
@@ -11,9 +12,8 @@ import model.phy.Dynamics.QuantumDynamics
 
 %interactoins
 import model.phy.SpinInteraction.ZeemanInteraction
-import model.phy.SpinInteraction.RotatingFrameInteraction
-import model.phy.SpinInteraction.DipolarInteractionSecular
-
+import model.phy.SpinInteraction.DipolarInteraction
+import model.phy.SpinApproximation.SpinSecularApproximation
 %strategies
 import model.phy.SpinCollection.Strategy.FromFile
 import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
@@ -28,17 +28,15 @@ spin_collection.generate();
 
 %% SpinInteraction
 Condition=LabCondition.getCondition;
-Condition.setValue('magnetic_field', 1e-4*100*[1 1 1]);
-para.B=1e-4*[0 0 100];
-% para.rotation_frequency=para.B*spin_collection.spin_list{1}.gamma;
+Condition.setValue('magnetic_field', 1e-4*[0 0 100]);
 
 hami=Hamiltonian(spin_collection);
 hami.addInteraction( ZeemanInteraction(spin_collection) );
-% hami.addInteraction( RotatingFrameInteraction(spin_collection, para.B(3)*spin_collection.spin_list{1}.gamma) );
-hami.addInteraction( DipolarInteractionSecular(spin_collection) );
+hami.addInteraction( DipolarInteraction(spin_collection) );
+hami.apply_approximation( SpinSecularApproximation(spin_collection) );
 
 liou=hami.circleC();
-disp('liou generated');
+
 %% DensityMatrix
 
 denseMat=DensityMatrix(spin_collection, {'1.0 * p(2)_1 * p(1)_2 * p(1)_3 * p(1)_4 * p(1)_5 * p(1)_6'});
@@ -51,7 +49,7 @@ obs1=Observable(spin_collection, 'sz1', {'1.0 * sz_1'});
 
 dynamics=QuantumDynamics( MatrixVectorEvolution(liou) );
 dynamics.set_initial_state(denseMat);
-dynamics.set_time_sequence(0:20e-6:20e-3);
+dynamics.set_time_sequence(0:20e-6:100e-3);
 dynamics.addObervable([obs1]);
 dynamics.calculate_mean_values();
 

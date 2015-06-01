@@ -1,6 +1,7 @@
-clear;clc;
+clear all;clc;
 %% Package import
 import model.phy.PhysicalObject.Spin
+import model.phy.LabCondition
 import model.phy.SpinCollection.SpinCollection
 
 import model.phy.QuantumOperator.SpinOperator.Hamiltonian
@@ -10,6 +11,7 @@ import model.phy.Dynamics.QuantumDynamics
 
 import model.phy.SpinInteraction.ZeemanInteraction
 import model.phy.SpinInteraction.DipolarInteractionSecular
+import model.phy.SpinInteraction.RotatingFrameInteraction
 
 import model.phy.SpinCollection.Strategy.FromSpinList
 import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
@@ -24,13 +26,13 @@ spin_collection.spin_source = FromSpinList([s1, s2, s3]);
 spin_collection.generate();
 
 %% SpinInteraction
-
-para.B=1e-4*[0 0 1];
-para.rotation_frequency=para.B*s1.gamma;
+Condition=LabCondition.getCondition;
+Condition.setValue('magnetic_field', 1e-4*[0 0 1]);
 
 hami=Hamiltonian(spin_collection );
-hami.addInteraction( ZeemanInteraction(spin_collection, para) );
-hami.addInteraction( DipolarInteractionSecular(spin_collection, para) );
+hami.addInteraction( ZeemanInteraction(spin_collection) );
+hami.addInteraction( RotatingFrameInteraction(spin_collection, 1e-4  ) );
+hami.addInteraction( DipolarInteractionSecular(spin_collection) );
 
 hami1=hami.project_operator(1, 1);
 hami2=hami.project_operator(1, 2);
@@ -56,6 +58,6 @@ dynamics.calculate_mean_values();
 
 %%
 figure();
-dynamics.render.plot('coherence_1_1', @abs);
+dynamics.render.plot('coherence_1_1', @real);
 figure();
-dynamics.render.fft('coherence_1_1', @abs);
+dynamics.render.plot('coherence_1_1', @imag);

@@ -3,6 +3,7 @@ classdef Hamiltonian < model.phy.QuantumOperator.MultiSpinOperator
     %   Detailed explanation goes here
     
     properties
+        approximation
     end
     
     methods
@@ -11,6 +12,7 @@ classdef Hamiltonian < model.phy.QuantumOperator.MultiSpinOperator
             if nargin > 1
                 obj.matrix_strategy = matrix_strategy;
             end
+            obj.name='hamiltonian';
         end
         
         function remove_identity(obj, freq)
@@ -19,6 +21,18 @@ classdef Hamiltonian < model.phy.QuantumOperator.MultiSpinOperator
             end
             mat=obj.getMatrix()-freq/obj.dim*speye(obj.dim);
             obj.setMatrix(mat);
+        end
+        
+        function addApproximation(obj, approximation)
+                obj.approximation = approximation;
+        end
+        
+        function apply_approximation(obj, approximation)
+            if nargin > 1
+                obj.addApproximation(approximation);
+            end
+            obj.approximation.apply(obj);
+            
         end
     end
     
