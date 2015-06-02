@@ -47,7 +47,7 @@ NVcenter=NV();
 tic
 
 NVe={NVcenter.espin};
-bath_cluster=all_clusters.getItem(600);
+bath_cluster=all_clusters.getItem(8600);
 cluster=SpinCollection( FromSpinList([NVe, bath_cluster]) );
 
 hami_cluster=Hamiltonian(cluster);
@@ -68,7 +68,7 @@ lv=hami1.flat_sharp_circleC(hami2);
 
 %% state
 
-denseMat1=DensityMatrix(cluster, {'1.0 * mat([1 0 0; 0 1 0; 0 0 1])_1'});
+denseMat1=DensityMatrix(cluster, {'1.0 * p(1)_1'});
 denseMat=denseMat1.project_operator(1, 1);
 
 %% obs
@@ -78,13 +78,12 @@ obs=obs1.project_operator(1, 1);
 %% dynamics
 dynamics=QuantumDynamics( MatrixVectorEvolution(lv) );
 dynamics.set_initial_state(denseMat);
-dynamics.set_time_sequence(0:5e-6:5e-3);
+dynamics.set_time_sequence(0:10e-6:2e-3);
 dynamics.addObervable(obs);
 dynamics.calculate_mean_values();
 
 toc
 %%
-figure();
-dynamics.render.plot('coherence_1_1', @abs);
-figure();
-dynamics.render.fft('coherence_1_1', @abs);
+figure();hold on;
+dynamics.render.plot('coherence_1_1', @real);
+dynamics.render.plot('coherence_1_1', @imag, 'b.-');
