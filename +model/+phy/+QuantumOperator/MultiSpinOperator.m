@@ -28,19 +28,23 @@
                 error('inconsistency detected.')
             end
         end
+            
         
         function v=getVector(obj)
             mat=obj.getMatrix();
             v=mat(:);
         end
-        
-        function res_mat=transform(obj, transform_operator)
-            transform_operator.generate_matrix();
+                
+        function transform(obj, transform_operator)
             tMat=transform_operator.getMatrix();
             res_mat=tMat'*obj.getMatrix()*tMat;
+            obj.setMatrix(res_mat);
         end
         
-        
+        function transform2selfEigenBases(obj)
+            ts=obj.spin_collection.selfEigenTransform();
+            obj.transform(ts);
+        end
         
         
         function proj_mat=project_matrix(obj, spin_sub_index, state)
@@ -64,7 +68,6 @@
             operator_class=str2func(class(obj));
             proj_operator=operator_class(sc);
             proj_operator.setMatrix(mat);
-            
             
             if nargin < 4
                 name=[obj.name, '_', num2str(spin_sub_index), '_', num2str(state)];                

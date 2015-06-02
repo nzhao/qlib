@@ -3,6 +3,7 @@ classdef NV < model.phy.PhysicalObject.PhysicalObject
     %   Detailed explanation goes here
     
     properties
+        magnetic_field
         espin
         nspin
         
@@ -10,30 +11,53 @@ classdef NV < model.phy.PhysicalObject.PhysicalObject
     
     methods
         function obj=NV(parameters)
-            try
-                orientation=parameters.orientation;
-            catch
-                orientation=[1 1 1];
+            if nargin == 0
+                try
+                    orientation=parameters.orientation;
+                catch
+                    orientation=[1 1 1];
+                end
+
+                try
+                    isotope=parameters.isotope;
+                catch
+                    isotope='14N';
+                end
+
+                try
+                    coordinate=parameters.coordinate;
+                catch
+                    coordinate=[0 0 0];
+                end
             end
             
-            try
-                isotope=parameters.isotope;
-            catch
-                isotope='14N';
-            end
-            
-            try
-                coordinate=parameters.coordinate;
-            catch
-                coordinate=[0 0 0];
-            end
+            condition=model.phy.LabCondition.getCondition;
+            obj.magnetic_field=condition.getValue('magnetic_field');
             
             obj.nspin=model.phy.PhysicalObject.Spin(isotope, coordinate);
             obj.espin=model.phy.PhysicalObject.Spin('NVespin', coordinate + orientation*DIAMOND_LATTICE_CONST/4);
+            
             obj.espin.ZFS=2*pi*2.87e9;
-            obj.espin.orientation=orientation;
+            obj.espin.principle_axis=orientation;
         end
         
+        function hami=get_ESpinHamiltonian(obj)
+            import model.phy.SpinInteraction.ZeemanInteraction
+            
+            nvE=model.phy.SpinCollection.SpinCollection();
+            nvE.spin_source = model.phy.SpinCollection.Strategy.FromSpinList({obj.espin});
+            nvE.generate();
+
+            para.B=obj.magnetic_field;
+            hami=model.phy.QuantumOperator.SpinOperator.Hamiltonian(nvE);
+            hami.addInteraction( ZeemanInteraction(nvE, para) );
+            hami.generate_matrix();
+        end
+        
+        function [state, energy]=get_ESpinEigen(obj)
+            espin_hamiltonian=obj.get_ESpinHamiltonian();
+            [state, energy]=eig(full(espin_hamiltonian.getMatrix));
+        end
     end
     
 end

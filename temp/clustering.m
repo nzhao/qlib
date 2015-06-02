@@ -1,9 +1,10 @@
 clear;clc;
 %% Package import
-%physical objects
-
+%physical condition and objects
+import model.phy.LabCondition
+import model.phy.PhysicalObject.NV
 import model.phy.SpinCollection.SpinCollection
-%import model.phy.SpinCollection.SpinCollection.Iterator.ClusterIteratorGen.AbstractClusterIteratorGen
+
 %quantum operators
 import model.phy.QuantumOperator.SpinOperator.Hamiltonian
 import model.phy.QuantumOperator.SpinOperator.DensityMatrix
@@ -12,26 +13,25 @@ import model.phy.Dynamics.QuantumDynamics
 
 %interactoins
 import model.phy.SpinInteraction.ZeemanInteraction
-import model.phy.SpinInteraction.DipolarInteractionSecular
-
+import model.phy.SpinInteraction.DipolarInteraction
 %strategies
 import model.phy.SpinCollection.Strategy.FromFile
+import model.phy.SpinCollection.Strategy.FromSpinList
 import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
-
 
 import model.phy.SpinCollection.Iterator.ClusterIterator
 import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
 
-import model.phy.PhysicalObject.NV
-%% Generate Cluster using CCE clustering
-tic
+import model.phy.SpinApproximation.SpinSecularApproximation
+%% Condition
 
+Condition=LabCondition.getCondition;
+Condition.setValue('magnetic_field', 1e-4*100*[1 1 1]);
+
+
+%% Generate Cluster using CCE clustering
 %spin_coord_file_path='./+controller/+input/';
-cluster=SpinCollection();
-cluster.spin_source = FromFile(...
-    [INPUT_FILE_PATH, '+xyz/RoyCoord.xyz']...
-     );
-cluster.generate();
+cluster=SpinCollection( FromFile([INPUT_FILE_PATH, '+xyz/RoyCoord.xyz']) );
 
 clu_para.cutoff=8;
 clu_para.max_order=4;
@@ -41,33 +41,49 @@ all_clusters=ClusterIterator(cluster,cce);
 
 %% Generate NV center and transformer
 NVcenter=NV();
+
+%%
+
+tic
+
 NVe={NVcenter.espin};
+bath_cluster=all_clusters.getItem(8600);
+cluster=SpinCollection( FromSpinList([NVe, bath_cluster]) );
 
-cluster_NVe=SpinCollection();
-cluster_NVe.spin_source = FromSpinList(NVe);
-cluster_NVe.generate();
-
-para.B=1e-4*100*[1 1 1];
-% para.rotation_frequency=para.B*cluster_NVe.spin_list{1}.gamma;
-hami_NVe=Hamiltonian(cluster_NVe);
-hami_NVe.addInteraction( ZeemanInteraction(cluster_NVe, para) );
-hami_NVe_mat=hami_NVe.getMatrix();
-[eigenvec,eigenval]=eig(full(hami_NVe_mat));
-ts_mat=mat2str(eigenvec);
-
-% ts=model.phy.QuantumOperator.SpinOperator.TransformOperator(cluster_NVe,{['1.0 * mat(' ts_mat ')_1']});%' num2str(eigenvec) '
-% hami_NVe_mat2=hami_NVe.transform(ts);
-
-% bath_cluster=all_clusters.currentItem();
-bath_cluster=all_clusters.getItem(600);
-cluster=SpinCollection();
-cluster.spin_source = FromSpinList([NVe, bath_cluster]);
-cluster.generate();
 hami_cluster=Hamiltonian(cluster);
-hami_cluster.addInteraction( ZeemanInteraction(cluster, para) );
-hami_cluster.addInteraction( DipolarInteractionSecular(cluster, para) );
+hami_cluster.addInteraction( ZeemanInteraction(cluster) );
+hami_cluster.addInteraction( DipolarInteraction(cluster) );
 
-ts=model.phy.QuantumOperator.SpinOperator.TransformOperator(cluster,{['1.0 * mat(' ts_mat ')_1']});%' num2str(eigenvec) '
-hami_trans=hami_cluster.transform(ts);
+hami_cluster.transform2selfEigenBases();
+hami1=hami_cluster.project_operator(1, 1);
+hami2=hami_cluster.project_operator(1, 2);
+hami1.remove_identity();
+hami2.remove_identity();
+
+
+hami1.apply_approximation( SpinSecularApproximation(hami1.spin_collection) );
+hami2.apply_approximation( SpinSecularApproximation(hami2.spin_collection) );
+
+lv=hami1.flat_sharp_circleC(hami2);
+
+%% state
+
+denseMat1=DensityMatrix(cluster, {'1.0 * p(1)_1'});
+denseMat=denseMat1.project_operator(1, 1);
+
+%% obs
+obs1=Observable(cluster, 'coherence', {'1.0 * p(1)_1'});
+obs=obs1.project_operator(1, 1);
+
+%% dynamics
+dynamics=QuantumDynamics( MatrixVectorEvolution(lv) );
+dynamics.set_initial_state(denseMat);
+dynamics.set_time_sequence(0:10e-6:2e-3);
+dynamics.addObervable(obs);
+dynamics.calculate_mean_values();
+
 toc
-
+%%
+figure();hold on;
+dynamics.render.plot('coherence_1_1', @real);
+dynamics.render.plot('coherence_1_1', @imag, 'b.-');

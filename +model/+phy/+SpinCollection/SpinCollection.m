@@ -8,8 +8,12 @@ classdef SpinCollection < handle
     end
     
     methods
-        function obj=SpinCollection()
+        function obj=SpinCollection(spin_source)
             obj.spin_list = {};
+            if nargin > 0
+                obj.spin_source=spin_source;
+                obj.generate()
+            end
         end
         
         function generate(obj)
@@ -70,6 +74,32 @@ classdef SpinCollection < handle
             end
 
         end
+        
+        function selfOP=selfEigenOperator(obj)
+            selfOP=model.phy.QuantumOperator.SpinOperator.Hamiltonian(obj);
+            
+            nspin=obj.getLength;
+            strCell=cell(1, nspin);
+            for k=1:nspin
+                strCell{k}=['1.0 * eigenValues()_', num2str(k)];
+            end            
+            self_int=model.phy.SpinInteraction.InteractionString(obj, strCell);
+            selfOP.addInteraction(self_int);
+        end
+        
+        function selfTransform=selfEigenTransform(obj)
+            oldStr='1.0 * ';
+            for k=1:obj.getLength
+                newStr=[oldStr, 'eigenVectors()_', num2str(k)];
+                if k==obj.getLength
+                    oldStr=newStr;
+                else
+                    oldStr=[newStr, ' * '];
+                end
+            end
+            selfTransform=model.phy.QuantumOperator.SpinOperator.TransformOperator(obj,{newStr});
+        end
+
             
     end
     
