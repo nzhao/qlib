@@ -1,4 +1,4 @@
-clear;clc;
+clc;
 %% Package import
 %physical objects
 import model.phy.LabCondition
@@ -18,6 +18,9 @@ import model.phy.SpinApproximation.SpinSecularApproximation
 import model.phy.SpinCollection.Strategy.FromFile
 import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
 
+
+Condition=LabCondition.getCondition;
+Condition.setValue('magnetic_field', 1e-4*[0 0 100]);
 %% FromSpinList 
 
 spin_collection=SpinCollection();
@@ -27,8 +30,7 @@ spin_collection.spin_source = FromFile(...
 spin_collection.generate();
 
 %% SpinInteraction
-Condition=LabCondition.getCondition;
-Condition.setValue('magnetic_field', 1e-4*[0 0 100]);
+
 
 hami=Hamiltonian(spin_collection);
 hami.addInteraction( ZeemanInteraction(spin_collection) );
@@ -39,11 +41,11 @@ liou=hami.circleC();
 
 %% DensityMatrix
 
-denseMat=DensityMatrix(spin_collection, {'1.0 * p(2)_1 * p(1)_2 * p(1)_3 * p(1)_4 * p(1)_5 * p(1)_6'});
+denseMat=DensityMatrix(spin_collection, '1.0 * p(2)_1 * p(1)_2 * p(1)_3 * p(1)_4 * p(1)_5 * p(1)_6');
 
 %% Observable
 
-obs1=Observable(spin_collection, 'sz1', {'1.0 * sz_1'});
+obs1=Observable(spin_collection, 'sz1', '1.0 * sz_1');
 
 %% Evolution
 

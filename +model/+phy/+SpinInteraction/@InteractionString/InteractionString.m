@@ -6,7 +6,12 @@ classdef InteractionString < model.phy.SpinInteraction.GeneralSpinInteraction
     end
     
     methods
-        function obj=InteractionString(spin_collection, strCell)
+        function obj=InteractionString(spin_collection, str)
+            if ischar(str)
+                strCell=strsplit(str, ' + ');
+            elseif iscell(str)
+                strCell=str;
+            end
 
             len=length(strCell);
 

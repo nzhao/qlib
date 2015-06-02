@@ -85,6 +85,7 @@ classdef SpinCollection < handle
             end            
             self_int=model.phy.SpinInteraction.InteractionString(obj, strCell);
             selfOP.addInteraction(self_int);
+            selfOP.generate_matrix();
         end
         
         function selfTransform=selfEigenTransform(obj)

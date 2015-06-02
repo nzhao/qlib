@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+   <Name>
+       <SolutionName type="char">BenzeneDynamics</SolutionName>
+   </Name>
+   <Condition>
+      <MagneticField type="eval">1e-4*[0 0 100]</MagneticField>
+   </Condition>
+   <Dynamics>
+      <TimeList type="eval">0:20e-6:100e-3</TimeList>
+   </Dynamics>
+   <InitialState>
+      <DensityMatrix type="char">1.0 * p(2)_1 * p(1)_2 * p(1)_3 * p(1)_4 * p(1)_5 * p(1)_6</DensityMatrix>
+   </InitialState>
+   <Interaction>
+      <IsSecular type="double">1</IsSecular>
+   </Interaction>
+   <Observable>
+      <ObservableName1 type="char">sz1</ObservableName1>
+      <ObservableNumber type="double">1</ObservableNumber>
+      <ObservableString1 type="char">1.0 * sz_1</ObservableString1>
+   </Observable>
+   <SpinCollection>
+      <FileName type="char">+xyz/BenzeneProtonZPlane.xyz</FileName>
+      <Source type="char">File</Source>
+   </SpinCollection>
+</config>

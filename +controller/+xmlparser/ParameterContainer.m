@@ -27,7 +27,7 @@ classdef ParameterContainer < handle
         end
         
         function exportXML(obj, xml_filename)
-            controller.xml.dict2xml(obj.dict, xml_filename);
+            controller.xmlparser.dict2xml(obj.dict, xml_filename);
         end
         
         function importXML(obj, xml_filename)
@@ -44,8 +44,10 @@ classdef ParameterContainer < handle
             
             if strcmp(datatype, 'double')
                 para=str2double(data);
+            elseif strcmp(datatype, 'eval')
+                para=eval(data);
             else
-                para=data;
+                para=char(data);
             end
 
         end
