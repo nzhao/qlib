@@ -4,6 +4,7 @@ classdef ClusterIterator < model.phy.SpinCollection.SpinCollectionIterator
     
     properties
         parameters
+        cluster_info
     end
     
     methods
@@ -13,6 +14,8 @@ classdef ClusterIterator < model.phy.SpinCollection.SpinCollectionIterator
         
         function res = index_gen(obj)
             res=obj.index_generator.generate_clusters();
+            obj.parameters=obj.index_generator.parameters;
+            obj.cluster_info=obj.index_generator.cluster_info;
         end
     end
     

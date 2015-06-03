@@ -27,8 +27,8 @@ spin_collection.spin_source = FromFile(...
 spin_collection.generate();
 
 %% SpinInteraction
-Condition=LabCondition.getCondition;
-Condition.setValue('magnetic_field', 1e-4*[0 0 100]);
+condition=LabCondition.getCondition;
+condition.setValue('magnetic_field', 1e-4*[0 0 100]);
 
 hami=Hamiltonian(spin_collection);
 hami.addInteraction( ZeemanInteraction(spin_collection) );

@@ -21,11 +21,18 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
     end
     
     methods
-        function obj = Spin(name, coord)
+        function obj = Spin(name, coord,varargin)
             obj.name=name;
             [obj.dim, obj.gamma] = model.phy.data.NMRData.get_spin(name);
-            if nargin > 1
-                obj.coordinate=coord;
+            obj.coordinate=coord;
+            if nargin > 2
+                para=varargin{1};
+                fname=fieldnames(para);
+                n_fname=length(fname);
+                for k=1:n_fname
+                   obj.(fname{k})=para.(fname{k}); 
+                end
+                
             end
             
             obj.S= 0.5*(obj.dim-1);
