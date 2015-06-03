@@ -19,7 +19,7 @@ classdef SpinSecularApproximation < model.phy.SpinApproximation.AbstractSpinAppr
         function apply(obj, hamiltonian)
             obj.original_matrix=hamiltonian.getMatrix;
             
-            hamiltonian.transform2selfEigenBases();
+            hamiltonian.transform2selfEigenBases();% this transformation is needless, and it may cause error
 
             hMatrix=hamiltonian.getMatrix();
             h0Matrix=obj.hamiltonian0.getMatrix();

@@ -31,7 +31,6 @@ spin_collection.generate();
 
 %% SpinInteraction
 
-
 hami=Hamiltonian(spin_collection);
 hami.addInteraction( ZeemanInteraction(spin_collection) );
 hami.addInteraction( DipolarInteraction(spin_collection) );
