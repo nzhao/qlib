@@ -35,10 +35,10 @@ classdef NV < model.phy.PhysicalObject.PhysicalObject
             obj.magnetic_field=condition.getValue('magnetic_field');
             
             obj.nspin=model.phy.PhysicalObject.Spin(isotope, coordinate);
-            obj.espin=model.phy.PhysicalObject.Spin('NVespin', coordinate + orientation*DIAMOND_LATTICE_CONST/4);
-            
-            obj.espin.ZFS=2*pi*2.87e9;
-            obj.espin.principle_axis=orientation;
+            coord_espin=coordinate + orientation*DIAMOND_LATTICE_CONST/4;
+            para.ZFS=2*pi*2.87e9;
+            para.principle_axis=orientation;
+            obj.espin=model.phy.PhysicalObject.Spin('NVespin',coord_espin,para);
         end
         
         function hami=get_ESpinHamiltonian(obj)
