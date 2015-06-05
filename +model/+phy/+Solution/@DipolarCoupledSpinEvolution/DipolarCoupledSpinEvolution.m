@@ -41,7 +41,8 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
             
         function perform(obj)
             para=obj.parameters;
-          %% Package import
+          
+            %%% Package import
             %physical objects
             import model.phy.LabCondition
             import model.phy.SpinCollection.SpinCollection
@@ -60,11 +61,11 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
             import model.phy.SpinCollection.Strategy.FromFile
             import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
 
-          %% Set Condition
+          %%% Set Condition
             Condition=LabCondition.getCondition;
             Condition.setValue('magnetic_field', para.MagneticField);
 
-          %% FromSpinList 
+          %%% FromSpinList 
            switch para.SpinCollectionStrategy
                case 'File'
                    spin_collection=SpinCollection( FromFile(...
@@ -74,7 +75,7 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
            end
            obj.keyVariables('spin_collection')=spin_collection;
 
-          %% Gernate Hamiltonian and Liouvillian Operator
+          %%% Gernate Hamiltonian and Liouvillian Operator
             hami=Hamiltonian(spin_collection);
             hami.addInteraction( ZeemanInteraction(spin_collection) );
             hami.addInteraction( DipolarInteraction(spin_collection) );
@@ -85,18 +86,18 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
             liou=hami.circleC();
             obj.keyVariables('hamiltonian')=hami;
             
-            %% DensityMatrix
+            %%% DensityMatrix
             denseMat=DensityMatrix(spin_collection, para.InitialState);
             obj.keyVariables('densityMatrix')=denseMat;
 
-            %% Observable
+            %%% Observable
             obs=[];
             for k=1:para.ObservableNumber
                 obs=[obs, Observable(spin_collection, para.ObservableName{k}, para.ObservableString{k})]; %#ok<AGROW>
             end
             obj.keyVariables('observables')=obs;
 
-            %% Evolution
+            %%% Evolution
             dynamics=QuantumDynamics( MatrixVectorEvolution(liou) );
             dynamics.set_initial_state(denseMat);
             dynamics.set_time_sequence(para.TimeList);
@@ -106,6 +107,39 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
             
             obj.render=dynamics.render;
             obj.result=obj.render.get_result();
+        end
+        
+        function export2GPU_Engine(obj, filename)
+            hami=obj.keyVariables('hamiltonian');
+            liou=hami.circleC();
+            liouMat=liou.getMatrix();
+
+            state=obj.keyVariables('densityMatrix');
+            stateVect=full(state.getVector());
+            
+            timeList=obj.parameters.TimeList;
+            nt=length(timeList);
+            
+            [dim,~]=size(liouMat);
+            nonzero=nnz(liouMat);
+            [iaT, jaT, a]=find(liouMat.');
+            ia=jaT;
+            ja=iaT;
+            
+            fileID = fopen(filename,'w');
+            fwrite(fileID, dim,'int');
+            fwrite(fileID, nonzero,'int');
+            fwrite(fileID, nt,'int');
+            
+            fwrite(fileID, ia, 'int');
+            fwrite(fileID, ja, 'int');
+            fwrite(fileID, real(a), 'double');
+            fwrite(fileID, imag(a), 'double');
+            fwrite(fileID, real(stateVect), 'double');
+            fwrite(fileID, imag(stateVect), 'double');
+            fwrite(fileID, timeList, 'double');
+            fclose(fileID);
+            
         end
     end
     
