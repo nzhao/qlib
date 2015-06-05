@@ -22,6 +22,7 @@ import model.phy.SpinInteraction.DipolarInteraction
 import model.phy.SpinCollection.Strategy.FromFile
 import model.phy.SpinCollection.Strategy.FromSpinList
 import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
+import model.phy.Dynamics.EvolutionKernel.ECCEMatrixEvolution
 
 import model.phy.SpinCollection.Iterator.ClusterIterator
 import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
@@ -64,16 +65,16 @@ hami_cluster.addInteraction( ZeemanInteraction(cluster) );
 ts=model.phy.QuantumOperator.SpinOperator.TransformOperator(cluster,{'1.0 * eigenVectors()_1'});
 hami_cluster.transform(ts);
 
-hami1=hami_cluster.project_operator(1, 1);
-hami2=hami_cluster.project_operator(1, 2);
-hami1.remove_identity();
-hami2.remove_identity();
-
-
-hami1.apply_approximation( SpinSecularApproximation(hami1.spin_collection) );
-hami2.apply_approximation( SpinSecularApproximation(hami2.spin_collection) );
-
-lv=hami1.flat_sharp_circleC(hami2);
+% hami1=hami_cluster.project_operator(1, 1);
+% hami2=hami_cluster.project_operator(1, 2);
+% hami1.remove_identity();
+% hami2.remove_identity();
+% 
+% 
+% hami1.apply_approximation( SpinSecularApproximation(hami1.spin_collection) );
+% hami2.apply_approximation( SpinSecularApproximation(hami2.spin_collection) );
+% 
+% lv=hami1.flat_sharp_circleC(hami2);
 
 %% state
 
@@ -85,7 +86,17 @@ obs1=Observable(cluster, 'coherence', '1.0 * p(1)_1');
 obs=obs1.project_operator(1, 1);
 
 %% dynamics
-dynamics=QuantumDynamics( MatrixVectorEvolution(lv) );
+coh_para.state1=1;
+coh_para.state2=2;
+coh_para.npulse=1;
+
+tmax=3*10^(-3);
+ntime=401;
+dt=tmax/(ntime-1);
+timelist=0:dt:tmax;
+
+% dynamics=QuantumDynamics( MatrixVectorEvolution(lv) );
+dynamics=QuantumDynamics( ECCEMatrixEvolution(hami_cluster,coh_para) ); 
 dynamics.set_initial_state(denseMat);
 dynamics.set_time_sequence(0:10e-6:2e-3);
 dynamics.addObervable(obs);
