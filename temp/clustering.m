@@ -78,11 +78,11 @@ hami_cluster.transform(ts);
 
 %% state
 
-denseMat1=DensityMatrix(cluster, {'1.0 * p(1)_1'});
+denseMat1=DensityMatrix(cluster, '1.0 * p(1)_1');
 denseMat=denseMat1.project_operator(1, 1);
 
 %% obs
-obs1=Observable(cluster, 'coherence', {'1.0 * p(1)_1'});
+obs1=Observable(cluster, 'coherence', '1.0 * p(1)_1');
 obs=obs1.project_operator(1, 1);
 
 %% dynamics

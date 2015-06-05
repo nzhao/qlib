@@ -1,5 +1,5 @@
 clc;
-p=controller.xml.ParameterContainer();
+p=controller.xmlparser.ParameterContainer();
 
 %% Spin Bath
 p.add_trunk('SpinBath');
@@ -11,8 +11,7 @@ p.add_trunk('CCE');
 p.add_branch('CCE', 'max_order', 4);
 
 %% Export
-path2file='/Users/nzhao/code/lib/active/qlib/+controller/+xml/';
-xml_file= [path2file, 'config.xml.example'];
+xml_file= [CONFIG_FILE_PATH, 'config.xml.example'];
 p.exportXML(xml_file);
 
 type(xml_file)
