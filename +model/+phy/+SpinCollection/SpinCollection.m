@@ -100,6 +100,21 @@ classdef SpinCollection < handle
             end
             selfTransform=model.phy.QuantumOperator.SpinOperator.TransformOperator(obj,{newStr});
         end
+        function set_spin(obj,paraCell)
+            nspin=obj.getLength;
+            nspecies=length(paraCell);% the number of spin species to be set
+            for n=1:nspecies
+                para=paraCell{n};
+              for m=1:nspin
+                  spin=obj.spin_list{m};
+                   if  spin.name==para.name
+                       spin.set_spin(para);                       
+                   end
+               end
+                
+            end
+        
+        end
 
             
     end

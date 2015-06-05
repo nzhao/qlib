@@ -1,5 +1,5 @@
 % clear;clc
-if 0
+% if 0
 
 cd /Users/ylp/Documents/code/qlib;
 addpath(genpath('./'));
@@ -37,7 +37,11 @@ Condition.setValue('magnetic_field', 1e-4*100*[1 1 1]);
 %% Generate Cluster using CCE clustering
 spin_coord_file_path='./+controller/+input/';
 cluster=SpinCollection( FromFile([spin_coord_file_path, '+xyz/RoyCoord.xyz']) );
-
+para.name='13C';
+para.ZFS=500;
+para.eta=0.01;
+para.principle_axis=[1,1,1];
+cluster.set_spin({para});
 % cluster=SpinCollection( FromFile([INPUT_FILE_PATH, '+xyz/RoyCoord.xyz']) );
 
 clu_para.cutoff=8;
@@ -45,7 +49,8 @@ clu_para.max_order=2;
 cce=CCE_Clustering(cluster, clu_para);
 
 all_clusters=ClusterIterator(cluster,cce);
-end
+% end
+if 0
 %% Generate NV center and transformer
 tic
 
@@ -107,3 +112,4 @@ toc
 figure();hold on;
 dynamics.render.plot('coherence_1_1', @real);
 dynamics.render.plot('coherence_1_1', @imag, 'b.-');
+end
