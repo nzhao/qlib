@@ -3,16 +3,17 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
     %   EnsembleCCESolution needs the following input paramters:
     %   1. parameters.SpinCollectionStrategy
     %   2. parameters.InputFile
-    %   3. parameters.BathSpinsSetting
+    %   3. parameters.SetBathSpins
+    %   4. parameters.SetCentralSpin 
     %   5. parameters.MagneticField
-    %   6. parameters.IsSecularApproximation
-    %   7. parameters.NPulse
-    %   8. parameters.CentralSpinSetting
-    
-    %   7. parameters.NTime
-    %     parameters.TMax
-    
-    
+    %   6.parameters.CutOff
+    %   7.parameters.MaxOrder    
+    %   9. parameters.IsSecularApproximation
+    %   6. parameters.NPulse
+    %   10. parameters.NTime
+    %   11. parameters.TMax
+
+   
     properties
     end
     
@@ -27,34 +28,61 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
             obj.parameters.SpinCollectionStrategy=p.get_parameter('SpinCollection', 'Source');
             obj.parameters.InputFile=p.get_parameter('SpinCollection', 'FileName');
             
-            obj.parameters.BathSpinsSetting.SetSpin=p.get_parameter('BathSpinsSetting','SetSpin');
-            if obj.parameters.BathSpinsSetting.SetSpin
-                SpeciesNumber=p.get_parameter('BathSpinsSetting','SpeciesNumber');
-                BathSpinsSettingCell=cell(4);
-                NameList=p.get_parameter('BathSpinsSetting','Name');
-                ZFSList=p.get_parameter('BathSpinsSetting','ZFS');
-                etaList=p.get_parameter('BathSpinsSetting','eta');
-                paxisList=p.get_parameter('BathSpinsSetting','principle_axis');
-                for k=1:SpeciesNumber
-                    BathSpinsSettingCell{k}.name=NameList(k);
-                    BathSpinsSettingCell{k}.ZFS=ZFSList(k);
-                    if ~strcmp(etaList,'default')                   
-                        BathSpinsSettingCell{k}.eta=etaList(k);
-                    end
-                    if ~strcmp(paxisList,'default')                   
-                        BathSpinsSettingCell{k}.principle_axis=paxisList(k,:);
-                    end
-                    
-                end
-                obj.parameters.BathSpinsSetting.BathSpinsSettingCell=BathSpinsSettingCell;               
-            end
+            obj.set_bath_spin(p);
+            obj.set_central_spin(p);
             
+            obj.parameters.CutOff=p.get_parameter('Clustering', 'CutOff');
+            obj.parameters.MaxOrder=p.get_parameter('Clustering', 'MaxOrder');
+                                  
             obj.parameters.MagneticField=p.get_parameter('Condition', 'MagneticField');
             obj.parameters.IsSecularApproximation=p.get_parameter('Interaction', 'IsSecular');
  
-            
-
-            obj.parameters.TimeList=p.get_parameter('Dynamics', 'TimeList');
+            obj.parameters.NTime=p.get_parameter('Dynamics', 'NTime');
+            obj.parameters.TMax=p.get_parameter('Dynamics', 'TMax');
+            obj.parameters.NPulse=p.get_parameter('Dynamics', 'NPulse');
+        end
+        
+        function set_bath_spin(obj, p)
+            obj.parameters.SetBathSpins.SetSpin=p.get_parameter('SetBathSpins','SetSpin');
+            if obj.parameters.SetBathSpins.SetSpin
+                SpeciesNumber=p.get_parameter('SetBathSpins','SpeciesNumber');
+                BathSpinsSettingCell=cell(1,4);
+                NameList=p.get_parameter('SetBathSpins','Name');
+                ZFSList=p.get_parameter('SetBathSpins','ZFS');
+                etaList=p.get_parameter('SetBathSpins','eta');
+                paxisList=p.get_parameter('SetBathSpins','principle_axis');
+                for k=1:SpeciesNumber
+                    BathSpinsSettingCell{k}.name=NameList(k,:);
+                    BathSpinsSettingCell{k}.ZFS=ZFSList(k,:);
+                    if ~strcmp(etaList,'default')                   
+                        BathSpinsSettingCell{k}.eta=etaList(k,:);
+                    end
+                    if ~strcmp(paxisList,'default')                   
+                        BathSpinsSettingCell{k}.principle_axis=paxisList(k,:);
+                    end                  
+                end
+                obj.parameters.SetBathSpins.BathSpinsSettingCell=BathSpinsSettingCell;               
+            end
+        end
+        
+        function set_central_spin(obj,p)
+            obj.parameters.SetCentralSpin.name=p.get_parameter('SetCentralSpin', 'Name');
+            obj.parameters.SetCentralSpin.CentralSpinStates=p.get_parameter('SetCentralSpin', 'CentralSpinStates');
+            obj.parameters.SetCentralSpin.SetSpin=p.get_parameter('SetCentralSpin', 'SetSpin');
+            Oritation=p.get_parameter('SetCentralSpin', 'Oritation');
+            Isotope=p.get_parameter('SetCentralSpin', 'Isotope');
+            Coordinate=p.get_parameter('SetCentralSpin', 'Coordinate');
+            if obj.parameters.SetCentralSpin.SetSpin
+                if ~strcmp(Oritation,'default') 
+                    obj.parameters.SetCentralSpin.CentralSpinSetting.Oritation=Oritation;
+                end
+                if ~strcmp(Isotope,'default') 
+                    obj.parameters.SetCentralSpin.CentralSpinSetting.Isotope=Isotope;
+                end
+                if ~strcmp(Coordinate,'default') 
+                    obj.parameters.SetCentralSpin.CentralSpinSetting.Coordinate=Coordinate;
+                end
+            end
         end
         
         function perform(obj)
@@ -62,6 +90,7 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
           %% Package import
             %physical objects
             import model.phy.LabCondition
+            import model.phy.PhysicalObject.NV
             import model.phy.SpinCollection.SpinCollection
 
             %quantum operators
@@ -73,35 +102,51 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
             %interactoins
             import model.phy.SpinInteraction.ZeemanInteraction
             import model.phy.SpinInteraction.DipolarInteraction
-            import model.phy.SpinApproximation.SpinSecularApproximation
             %strategies
             import model.phy.SpinCollection.Strategy.FromFile
-            import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
+            import model.phy.SpinCollection.Strategy.FromSpinList
+%             import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
+%             import model.phy.Dynamics.EvolutionKernel.ECCEMatrixEvolution
+
+            import model.phy.SpinCollection.Iterator.ClusterIterator
+            import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
+
+            import model.phy.SpinApproximation.SpinSecularApproximation
 
           %% Set Condition
             Condition=LabCondition.getCondition;
             Condition.setValue('magnetic_field', para.MagneticField);
 
-          %% FromSpinList 
+          %%  Generate Spin Collection FromSpinList and generate clusters
            switch para.SpinCollectionStrategy
                case 'File'
                    spin_collection=SpinCollection( FromFile(...
                        [INPUT_FILE_PATH, para.InputFile]));
+                   if para.SetBathSpins.SetSpin;
+                       paraCell=para.SetBathSpins.BathSpinsSettingCell;
+                       spin_collection.set_spin(paraCell);
+                   end
                case 'SpinList'
                    error('not surported so far.');
            end
            obj.keyVariables('spin_collection')=spin_collection;
-
+           
+           clu_para.cutoff=para.CutOff;
+           clu_para.max_order=para.MaxOrder;
+           cce=CCE_Clustering(spin_collection, clu_para);
+           cluster_collection=ClusterIterator(spin_collection,cce);
+           %%%%%%%%%%%%%%%%%%%%%%%%%%%%Start from here%%%%%%%%%%%%%
+           
+           obj.keyVariables('cluster_collection')=cluster_collection;
           %% Gernate Hamiltonian and Liouvillian Operator
-            hami=Hamiltonian(spin_collection);
-            hami.addInteraction( ZeemanInteraction(spin_collection) );
-            hami.addInteraction( DipolarInteraction(spin_collection) );
-            
-            if para.IsSecularApproximation
-                hami.apply_approximation( SpinSecularApproximation(spin_collection) );
-            end
-            liou=hami.circleC();
-            obj.keyVariables('hamiltonian')=hami;
+            NVcenter=NV();
+
+            NVe={NVcenter.espin};
+            bath_cluster=cluster_collection.getItem(86);
+            cluster=SpinCollection( FromSpinList([NVe, bath_cluster]) );
+            hami_cluster=Hamiltonian(cluster);
+            hami_cluster.addInteraction( ZeemanInteraction(cluster) );
+%             obj.keyVariables('hamiltonian')=hami;
             
             %% DensityMatrix
             denseMat=DensityMatrix(spin_collection, para.InitialState);

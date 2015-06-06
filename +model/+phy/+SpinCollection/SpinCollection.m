@@ -13,7 +13,7 @@ classdef SpinCollection < handle
             if nargin > 0
                 obj.spin_source=spin_source;
                 obj.generate()
-            end
+            end           
         end
         
         function generate(obj)
@@ -102,18 +102,20 @@ classdef SpinCollection < handle
         end
         function set_spin(obj,paraCell)
             nspin=obj.getLength;
-            nspecies=length(paraCell);% the number of spin species to be set
-            for n=1:nspecies
-                para=paraCell{n};
-              for m=1:nspin
-                  spin=obj.spin_list{m};
-                   if  spin.name==para.name
-                       spin.set_spin(para);                       
-                   end
-               end
-                
+            nameList=[];
+            if nargin>1               
+                    nameList=cellfun(@(s) s.name, paraCell,'UniformOutput', false);
             end
-        
+            for m=1:nspin
+                 spin=obj.spin_list{m};
+                 pos=find(strcmp(nameList,spin.name));
+                if pos
+                       para=paraCell{pos};
+                       spin.set_spin(para);                       
+                else
+                    spin.set_spin();  
+                end                    
+            end
         end
 
             

@@ -72,6 +72,7 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
                case 'SpinList'
                    error('not surported so far.');
            end
+           spin_collection.set_spin();
            obj.keyVariables('spin_collection')=spin_collection;
 
           %% Gernate Hamiltonian and Liouvillian Operator

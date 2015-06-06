@@ -1,7 +1,8 @@
 % clear;clc
-% if 0
+if 0
 
-cd /Users/ylp/Documents/code/qlib;
+% cd /Users/ylp/Documents/code/qlib;
+cd D:\AcademicLife\code\qlib
 addpath(genpath('./'));
 %% Package import
 %physical condition and objects
@@ -33,15 +34,19 @@ import model.phy.SpinApproximation.SpinSecularApproximation
 Condition=LabCondition.getCondition;
 Condition.setValue('magnetic_field', 1e-4*100*[1 1 1]);
 
-
+end
 %% Generate Cluster using CCE clustering
 spin_coord_file_path='./+controller/+input/';
-cluster=SpinCollection( FromFile([spin_coord_file_path, '+xyz/RoyCoord.xyz']) );
-para.name='13C';
-para.ZFS=500;
-para.eta=0.01;
-para.principle_axis=[1,1,1];
-cluster.set_spin({para});
+cluster=SpinCollection( FromFile([spin_coord_file_path, '+xyz/hBNLayer.xyz']) );
+para=cell(1,3);
+namelist=[{'10B'},{'11B'},{'15N'}];
+for n=1:3
+    para{n}.name=namelist{n};
+    para{n}.ZFS=500;
+    para{n}.eta=0.01;
+    para{n}.principle_axis=[1,1,1];
+end
+cluster.set_spin(para);%
 % cluster=SpinCollection( FromFile([INPUT_FILE_PATH, '+xyz/RoyCoord.xyz']) );
 
 clu_para.cutoff=8;

@@ -38,7 +38,8 @@ classdef NV < model.phy.PhysicalObject.PhysicalObject
             coord_espin=coordinate + orientation*DIAMOND_LATTICE_CONST/4;
             para.ZFS=2*pi*2.87e9;
             para.principle_axis=orientation;
-            obj.espin=model.phy.PhysicalObject.Spin('NVespin',coord_espin,para);
+            obj.espin=model.phy.PhysicalObject.Spin('NVespin',coord_espin);
+            obj.espin.set_spin(para);
         end
         
         function hami=get_ESpinHamiltonian(obj)
