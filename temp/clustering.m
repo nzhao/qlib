@@ -23,7 +23,7 @@ import model.phy.SpinInteraction.DipolarInteraction
 import model.phy.SpinCollection.Strategy.FromFile
 import model.phy.SpinCollection.Strategy.FromSpinList
 import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
-import model.phy.Dynamics.EvolutionKernel.ECCEMatrixEvolution
+import model.phy.Dynamics.EvolutionKernel.DensityMatrixEvolution
 
 import model.phy.SpinCollection.Iterator.ClusterIterator
 import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
@@ -34,7 +34,7 @@ import model.phy.SpinApproximation.SpinSecularApproximation
 Condition=LabCondition.getCondition;
 Condition.setValue('magnetic_field', 1e-4*100*[1 1 1]);
 
-end
+% end
 %% Generate Cluster using CCE clustering
 spin_coord_file_path='./+controller/+input/';
 cluster=SpinCollection( FromFile([spin_coord_file_path, '+xyz/hBNLayer.xyz']) );
@@ -54,8 +54,8 @@ clu_para.max_order=2;
 cce=CCE_Clustering(cluster, clu_para);
 
 all_clusters=ClusterIterator(cluster,cce);
-% end
-if 0
+end
+% if 0
 %% Generate NV center and transformer
 tic
 
@@ -87,9 +87,10 @@ hami_cluster.transform(ts);
 % lv=hami1.flat_sharp_circleC(hami2);
 
 %% state
-
-denseMat1=DensityMatrix(cluster, '1.0 * p(1)_1');
-denseMat=denseMat1.project_operator(1, 1);
+    denseMat=DensityMatrix(SpinCollection( FromSpinList(bath_cluster)));
+    denseMat.getMatrix;
+% denseMat1=DensityMatrix(cluster, '1.0 * p(1)_1');
+% denseMat=denseMat1.project_operator(1, 1);
 
 %% obs
 obs1=Observable(cluster, 'coherence', '1.0 * p(1)_1');
@@ -117,4 +118,4 @@ toc
 figure();hold on;
 dynamics.render.plot('coherence_1_1', @real);
 dynamics.render.plot('coherence_1_1', @imag, 'b.-');
-end
+% end

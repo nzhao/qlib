@@ -37,54 +37,16 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
             obj.parameters.MagneticField=p.get_parameter('Condition', 'MagneticField');
             obj.parameters.IsSecularApproximation=p.get_parameter('Interaction', 'IsSecular');
  
-            obj.parameters.NTime=p.get_parameter('Dynamics', 'NTime');
-            obj.parameters.TMax=p.get_parameter('Dynamics', 'TMax');
+            NTime=p.get_parameter('Dynamics', 'NTime');
+            TMax=p.get_parameter('Dynamics', 'TMax');
+            dt=TMax/(NTime-1);
+            obj.parameters.TimeList=0:dt:TMax;
             obj.parameters.NPulse=p.get_parameter('Dynamics', 'NPulse');
         end
         
-        function set_bath_spin(obj, p)
-            obj.parameters.SetBathSpins.SetSpin=p.get_parameter('SetBathSpins','SetSpin');
-            if obj.parameters.SetBathSpins.SetSpin
-                SpeciesNumber=p.get_parameter('SetBathSpins','SpeciesNumber');
-                BathSpinsSettingCell=cell(1,4);
-                NameList=p.get_parameter('SetBathSpins','Name');
-                ZFSList=p.get_parameter('SetBathSpins','ZFS');
-                etaList=p.get_parameter('SetBathSpins','eta');
-                paxisList=p.get_parameter('SetBathSpins','principle_axis');
-                for k=1:SpeciesNumber
-                    BathSpinsSettingCell{k}.name=NameList(k,:);
-                    BathSpinsSettingCell{k}.ZFS=ZFSList(k,:);
-                    if ~strcmp(etaList,'default')                   
-                        BathSpinsSettingCell{k}.eta=etaList(k,:);
-                    end
-                    if ~strcmp(paxisList,'default')                   
-                        BathSpinsSettingCell{k}.principle_axis=paxisList(k,:);
-                    end                  
-                end
-                obj.parameters.SetBathSpins.BathSpinsSettingCell=BathSpinsSettingCell;               
-            end
-        end
         
-        function set_central_spin(obj,p)
-            obj.parameters.SetCentralSpin.name=p.get_parameter('SetCentralSpin', 'Name');
-            obj.parameters.SetCentralSpin.CentralSpinStates=p.get_parameter('SetCentralSpin', 'CentralSpinStates');
-            obj.parameters.SetCentralSpin.SetSpin=p.get_parameter('SetCentralSpin', 'SetSpin');
-            Oritation=p.get_parameter('SetCentralSpin', 'Oritation');
-            Isotope=p.get_parameter('SetCentralSpin', 'Isotope');
-            Coordinate=p.get_parameter('SetCentralSpin', 'Coordinate');
-            if obj.parameters.SetCentralSpin.SetSpin
-                if ~strcmp(Oritation,'default') 
-                    obj.parameters.SetCentralSpin.CentralSpinSetting.Oritation=Oritation;
-                end
-                if ~strcmp(Isotope,'default') 
-                    obj.parameters.SetCentralSpin.CentralSpinSetting.Isotope=Isotope;
-                end
-                if ~strcmp(Coordinate,'default') 
-                    obj.parameters.SetCentralSpin.CentralSpinSetting.Coordinate=Coordinate;
-                end
-            end
-        end
         
+           
         function perform(obj)
             para=obj.parameters;
           %% Package import
@@ -105,8 +67,7 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
             %strategies
             import model.phy.SpinCollection.Strategy.FromFile
             import model.phy.SpinCollection.Strategy.FromSpinList
-%             import model.phy.Dynamics.EvolutionKernel.MatrixVectorEvolution
-%             import model.phy.Dynamics.EvolutionKernel.ECCEMatrixEvolution
+            import model.phy.Dynamics.EvolutionKernel.DensityMatrixEvolution
 
             import model.phy.SpinCollection.Iterator.ClusterIterator
             import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
@@ -135,40 +96,39 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
            clu_para.max_order=para.MaxOrder;
            cce=CCE_Clustering(spin_collection, clu_para);
            cluster_collection=ClusterIterator(spin_collection,cce);
-           %%%%%%%%%%%%%%%%%%%%%%%%%%%%Start from here%%%%%%%%%%%%%
            
            obj.keyVariables('cluster_collection')=cluster_collection;
-          %% Gernate Hamiltonian and Liouvillian Operator
+          %% Gernate cluster Hamiltonian and reduced Hamiltonian List for pulsed CCE
             NVcenter=NV();
-
             NVe={NVcenter.espin};
+
             bath_cluster=cluster_collection.getItem(86);
             cluster=SpinCollection( FromSpinList([NVe, bath_cluster]) );
             hami_cluster=Hamiltonian(cluster);
             hami_cluster.addInteraction( ZeemanInteraction(cluster) );
-%             obj.keyVariables('hamiltonian')=hami;
+            hami_cluster.addInteraction( DipolarInteraction(cluster) );
+            hamiCell=obj.gen_reduced_hamiltonian(cluster,hami_cluster);
+            [hami_list,time_seq]=obj.gen_hami_list(hamiCell);
+            
             
             %% DensityMatrix
-            denseMat=DensityMatrix(spin_collection, para.InitialState);
-            obj.keyVariables('densityMatrix')=denseMat;
-
+            denseMat=DensityMatrix(SpinCollection( FromSpinList(bath_cluster)));
+            dim=denseMat.dim;
+            denseMat.setMatrix(eye(dim)/dim);
             %% Observable
-            obs=[];
-            for k=1:para.ObservableNumber
-                obs=[obs, Observable(spin_collection, para.ObservableName{k}, para.ObservableString{k})]; %#ok<AGROW>
-            end
-            obj.keyVariables('observables')=obs;
+            obs=Observable(SpinCollection( FromSpinList(bath_cluster)));
+            obs.setMatrix(1);
 
             %% Evolution
-            dynamics=QuantumDynamics( MatrixVectorEvolution(liou) );
-            dynamics.set_initial_state(denseMat);
+            dynamics=QuantumDynamics( DensityMatrixEvolution(hami_list,time_seq) );
+            dynamics.set_initial_state(denseMat,'Hilbert');
             dynamics.set_time_sequence(para.TimeList);
-            dynamics.addObervable(obs);
+            dynamics.addObervable({obs});
             dynamics.calculate_mean_values();
-            obj.keyVariables('dynamics')=dynamics;
+%             obj.keyVariables('dynamics')=dynamics;
             
-            obj.render=dynamics.render;
-            obj.result=obj.render.get_result();
+%             obj.render=dynamics.render;
+%             obj.result=obj.render.get_result();
         end
                
         

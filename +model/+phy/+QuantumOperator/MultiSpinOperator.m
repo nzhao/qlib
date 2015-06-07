@@ -11,7 +11,7 @@
         function obj=MultiSpinOperator(spin_collection, matrix_strategy)
             obj.spin_collection=spin_collection;
             obj.interaction_list={};
-            obj.dim=spin_collection.getDim();
+            obj.dim=spin_collection.getDim;
             
             if nargin < 2
                 obj.matrix_strategy= model.phy.QuantumOperator.MatrixStrategy.FromProductSpace();

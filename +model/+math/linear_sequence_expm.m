@@ -5,7 +5,7 @@ function matrix_cells= linear_sequence_expm( mat,maxpower,power_step)
     if rem(ncells,1)==0
         matrix_cells=cell(ncells+1,1);
         matrix_cells{1,1}=eye(dim);
-        core=mat^power_step;
+        core=expm(mat^power_step);
         for n=2:(ncells+1)
              matrix_cells{n,1}= matrix_cells{n-1,1}*core;
         end
