@@ -91,7 +91,7 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
             denseMat=DensityMatrix(spin_collection, para.InitialState);
             obj.keyVariables('densityMatrix')=denseMat;
 
-            %%% Observable
+            %% Observable
             obs={};
             for k=1:para.ObservableNumber
                 obs{k}=Observable(spin_collection, para.ObservableName{k}, para.ObservableString{k});

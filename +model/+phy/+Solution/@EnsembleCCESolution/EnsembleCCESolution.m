@@ -58,10 +58,8 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
             import model.phy.PhysicalObject.NV
             import model.phy.SpinCollection.SpinCollection
 
-
                 %strategies
             import model.phy.SpinCollection.Strategy.FromFile
-
 
             import model.phy.SpinCollection.Iterator.ClusterIterator
             import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
@@ -87,7 +85,6 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
            
            clu_para.cutoff=para.CutOff;
            clu_para.max_order=para.MaxOrder;
-
            % the cce strategy can be change
            cce=CCE_Clustering(spin_collection, clu_para);
            cluster_collection=ClusterIterator(spin_collection,cce);
@@ -102,7 +99,6 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
 %             obj.result=obj.render.get_result();
         end
         
-
 
         
     end
