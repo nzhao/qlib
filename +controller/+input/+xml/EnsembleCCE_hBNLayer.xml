@@ -4,21 +4,18 @@
        <SolutionName type="char">hBNLayerDynamics</SolutionName>
    </Name>
    <Condition>
-      <MagneticField type="eval">1e-4*[0 0 806]</MagneticField>
+      <MagneticField type="eval">1e-4*[0 0 1000]</MagneticField>
    </Condition>
    <Dynamics>
-      <NTime type="double">101</NTime>
-      <TMax type="eval">5e-3</TMax>
-      <NPulse type="double">0</NPulse>
+      <NTime type="double">401</NTime>
+      <TMax type="eval">3e-3</TMax>
+      <NPulse type="double">1</NPulse>
    </Dynamics>
-   <InitialState>
-      <DensityMatrix type="char">1.0 * p(2)_1 * p(1)_2 * p(1)_3 * p(1)_4 * p(1)_5 * p(1)_6</DensityMatrix>
-   </InitialState>
    <Interaction>
       <IsSecular type="double">0</IsSecular>
    </Interaction>
    <SpinCollection>
-      <FileName type="char">+xyz/hBNLayer.xyz</FileName>
+      <FileName type="char">+xyz/RoyCoord.xyz</FileName>
       <Source type="char">File</Source>
    </SpinCollection>
    <SetBathSpins>
@@ -33,12 +30,12 @@
        <Name type="char">NV</Name>
        <CentralSpinStates type="eval">[1,2]</CentralSpinStates>
        <SetSpin type="double">1</SetSpin>
-       <Orientation type="eval">[0,0,1]</Orientation>
+       <Orientation type="eval">[1,1,1]</Orientation>
        <Isotope type="char">14N</Isotope>
-       <Coordinate type="eval">[0,0,10]</Coordinate>
+       <Coordinate type="eval">[0,0,0]</Coordinate>
    </SetCentralSpin>
    <Clustering>
-		<CutOff type="double">2.6</CutOff>
-		<MaxOrder type="double">2</MaxOrder>
+		<CutOff type="double">8</CutOff>
+		<MaxOrder type="double">3</MaxOrder>
    </Clustering>
 </config>

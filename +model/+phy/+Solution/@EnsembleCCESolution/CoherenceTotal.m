@@ -4,13 +4,19 @@ function CoherenceTotal(obj,para,cluster_collection,spin_collection)
    import model.phy.SpinCollection.Strategy.FromSpinList
    
    CoherenceMatrix=zeros(cluster_collection.cluster_info.cluster_number,para.NTime);
+   
    cluster_list=cluster_collection.index_list;
    ncluster=cluster_collection.cluster_info.cluster_number;
-%            subcluster_list=cluster_collection.cluster_info.subcluster_list;
+   
+   subcluster_list=cluster_collection.cluster_info.subcluster_list;
+   cluster_number_list=[cluster_collection.cluster_info.cluster_number_list{:,2}];
+   
    bath_spin_list=spin_collection.spin_list; 
+   
    center_spin=obj.keyVariables('center_spin');
    central_espin={center_spin.espin};
-    for n=1:ncluster
+   
+   for n=1:ncluster
         %Gernate cluster Hamiltonian and reduced Hamiltonian List for pulsed CCE
         cluster_spin_index=cluster_list{n};
         bath_cluster=bath_spin_list(cluster_spin_index);
@@ -18,8 +24,45 @@ function CoherenceTotal(obj,para,cluster_collection,spin_collection)
         coh=ClusterCoherence(cluster,para);
         CoherenceMatrix(n,:)=coh;
     end
-    obj.keyVariables('ClusterCoherenceMatrix')=CoherenceMatrix;
+    obj.keyVariables('cluster_coherence_matrix')=CoherenceMatrix;
+    
+    [coherence,ClusterCoherenceTildeMatrix]=CoherenceTilde(CoherenceMatrix,subcluster_list,cluster_number_list);
+    obj.keyVariables('cluster_coherence_tilde_Matrix')=ClusterCoherenceTildeMatrix;
+    coherence.timelist=para.TimeList;
+    obj.keyVariables('coherence')=coherence;
+end
 
+function [coherence,coh_tilde_mat]=CoherenceTilde(cohmat,subcluster_list,cluster_number_list)
+    nclusters=length(subcluster_list);
+    ntime=length(cohmat(1,:));
+    coh_tilde_mat=zeros(nclusters,ntime);
+    coh_total=ones(1,ntime);
+    cceorder=1;
+    endpoints=cumsum(cluster_number_list);
+    for m=1:nclusters
+        subcluster=subcluster_list{m};
+        nsubcluster=length(subcluster);
+        coh_tilde=cohmat(m,:);
+        if nsubcluster==0
+            coh_tilde_mat(m,:)= coh_tilde;
+        elseif nsubcluster>0
+            for n=1:nsubcluster;
+                coh_tilde_sub=coh_tilde_mat(subcluster(n),:);
+                coh_tilde=coh_tilde./coh_tilde_sub;
+            end
+            coh_tilde_mat(m,:)=coh_tilde;
+        end
+
+        coh_total=coh_total.*coh_tilde;
+        if m==endpoints(1,cceorder)
+            field_name=strcat('coherence_cce_',num2str(cceorder));
+            coherence.(field_name)=coh_total;
+            cceorder=cceorder+1;
+        end
+
+    end
+
+    coherence.('coherence')= coh_total;  
 end
 
 function coh = ClusterCoherence(cluster, para)
