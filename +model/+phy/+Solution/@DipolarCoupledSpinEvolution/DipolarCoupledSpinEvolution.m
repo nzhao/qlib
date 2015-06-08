@@ -94,7 +94,7 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
             %%% Observable
             obs={};
             for k=1:para.ObservableNumber
-                obs=[obs, Observable(spin_collection, para.ObservableName{k}, para.ObservableString{k})]; %#ok<AGROW>
+                obs{k}=Observable(spin_collection, para.ObservableName{k}, para.ObservableString{k});
             end
             obj.keyVariables('observables')=obs;
 
