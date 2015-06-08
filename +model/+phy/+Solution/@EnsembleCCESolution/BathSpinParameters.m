@@ -1,4 +1,4 @@
-function set_bath_spin(obj, p)
+function BathSpinParameters(obj, p)
      %set bath spin
      % get the parameters for setting the bath spins e.g. ZFS, eta, principle_axis, coordinate
         obj.parameters.SetBathSpins.SetSpin=p.get_parameter('SetBathSpins','SetSpin');

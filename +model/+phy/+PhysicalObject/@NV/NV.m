@@ -10,32 +10,32 @@ classdef NV < model.phy.PhysicalObject.PhysicalObject
     end
     
     methods
-        function obj=NV(parameters)
-            if nargin == 0
-                try
-                    orientation=parameters.orientation;
-                catch
-                    orientation=[1 1 1];
-                end
-
-                try
-                    isotope=parameters.isotope;
-                catch
-                    isotope='14N';
-                end
-
-                try
-                    coordinate=parameters.coordinate;
-                catch
-                    coordinate=[0 0 0];
-                end
+        function obj=NV(varargin)
+            parameters=varargin{1,1};
+            try
+                orientation=parameters.orientation;
+            catch
+                orientation=[1 1 1];
             end
+
+            try
+                isotope=parameters.isotope;
+            catch
+                isotope='14N';
+            end
+
+            try
+                coordinate=parameters.coordinate;
+            catch
+                coordinate=[0 0 0];
+            end
+
             
             condition=model.phy.LabCondition.getCondition;
             obj.magnetic_field=condition.getValue('magnetic_field');
             
             obj.nspin=model.phy.PhysicalObject.Spin(isotope, coordinate);
-            coord_espin=coordinate + orientation*DIAMOND_LATTICE_CONST/4;
+            coord_espin=coordinate ;%+ orientation*DIAMOND_LATTICE_CONST/4
             para.ZFS=2*pi*2.87e9;
             para.principle_axis=orientation;
             obj.espin=model.phy.PhysicalObject.Spin('NVespin',coord_espin);

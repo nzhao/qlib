@@ -12,6 +12,7 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
     %   6. parameters.NPulse
     %   10. parameters.NTime
     %   11. parameters.TMax
+    %   12. parameters.TimeList
 
    
     properties
@@ -28,8 +29,8 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
             obj.parameters.SpinCollectionStrategy=p.get_parameter('SpinCollection', 'Source');
             obj.parameters.InputFile=p.get_parameter('SpinCollection', 'FileName');
             
-            obj.set_bath_spin(p);
-            obj.set_central_spin(p);
+            obj.BathSpinParameters(p);
+            obj.CentralSpinParameters(p);
             
             obj.parameters.CutOff=p.get_parameter('Clustering', 'CutOff');
             obj.parameters.MaxOrder=p.get_parameter('Clustering', 'MaxOrder');
@@ -41,6 +42,8 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
             TMax=p.get_parameter('Dynamics', 'TMax');
             dt=TMax/(NTime-1);
             obj.parameters.TimeList=0:dt:TMax;
+            obj.parameters.NTime=NTime;
+            obj.parameters.TMax=TMax;
             obj.parameters.NPulse=p.get_parameter('Dynamics', 'NPulse');
         end
         
@@ -55,24 +58,12 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
             import model.phy.PhysicalObject.NV
             import model.phy.SpinCollection.SpinCollection
 
-            %quantum operators
-            import model.phy.QuantumOperator.SpinOperator.Hamiltonian
-            import model.phy.QuantumOperator.SpinOperator.DensityMatrix
-            import model.phy.QuantumOperator.SpinOperator.Observable
-            import model.phy.Dynamics.QuantumDynamics
-
-            %interactoins
-            import model.phy.SpinInteraction.ZeemanInteraction
-            import model.phy.SpinInteraction.DipolarInteraction
-            %strategies
+                %strategies
             import model.phy.SpinCollection.Strategy.FromFile
-            import model.phy.SpinCollection.Strategy.FromSpinList
-            import model.phy.Dynamics.EvolutionKernel.DensityMatrixEvolution
 
             import model.phy.SpinCollection.Iterator.ClusterIterator
             import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
 
-            import model.phy.SpinApproximation.SpinSecularApproximation
 
           %% Set Condition
             Condition=LabCondition.getCondition;
@@ -94,43 +85,21 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
            
            clu_para.cutoff=para.CutOff;
            clu_para.max_order=para.MaxOrder;
+           % the cce strategy can be change
            cce=CCE_Clustering(spin_collection, clu_para);
            cluster_collection=ClusterIterator(spin_collection,cce);
-           
            obj.keyVariables('cluster_collection')=cluster_collection;
-          %% Gernate cluster Hamiltonian and reduced Hamiltonian List for pulsed CCE
-            NVcenter=NV();
-            NVe={NVcenter.espin};
 
-            bath_cluster=cluster_collection.getItem(86);
-            cluster=SpinCollection( FromSpinList([NVe, bath_cluster]) );
-            hami_cluster=Hamiltonian(cluster);
-            hami_cluster.addInteraction( ZeemanInteraction(cluster) );
-            hami_cluster.addInteraction( DipolarInteraction(cluster) );
-            hamiCell=obj.gen_reduced_hamiltonian(cluster,hami_cluster);
-            [hami_list,time_seq]=obj.gen_hami_list(hamiCell);
-            
-            
-            %% DensityMatrix
-            denseMat=DensityMatrix(SpinCollection( FromSpinList(bath_cluster)));
-            dim=denseMat.dim;
-            denseMat.setMatrix(eye(dim)/dim);
-            %% Observable
-            obs=Observable(SpinCollection( FromSpinList(bath_cluster)));
-            obs.setMatrix(1);
-
-            %% Evolution
-            dynamics=QuantumDynamics( DensityMatrixEvolution(hami_list,time_seq) );
-            dynamics.set_initial_state(denseMat,'Hilbert');
-            dynamics.set_time_sequence(para.TimeList);
-            dynamics.addObervable({obs});
-            dynamics.calculate_mean_values();
-%             obj.keyVariables('dynamics')=dynamics;
-            
+           center_spin_name=para.SetCentralSpin.name;
+           para_central_spin=para.SetCentralSpin; 
+           center_spin=eval(strcat(center_spin_name,'(','para_central_spin',')'));
+           obj.keyVariables('center_spin')=center_spin;
+           obj.CoherenceTotal(para,cluster_collection,spin_collection);
 %             obj.render=dynamics.render;
 %             obj.result=obj.render.get_result();
         end
-               
+        
+
         
     end
     
