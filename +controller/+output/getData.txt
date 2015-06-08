@@ -1,0 +1,1 @@
+res=ButaneDynamics.keyVariables('dynamics').kernel.result;
