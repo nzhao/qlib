@@ -13,7 +13,7 @@ classdef SpinCollection < handle
             if nargin > 0
                 obj.spin_source=spin_source;
                 obj.generate()
-            end
+            end           
         end
         
         function generate(obj)
@@ -99,6 +99,23 @@ classdef SpinCollection < handle
                 end
             end
             selfTransform=model.phy.QuantumOperator.SpinOperator.TransformOperator(obj,{newStr});
+        end
+        function set_spin(obj,paraCell)
+            nspin=obj.getLength;
+            nameList=[];
+            if nargin>1               
+                    nameList=cellfun(@(s) s.name, paraCell,'UniformOutput', false);
+            end
+            for m=1:nspin
+                 spin=obj.spin_list{m};
+                 pos=find(strcmp(nameList,spin.name));
+                if pos
+                       para=paraCell{pos};
+                       spin.set_spin(para);                       
+                else
+                    spin.set_spin();  
+                end                    
+            end
         end
 
             

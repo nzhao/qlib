@@ -21,23 +21,26 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
     end
     
     methods
-        function obj = Spin(name, coord,varargin)
+        function obj = Spin(name, coord)
             obj.name=name;
             [obj.dim, obj.gamma] = model.phy.data.NMRData.get_spin(name);
             obj.coordinate=coord;
-            if nargin > 2
-                para=varargin{1};
+%             if nargin > 2
+%                 obj.set_spin(varargin{1});                
+%             end
+            
+            obj.S= 0.5*(obj.dim-1);
+            obj.S2= obj.S*(obj.S+1);
+        end
+        
+        function set_spin(obj,para)
+            if nargin>1
                 fname=fieldnames(para);
                 n_fname=length(fname);
                 for k=1:n_fname
                    obj.(fname{k})=para.(fname{k}); 
                 end
-                
             end
-            
-            obj.S= 0.5*(obj.dim-1);
-            obj.S2= obj.S*(obj.S+1);
-            
             obj.self_hamiltonian=obj.selfHamiltonian();
             [obj.eigen_vect, obj.eigen_val]=eig(full(obj.self_hamiltonian.getMatrix));
         end

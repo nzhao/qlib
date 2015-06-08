@@ -18,7 +18,7 @@ classdef AbstractDynamics < handle
     methods
         function obj=AbstractDynamics(kernel)
             obj.kernel=kernel;
-            obj.observable_list=[];
+            obj.observable_list={};
             obj.observable_keys={};
             obj.is_evolved=0;
             
@@ -38,12 +38,14 @@ classdef AbstractDynamics < handle
         end
         
         
-        function set_initial_state(obj, state)
-            try
+        function set_initial_state(obj, state,Space)
+            if strcmp(Space,'Liouville')
                 obj.state_in=state.getVector();
                 obj.kernel.result=state.getVector();
-            catch
-               error([class(state), 'does not have a property of vector.']);
+            elseif strcmp(Space,'Hilbert')
+                obj.state_in=state.getMatrix();
+            else
+                error([class(state), 'does not have a property of vector.']);
             end
         end
         
@@ -52,12 +54,12 @@ classdef AbstractDynamics < handle
         end
         
         function addObervable(obj, obs_list)
-            obj.observable_list=[obj.observable_list, obs_list];
+            obj.observable_list=[obj.observable_list,obs_list];
             obs_num=length(obj.observable_list);
             
             obj.observable_keys=cell(1, obs_num);
             for k=1:obs_num
-                obj.observable_keys{k}=obs_list(k).name;
+                obj.observable_keys{k}=obs_list{k}.name;
             end
         end
         

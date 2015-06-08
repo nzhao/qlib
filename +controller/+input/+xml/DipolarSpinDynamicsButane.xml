@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
    <Name>
-       <SolutionName type="char">BenzeneDynamics</SolutionName>
+       <SolutionName type="char">ButaneDynamics</SolutionName>
    </Name>
    <Condition>
       <MagneticField type="eval">1e-4*[0 0 100]</MagneticField>

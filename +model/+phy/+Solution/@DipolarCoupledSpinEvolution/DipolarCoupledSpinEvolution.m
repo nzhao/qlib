@@ -73,6 +73,7 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
                case 'SpinList'
                    error('not surported so far.');
            end
+           spin_collection.set_spin();
            obj.keyVariables('spin_collection')=spin_collection;
 
           %%% Gernate Hamiltonian and Liouvillian Operator
@@ -91,7 +92,7 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
             obj.keyVariables('densityMatrix')=denseMat;
 
             %%% Observable
-            obs=[];
+            obs={};
             for k=1:para.ObservableNumber
                 obs=[obs, Observable(spin_collection, para.ObservableName{k}, para.ObservableString{k})]; %#ok<AGROW>
             end
@@ -99,7 +100,7 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
 
             %%% Evolution
             dynamics=QuantumDynamics( MatrixVectorEvolution(liou) );
-            dynamics.set_initial_state(denseMat);
+            dynamics.set_initial_state(denseMat,'Liouville');
             dynamics.set_time_sequence(para.TimeList);
             dynamics.addObervable(obs);
             dynamics.calculate_mean_values();
