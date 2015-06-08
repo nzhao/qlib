@@ -1,30 +1,32 @@
-function CoherenceTotal(obj,para,cluster_collection,spin_collection)   
-   import model.phy.LabCondition
+function CoherenceTotalParallel(obj)   
    import model.phy.SpinCollection.SpinCollection   
    import model.phy.SpinCollection.Strategy.FromSpinList
    
-   CoherenceMatrix=zeros(cluster_collection.cluster_info.cluster_number,para.NTime);
-   
-   cluster_list=cluster_collection.index_list;
+   para=obj.parameters;
+   cluster_collection=obj.keyVariables('cluster_collection');
    ncluster=cluster_collection.cluster_info.cluster_number;
-   
    subcluster_list=cluster_collection.cluster_info.subcluster_list;
    cluster_number_list=[cluster_collection.cluster_info.cluster_number_list{:,2}];
    
-   bath_spin_list=spin_collection.spin_list; 
+   CoherenceMatrix=zeros(cluster_collection.cluster_info.cluster_number,para.NTime);
    
-   center_spin=obj.keyVariables('center_spin');
-   central_espin={center_spin.espin};
+   tic
+    cluster_list=cell(1,ncluster);
+    for n=1:ncluster
+        cluster_list{1,n}=obj.getCluster(n);
+    end        
+   toc
    
-   for n=1:ncluster
-        %Gernate cluster Hamiltonian and reduced Hamiltonian List for pulsed CCE
-        cluster_spin_index=cluster_list{n};
-        bath_cluster=bath_spin_list(cluster_spin_index);
-        cluster=SpinCollection( FromSpinList([central_espin, bath_cluster]) );
+   disp('calculate the cluster-coherence matrix ...');
+   tic
+   parfor n=1:ncluster
+        cluster=cluster_list{1,n};
         coh=ClusterCoherence(cluster,para);
         CoherenceMatrix(n,:)=coh;
     end
     obj.keyVariables('cluster_coherence_matrix')=CoherenceMatrix;
+    disp('calculation of the cluster-coherence matrix finished.');
+    toc
     
     [coherence,ClusterCoherenceTildeMatrix]=CoherenceTilde(CoherenceMatrix,subcluster_list,cluster_number_list);
     obj.keyVariables('cluster_coherence_tilde_Matrix')=ClusterCoherenceTildeMatrix;

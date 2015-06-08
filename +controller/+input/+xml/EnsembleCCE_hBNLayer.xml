@@ -4,7 +4,7 @@
        <SolutionName type="char">hBNLayerDynamics</SolutionName>
    </Name>
    <Condition>
-      <MagneticField type="eval">1e-4*[0 0 1000]</MagneticField>
+      <MagneticField type="eval">1000*1e-4*[1 1 1]/sqrt(3)</MagneticField>
    </Condition>
    <Dynamics>
       <NTime type="double">401</NTime>

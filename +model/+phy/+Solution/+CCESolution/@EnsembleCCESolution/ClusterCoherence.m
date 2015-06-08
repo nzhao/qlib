@@ -1,28 +1,46 @@
-function coh = ClusterCoherence(obj, cluster, para)
+function coh = ClusterCoherence(obj, cluster_idx)
 %CLUSTERCOHERENCE Summary of this function goes here
 %   calculate the coherence of single cluster
-
+    import model.phy.SpinInteraction.ZeemanInteraction
+    import model.phy.SpinInteraction.DipolarInteraction
+    import model.phy.QuantumOperator.SpinOperator.Hamiltonian
+    import model.phy.QuantumOperator.SpinOperator.DensityMatrix
+    import model.phy.QuantumOperator.SpinOperator.Observable
+    import model.phy.Dynamics.QuantumDynamics
+    import model.phy.SpinCollection.SpinCollection  
+    import model.phy.SpinCollection.Strategy.FromSpinList
+    import model.phy.Dynamics.EvolutionKernel.DensityMatrixEvolution
+    import model.phy.SpinApproximation.SpinSecularApproximation
+    
+    cluster=obj.getCluster(cluster_idx);
+    para=obj.parameters;
+    
     hami_cluster=Hamiltonian(cluster);
     hami_cluster.addInteraction( ZeemanInteraction(cluster) );
     hami_cluster.addInteraction( DipolarInteraction(cluster) );
-    hamiCell=obj.gen_reduced_hamiltonian(cluster,hami_cluster);
-    [hami_list,time_seq]=obj.gen_hami_list(hamiCell);
+    center_spin_states=para.SetCentralSpin.CentralSpinStates;
 
+    is_secular=para.IsSecularApproximation;
+    hamiCell=gen_reduced_hamiltonian(cluster,hami_cluster,center_spin_states,is_secular);
+    
+    npulse=para.NPulse; 
+    [hami_list,time_seq]=gen_hami_list(hamiCell,npulse);
 
-    %% DensityMatrix
+    % DensityMatrix
     bath_cluster=cluster.spin_list(2:end);
     denseMat=DensityMatrix(SpinCollection( FromSpinList(bath_cluster)));
     dim=denseMat.dim;
     denseMat.setMatrix(eye(dim)/dim);
-    %% Observable
+    
+    %Observable
     obs=Observable(SpinCollection( FromSpinList(bath_cluster)));
     obs.setMatrix(1);
 
-    %% Evolution
+    % Evolution
     dynamics=QuantumDynamics( DensityMatrixEvolution(hami_list,time_seq) );
     dynamics.set_initial_state(denseMat,'Hilbert');
-    TimeList=para.TimeList;
-    dynamics.set_time_sequence(TimeList);
+    timelist=para.TimeList;
+    dynamics.set_time_sequence(timelist);
     dynamics.addObervable({obs});
     dynamics.calculate_mean_values();
     coh=dynamics.observable_values;
