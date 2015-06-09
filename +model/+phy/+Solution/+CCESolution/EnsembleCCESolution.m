@@ -1,4 +1,4 @@
-classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
+classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolution
     %ENSEMBLECCESOLUTION Summary of this class goes here
     %   EnsembleCCESolution needs the following input paramters:
     %   1. parameters.SpinCollectionStrategy
@@ -20,7 +20,7 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
     
     methods
         function obj=EnsembleCCESolution(xml_file)
-            obj@model.phy.Solution.AbstractSolution(xml_file);
+            obj@model.phy.Solution.CCESolution.AbstractCCESolution(xml_file);
         end
         
         function get_parameters(obj, p)
@@ -60,7 +60,7 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
 
                 %strategies
             import model.phy.SpinCollection.Strategy.FromFile
-
+            import model.phy.SpinCollection.Strategy.FromSpinList
             import model.phy.SpinCollection.Iterator.ClusterIterator
             import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
 
@@ -94,11 +94,24 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
            para_central_spin=para.SetCentralSpin; 
            center_spin=eval(strcat(center_spin_name,'(','para_central_spin',')'));
            obj.keyVariables('center_spin')=center_spin;
-           obj.CoherenceTotal(para,cluster_collection,spin_collection);
+           strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.ECCEClusterCoherence();
+           total_coherence=model.phy.Solution.CCESolution.CCECoherenceStrategy.CCETotalCoherence(cluster_collection,center_spin,strategy);
+           total_coherence.calculate_total_coherence(para);
+           obj.keyVariables('coherence_matrix')=total_coherence.coherence_matrix;
+           obj.keyVariables('cluster_coherence_tilde_matrix')=total_coherence.cluster_coherence_tilde_matrix;
+           obj.keyVariables('coherence')=total_coherence.coherence;
 %             obj.render=dynamics.render;
 %             obj.result=obj.render.get_result();
         end
-        
+%         function cluster=getCluster(obj,index)
+%            import model.phy.SpinCollection.SpinCollection
+%            import model.phy.SpinCollection.Strategy.FromSpinList
+%            cluster_collection=obj.keyVariables('cluster_collection');
+%            bath_cluster=cluster_collection.getItem(index);
+%            center_spin=obj.keyVariables('center_spin');
+%            central_espin={center_spin.espin};
+%            cluster=SpinCollection( FromSpinList([central_espin, bath_cluster]) );
+%         end
 
         
     end

@@ -83,6 +83,7 @@ classdef CCE_Clustering < model.phy.SpinCollection.Iterator.ClusterIteratorGen.A
                 num_list=obj.cluster_info.cluster_number_list;%the end point of every order
                 maxorder=obj.parameters.max_order;
                 if maxorder==1
+                    subcluster_list=cell(nclusters,1);
                     return;
                 end
                 row=ones((maxorder-1)*nclusters,1);

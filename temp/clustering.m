@@ -1,8 +1,8 @@
 % clear;clc
-if 0
+% if 0
 
-% cd /Users/ylp/Documents/code/qlib;
-cd D:\AcademicLife\code\qlib
+cd /Users/ylp/Documents/code/qlib;
+% cd D:\AcademicLife\code\qlib
 addpath(genpath('./'));
 %% Package import
 %physical condition and objects
@@ -54,7 +54,7 @@ clu_para.max_order=2;
 cce=CCE_Clustering(cluster, clu_para);
 
 all_clusters=ClusterIterator(cluster,cce);
-end
+
 % if 0
 %% Generate NV center and transformer
 tic
@@ -85,7 +85,7 @@ hami_cluster.transform(ts);
 % hami2.apply_approximation( SpinSecularApproximation(hami2.spin_collection) );
 % 
 % lv=hami1.flat_sharp_circleC(hami2);
-
+% end
 %% state
     denseMat=DensityMatrix(SpinCollection( FromSpinList(bath_cluster)));
     denseMat.getMatrix;
