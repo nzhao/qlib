@@ -16,8 +16,8 @@
       <IsSecular type="double">1</IsSecular>
    </Interaction>
    <Observable>
-      <ObservableName1 type="char">sz1</ObservableName1>
       <ObservableNumber type="double">1</ObservableNumber>
+      <ObservableName1 type="char">sz1</ObservableName1>
       <ObservableString1 type="char">1.0 * sz_1</ObservableString1>
    </Observable>
    <SpinCollection>

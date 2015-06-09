@@ -33,6 +33,13 @@ classdef AbstractSolution < handle
         function get_parameters(obj, p)
             obj.solutionName=p.get_parameter('Name', 'SolutionName');
         end
+        
+        function StoreKeyVariables(obj, varargin)
+            for k=1:length(varargin)
+                name_k=inputname(k+1);
+                obj.result.(name_k) = varargin{k};
+            end
+        end
     end
     
     methods (Abstract)
