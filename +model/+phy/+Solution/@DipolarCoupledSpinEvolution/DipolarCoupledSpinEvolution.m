@@ -52,7 +52,6 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
             mean_values                = obj.GetMeanValues(dynamics, observables);
             
             obj.StoreKeyVariables(spin_collection, hamiltonian, density_matrix, observables, dynamics, mean_values);
-            obj.result=mean_values;
         end
 
     end
