@@ -39,7 +39,7 @@ classdef DynamicsRender < view.SolutionRender.AbstractSolutionRender
         end
         
         function plt=fft(obj, name, varargin)
-            style='ro-'; f=@(x) x; isRemoveAverage=0;
+            style='ro-'; f=@(x) x; isRemoveAverage=1;
             for k=1:length(varargin)
                 switch class(varargin{k})
                     case 'function_handle'
