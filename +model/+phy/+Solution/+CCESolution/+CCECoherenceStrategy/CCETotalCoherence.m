@@ -38,17 +38,31 @@ classdef CCETotalCoherence < handle
             obj.cluster_cell=clu_cell;
         end
         
-        function calculate_total_coherence(obj,para)
+        function calculate_total_coherence(obj,center_spin_states,timelist,varargin)
+           p = inputParser;
+           addRequired(p,'center_spin_states');
+           addRequired(p,'timelist');
+           addOptional(p,'npulse',0,@isnumeric);
+           addOptional(p,'is_secular',0,@isnumeric); 
+            
+           parse(p,center_spin_states,timelist,varargin{:});
+            
+           center_spin_states=p.Results.center_spin_states;
+           is_secular=p.Results.is_secular;
+           timelist=p.Results.timelist;
+           npulse=p.Results.npulse;
+            
            ncluster=obj.cluster_iter.getLength;
-           CoherenceMatrix=zeros(ncluster,para.NTime);
+           ntime=length(timelist);
+           CoherenceMatrix=zeros(ncluster,ntime);
            clu_cell=obj.cluster_cell;
            strategy=obj.cluster_coherence_strategy;
            disp('calculate the cluster-coherence matrix ...');
            tic
-           for n=1:ncluster
+           for n=1:ncluster              
                cluster=clu_cell{n};
                strategy.generate(cluster);
-               CoherenceMatrix(n,:)=strategy.calculate_cluster_coherence(para);
+               CoherenceMatrix(n,:)=strategy.calculate_cluster_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
             end
             obj.coherence_matrix=CoherenceMatrix;
             toc

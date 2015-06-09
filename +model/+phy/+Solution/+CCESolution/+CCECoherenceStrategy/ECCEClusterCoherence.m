@@ -13,36 +13,41 @@ classdef ECCEClusterCoherence < model.phy.Solution.CCESolution.CCECoherenceStrat
             end                    
         end
         
-        function coh=calculate_cluster_coherence(obj,para)
-            import model.phy.QuantumOperator.SpinOperator.DensityMatrix
-            import model.phy.QuantumOperator.SpinOperator.Observable
-            import model.phy.Dynamics.QuantumDynamics
-            import model.phy.SpinCollection.SpinCollection  
-            import model.phy.SpinCollection.Strategy.FromSpinList
-            import model.phy.Dynamics.EvolutionKernel.DensityMatrixEvolution
-            import model.phy.SpinApproximation.SpinSecularApproximation
+        function coh=calculate_cluster_coherence(obj,center_spin_states,timelist,varargin)
+            p = inputParser;
+            addRequired(p,'center_spin_states');
+            addRequired(p,'timelist');
+            addOptional(p,'npulse',0,@isnumeric);
+            addOptional(p,'is_secular',0,@isnumeric); 
 
-            obj.npulse=para.NPulse;
-            center_spin_states=para.SetCentralSpin.CentralSpinStates;
-            is_secular=para.IsSecularApproximation;
-            
+            parse(p,center_spin_states,timelist,varargin{:});
+
+            obj.npulse=p.Results.npulse;
+            center_spin_states=p.Results.center_spin_states;
+            is_secular=p.Results.is_secular;
+            timelist=p.Results.timelist;
+
             hamiCell=obj.gen_reduced_hamiltonian(center_spin_states,is_secular);
             [hami_list,hami_prefactor]=obj.gen_hami_list(hamiCell);
 
             % DensityMatrix
-            bath_cluster=obj.spin_collection.spin_list(2:end);
-            denseMat=DensityMatrix(SpinCollection( FromSpinList(bath_cluster)));
+            bath_spins=obj.spin_collection.spin_list(2:end);
+            bath_cluster= model.phy.SpinCollection.SpinCollection();
+            bath_cluster.spin_source=model.phy.SpinCollection.Strategy.FromSpinList(bath_spins);
+            bath_cluster.generate();
+            denseMat=model.phy.QuantumOperator.SpinOperator.DensityMatrix(bath_cluster);
             dim=denseMat.dim;
             denseMat.setMatrix(eye(dim)/dim);
 
             %Observable
-            obs=Observable(SpinCollection( FromSpinList(bath_cluster)));
+            obs=model.phy.QuantumOperator.SpinOperator.Observable(bath_cluster);
             obs.setMatrix(1);
 
             % Evolution
-            dynamics=QuantumDynamics( DensityMatrixEvolution(hami_list,hami_prefactor) );
+            d_mat_evolution=model.phy.Dynamics.EvolutionKernel.DensityMatrixEvolution(hami_list,hami_prefactor);
+            dynamics=model.phy.Dynamics.QuantumDynamics(d_mat_evolution);
             dynamics.set_initial_state(denseMat,'Hilbert');
-            timelist=para.TimeList;
+
             dynamics.set_time_sequence(timelist);
             dynamics.addObervable({obs});
             dynamics.calculate_mean_values();

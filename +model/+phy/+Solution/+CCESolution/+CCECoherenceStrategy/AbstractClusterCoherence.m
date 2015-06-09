@@ -21,12 +21,14 @@ classdef AbstractClusterCoherence < handle
         end
         %  generate reduced hamiltonian for the given central spin states
         function reduced_hami = gen_reduced_hamiltonian(obj,center_spin_state,is_secular)
-            import model.phy.SpinInteraction.ZeemanInteraction
-            import model.phy.SpinInteraction.DipolarInteraction
+            import 
+            import 
             cluster=obj.spin_collection;
             hami_cluster=model.phy.QuantumOperator.SpinOperator.Hamiltonian(cluster);
-            hami_cluster.addInteraction( ZeemanInteraction(cluster) );
-            hami_cluster.addInteraction( DipolarInteraction(cluster) );
+            zee_interaction=model.phy.SpinInteraction.ZeemanInteraction(cluster);
+            dip_interaction=model.phy.SpinInteraction.DipolarInteraction(cluster);
+            hami_cluster.addInteraction(zee_interaction);
+            hami_cluster.addInteraction(dip_interaction);
             ts=model.phy.QuantumOperator.SpinOperator.TransformOperator(cluster,{'1.0 * eigenVectors()_1'});
             hami_cluster.transform(ts);
 
@@ -36,9 +38,11 @@ classdef AbstractClusterCoherence < handle
             hami2.remove_identity();
 
             if is_secular && hami1.spin_collection.getLength>1
-                import model.phy.SpinApproximation.SpinSecularApproximation
-                hami1.apply_approximation( SpinSecularApproximation(hami1.spin_collection) );
-                hami2.apply_approximation( SpinSecularApproximation(hami2.spin_collection) );
+                import 
+                approx1=model.phy.SpinApproximation.SpinSecularApproximation(hami1.spin_collection);
+                approx2=model.phy.SpinApproximation.SpinSecularApproximation(hami2.spin_collection);
+                hami1.apply_approximation(approx1);
+                hami2.apply_approximation(approx2);
             end
 
             reduced_hami=cell(1,2);
