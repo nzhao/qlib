@@ -21,8 +21,6 @@ classdef AbstractClusterCoherence < handle
         end
         %  generate reduced hamiltonian for the given central spin states
         function reduced_hami = gen_reduced_hamiltonian(obj,center_spin_state,is_secular)
-            import 
-            import 
             cluster=obj.spin_collection;
             hami_cluster=model.phy.QuantumOperator.SpinOperator.Hamiltonian(cluster);
             zee_interaction=model.phy.SpinInteraction.ZeemanInteraction(cluster);
@@ -38,7 +36,6 @@ classdef AbstractClusterCoherence < handle
             hami2.remove_identity();
 
             if is_secular && hami1.spin_collection.getLength>1
-                import 
                 approx1=model.phy.SpinApproximation.SpinSecularApproximation(hami1.spin_collection);
                 approx2=model.phy.SpinApproximation.SpinSecularApproximation(hami2.spin_collection);
                 hami1.apply_approximation(approx1);

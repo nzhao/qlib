@@ -56,13 +56,14 @@ classdef CCETotalCoherence < handle
            ntime=length(timelist);
            CoherenceMatrix=zeros(ncluster,ntime);
            clu_cell=obj.cluster_cell;
-           strategy=obj.cluster_coherence_strategy;
+           strategy_name=obj.cluster_coherence_strategy;
            disp('calculate the cluster-coherence matrix ...');
            tic
            for n=1:ncluster              
-               cluster=clu_cell{n};
-               strategy.generate(cluster);
-               CoherenceMatrix(n,:)=strategy.calculate_cluster_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
+              cluster=clu_cell{n};
+              strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.(strategy_name);
+              strategy.generate(cluster);
+              CoherenceMatrix(n,:)=strategy.calculate_cluster_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
             end
             obj.coherence_matrix=CoherenceMatrix;
             toc

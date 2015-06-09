@@ -100,9 +100,8 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
            npulse=para.NPulse;
            is_secular=para.IsSecularApproximation;
            
-           strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.ECCEClusterCoherence();
-           
-           total_coherence=model.phy.Solution.CCESolution.CCECoherenceStrategy.CCETotalCoherence(cluster_collection,center_spin,strategy);           
+           strategy_name='ECCEClusterCoherence';        
+           total_coherence=model.phy.Solution.CCESolution.CCECoherenceStrategy.CCETotalCoherence(cluster_collection,center_spin,strategy_name);           
            total_coherence.calculate_total_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
            obj.keyVariables('coherence_matrix')=total_coherence.coherence_matrix;
            obj.keyVariables('cluster_coherence_tilde_matrix')=total_coherence.cluster_coherence_tilde_matrix;
