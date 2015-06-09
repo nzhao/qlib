@@ -11,7 +11,9 @@ classdef NV < model.phy.PhysicalObject.PhysicalObject
     
     methods
         function obj=NV(varargin)
-            parameters=varargin{1,1};
+            if nargin>0
+                parameters=varargin{1,1};
+            end
             try
                 orientation=parameters.orientation;
             catch

@@ -1,0 +1,99 @@
+classdef CCETotalCoherence < handle
+    %ECCETOTALCOHERENCE 
+    
+    properties
+        cluster_iter
+        center_spin
+        cluster_cell
+        sub_cluster_list
+
+    end
+    
+    methods
+        function obj=CCETotalCoherence(cluster_iter,center_spin)
+            obj.cluster_iter=cluster_iter;
+            obj.center_spin=center_spin;
+            obj.generate_cluster_cell();
+        end
+        
+        function generate_cluster_cell(obj)
+            iter=obj.cluster_iter;
+            iter.setCursor(1);
+            ncluster=length(iter.index_list);
+            clu_cell=cell(1,ncluster);
+%             while ~iter.isLast() 
+            for n=1:ncluster
+%                 bath_cluster=iter.currentItem();
+                bath_cluster=iter.getItem(n);
+                central_espin={obj.center_spin.espin};
+                cluster=model.phy.SpinCollection.SpinCollection();
+                cluster.spin_source=model.phy.SpinCollection.Strategy.FromSpinList([central_espin, bath_cluster]);
+                cluster.generate();
+                clu_cell{1,iter.currentIndex}=cluster;
+%                 iter.moveForward();
+            end
+            obj.cluster_cell=clu_cell;
+        end
+        
+        function calculate_total_coherence(obj,para)
+           ncluster=obj.cluster_iter.getLength;
+           CoherenceMatrix=zeros(ncluster,para.NTime);
+           clu_cell=obj.cluster_cell;
+           
+           disp('calculate the cluster-coherence matrix ...');
+           tic
+           for n=1:ncluster
+               cluster=clu_cell{n};
+               clu_coh=model.phy.Solution.CCESolution.CCECoherenceStrategy.ECCEClusterCoherence(cluster);
+               CoherenceMatrix(n,:)=clu_coh.calculate_cluster_coherence(para);
+            end
+            obj.keyVariables('cluster_coherence_matrix')=CoherenceMatrix;
+            toc
+            disp('calculation of the cluster-coherence matrix finished.');
+
+            obj.CoherenceTilde(CoherenceMatrix);            
+        end
+        function CoherenceTilde(obj,cohmat)
+            subcluster_list=obj.cluster_iter.cluster_info.subcluster_list;
+            cluster_number_list=[obj.cluster_iter.cluster_info.cluster_number_list{:,2}];
+            
+            nclusters=length(subcluster_list);
+            ntime=length(cohmat(1,:));
+            coh_tilde_mat=zeros(nclusters,ntime);
+            coh_total=ones(1,ntime);
+            coh=struct();
+            
+            cceorder=1;
+            endpoints=cumsum(cluster_number_list);
+            for m=1:nclusters
+                subcluster=subcluster_list{m};
+                nsubcluster=length(subcluster);
+                coh_tilde=cohmat(m,:);
+                if nsubcluster==0
+                    coh_tilde_mat(m,:)= coh_tilde;
+                elseif nsubcluster>0
+                    for n=1:nsubcluster;
+                        coh_tilde_sub=coh_tilde_mat(subcluster(n),:);
+                        coh_tilde=coh_tilde./coh_tilde_sub;
+                    end
+                    coh_tilde_mat(m,:)=coh_tilde;
+                end
+
+                coh_total=coh_total.*coh_tilde;
+                if m==endpoints(1,cceorder)
+                    field_name=strcat('coherence_cce_',num2str(cceorder));
+                    coh.(field_name)=coh_total;
+                    cceorder=cceorder+1;
+                end
+            end
+            coh.('coherence')= coh_total; 
+            
+            obj.cluster_coherence_tilde_Matrix=coh_tilde_mat;
+            obj.coherence=coh;
+        end
+
+        
+    end
+    
+end
+

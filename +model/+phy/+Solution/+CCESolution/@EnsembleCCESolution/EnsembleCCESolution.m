@@ -94,20 +94,20 @@ classdef EnsembleCCESolution < model.phy.Solution.AbstractSolution
            para_central_spin=para.SetCentralSpin; 
            center_spin=eval(strcat(center_spin_name,'(','para_central_spin',')'));
            obj.keyVariables('center_spin')=center_spin;
-%            obj.CoherenceTotal();
-          obj.CoherenceTotalParallel();
+           total_coherence=model.phy.Solution.CCESolution.CCECoherenceStrategy.CCETotalCoherence(cluster_collection,center_spin)
+%           obj.CoherenceTotalParallel();
 %             obj.render=dynamics.render;
 %             obj.result=obj.render.get_result();
         end
-        function cluster=getCluster(obj,index)
-           import model.phy.SpinCollection.SpinCollection
-           import model.phy.SpinCollection.Strategy.FromSpinList
-           cluster_collection=obj.keyVariables('cluster_collection');
-           bath_cluster=cluster_collection.getItem(index);
-           center_spin=obj.keyVariables('center_spin');
-           central_espin={center_spin.espin};
-           cluster=SpinCollection( FromSpinList([central_espin, bath_cluster]) );
-        end
+%         function cluster=getCluster(obj,index)
+%            import model.phy.SpinCollection.SpinCollection
+%            import model.phy.SpinCollection.Strategy.FromSpinList
+%            cluster_collection=obj.keyVariables('cluster_collection');
+%            bath_cluster=cluster_collection.getItem(index);
+%            center_spin=obj.keyVariables('center_spin');
+%            central_espin={center_spin.espin};
+%            cluster=SpinCollection( FromSpinList([central_espin, bath_cluster]) );
+%         end
 
         
     end
