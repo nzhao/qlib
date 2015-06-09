@@ -11,10 +11,14 @@ classdef AbstractClusterCoherence < handle
     end
     
     methods
-        function obj=AbstractClusterCoherence(cluster)
-            obj.spin_collection=cluster;  
+        function obj=AbstractClusterCoherence(cluster)            
+            if nargin>0
+                obj.generate(cluster);
+            end
         end 
-        
+        function generate(obj,cluster)
+            obj.spin_collection=cluster;
+        end
         %  generate reduced hamiltonian for the given central spin states
         function reduced_hami = gen_reduced_hamiltonian(obj,center_spin_state,is_secular)
             import model.phy.SpinInteraction.ZeemanInteraction

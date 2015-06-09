@@ -3,16 +3,19 @@ classdef CCETotalCoherence < handle
     
     properties
         cluster_iter
+        cluster_coherence_strategy
         center_spin
         cluster_cell
-        sub_cluster_list
-
+        coherence_matrix
+        cluster_coherence_tilde_matrix
+        coherence
     end
     
     methods
-        function obj=CCETotalCoherence(cluster_iter,center_spin)
+        function obj=CCETotalCoherence(cluster_iter,center_spin,strategy)
             obj.cluster_iter=cluster_iter;
             obj.center_spin=center_spin;
+            obj.cluster_coherence_strategy=strategy;
             obj.generate_cluster_cell();
         end
         
@@ -39,15 +42,15 @@ classdef CCETotalCoherence < handle
            ncluster=obj.cluster_iter.getLength;
            CoherenceMatrix=zeros(ncluster,para.NTime);
            clu_cell=obj.cluster_cell;
-           
+           strategy=obj.cluster_coherence_strategy;
            disp('calculate the cluster-coherence matrix ...');
            tic
            for n=1:ncluster
                cluster=clu_cell{n};
-               clu_coh=model.phy.Solution.CCESolution.CCECoherenceStrategy.ECCEClusterCoherence(cluster);
-               CoherenceMatrix(n,:)=clu_coh.calculate_cluster_coherence(para);
+               strategy.generate(cluster);
+               CoherenceMatrix(n,:)=strategy.calculate_cluster_coherence(para);
             end
-            obj.keyVariables('cluster_coherence_matrix')=CoherenceMatrix;
+            obj.coherence_matrix=CoherenceMatrix;
             toc
             disp('calculation of the cluster-coherence matrix finished.');
 
@@ -88,7 +91,7 @@ classdef CCETotalCoherence < handle
             end
             coh.('coherence')= coh_total; 
             
-            obj.cluster_coherence_tilde_Matrix=coh_tilde_mat;
+            obj.cluster_coherence_tilde_matrix=coh_tilde_mat;
             obj.coherence=coh;
         end
 

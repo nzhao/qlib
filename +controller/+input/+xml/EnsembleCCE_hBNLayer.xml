@@ -32,7 +32,7 @@
        <SetSpin type="double">1</SetSpin>
        <Orientation type="eval">[1,1,1]</Orientation>
        <Isotope type="char">14N</Isotope>
-       <Coordinate type="eval">[0,0,0]</Coordinate>
+       <Coordinate type="eval">[0,0,10]</Coordinate>
    </SetCentralSpin>
    <Clustering>
 		<CutOff type="double">6</CutOff>

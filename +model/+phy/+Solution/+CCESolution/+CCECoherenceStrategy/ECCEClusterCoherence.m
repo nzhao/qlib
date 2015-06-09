@@ -7,8 +7,10 @@ classdef ECCEClusterCoherence < model.phy.Solution.CCESolution.CCECoherenceStrat
     
     methods
         function obj=ECCEClusterCoherence(cluster)
-            obj@model.phy.Solution.CCESolution.CCECoherenceStrategy.AbstractClusterCoherence(cluster);
-                     
+            obj@model.phy.Solution.CCESolution.CCECoherenceStrategy.AbstractClusterCoherence();
+            if nargin >0
+               obj.generate(cluster); 
+            end                    
         end
         
         function coh=calculate_cluster_coherence(obj,para)
@@ -48,8 +50,8 @@ classdef ECCEClusterCoherence < model.phy.Solution.CCESolution.CCECoherenceStrat
             obj.coherence=coh;
         end
         
-        function calculater_cluster_coherence_tilde(obj)
-            disp('need to add the function');
+        function calculater_cluster_coherence_tilde(obj,para,subclusters)
+
         end
         
 
