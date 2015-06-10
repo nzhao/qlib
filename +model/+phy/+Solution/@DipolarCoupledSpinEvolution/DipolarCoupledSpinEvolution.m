@@ -3,15 +3,15 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
     %coupled spin system.
     %   DipolarCoupledSpinEvolution needs the following input paramters:
     %
-    %   1. parameters.SpinCollectionStrategy   - 'SpinCollection' > 'Source'
-    %   2. parameters.InputFile                - 'SpinCollection' > 'FileName'
-    %   3. parameters.MagneticField            - 'Condition'      > 'MagneticField'
-    %   4. parameters.IsSecularApproximation   - 'Interaction'    > 'IsSecular'
-    %   5. parameters.InitialState             - 'InitialState'   > 'DensityMatrix'
-    %   6. parameters.ObservableNumber                          - 'Observable'  > 'ObservableNumber'
-    %   7. parameters.ObservableName     [* ObservableNumber]   - 'Observable'  > 'ObservableName1..N'
-    %   8. parameters.ObservableString   [* ObservableNumber]   - 'Observable'  > 'ObservableString1..N'
-    %   9. parameters.TimeList                 - 'Dynamics'       > 'TimeList'
+    %   1. parameters.SpinCollectionStrategy                    - 'SpinCollection' > 'Source'
+    %   2. parameters.InputFile                                 - 'SpinCollection' > 'FileName'
+    %   3. parameters.MagneticField                             - 'Condition'      > 'MagneticField'
+    %   4. parameters.IsSecularApproximation                    - 'Interaction'    > 'IsSecular'
+    %   5. parameters.InitialState                              - 'InitialState'   > 'DensityMatrix'
+    %   6. parameters.ObservableNumber                          - 'Observable'     > 'ObservableNumber'
+    %   7. parameters.ObservableName     [* ObservableNumber]   - 'Observable'     > 'ObservableName1...N'
+    %   8. parameters.ObservableString   [* ObservableNumber]   - 'Observable'     > 'ObservableString1...N'
+    %   9. parameters.TimeList                                  - 'Dynamics'       > 'TimeList'
     
     properties
     end
