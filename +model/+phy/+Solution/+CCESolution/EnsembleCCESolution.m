@@ -62,8 +62,7 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
             import model.phy.SpinCollection.Strategy.FromFile
             import model.phy.SpinCollection.Strategy.FromSpinList
             import model.phy.SpinCollection.Iterator.ClusterIterator
-            import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
-
+            import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering1
 
           %% Set Condition
             Condition=LabCondition.getCondition;
@@ -86,7 +85,8 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
            clu_para.cutoff=para.CutOff;
            clu_para.max_order=para.MaxOrder;
            % the cce strategy can be change
-           cce=CCE_Clustering(spin_collection, clu_para);
+%            cce=CCE_Clustering(spin_collection, clu_para);
+           cce=CCE_Clustering1(spin_collection, clu_para);
            cluster_collection=ClusterIterator(spin_collection,cce);
            obj.keyVariables('cluster_collection')=cluster_collection;
 
@@ -106,8 +106,8 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
            obj.keyVariables('coherence_matrix')=total_coherence.coherence_matrix;
            obj.keyVariables('cluster_coherence_tilde_matrix')=total_coherence.cluster_coherence_tilde_matrix;
            obj.keyVariables('coherence')=total_coherence.coherence;
-%             obj.render=dynamics.render;
-%             obj.result=obj.render.get_result();
+%            obj.render=dynamics.render;
+%            obj.result=obj.render.get_result();
         end
 %         function cluster=getCluster(obj,index)
 %            import model.phy.SpinCollection.SpinCollection

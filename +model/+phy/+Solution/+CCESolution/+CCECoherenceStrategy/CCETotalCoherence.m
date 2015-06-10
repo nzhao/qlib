@@ -32,7 +32,7 @@ classdef CCETotalCoherence < handle
                 cluster=model.phy.SpinCollection.SpinCollection();
                 cluster.spin_source=model.phy.SpinCollection.Strategy.FromSpinList([central_espin, bath_cluster]);
                 cluster.generate();
-                clu_cell{1,iter.currentIndex}=cluster;
+                clu_cell{1,n}=cluster;
 %                 iter.moveForward();
             end
             obj.cluster_cell=clu_cell;
