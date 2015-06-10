@@ -62,7 +62,7 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
             import model.phy.SpinCollection.Strategy.FromFile
             import model.phy.SpinCollection.Strategy.FromSpinList
             import model.phy.SpinCollection.Iterator.ClusterIterator
-            import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering1
+            import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
 
           %% Set Condition
             Condition=LabCondition.getCondition;
@@ -84,12 +84,15 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
            
            clu_para.cutoff=para.CutOff;
            clu_para.max_order=para.MaxOrder;
+           disp('clustering begins...')
+           tic
            % the cce strategy can be change
-%            cce=CCE_Clustering(spin_collection, clu_para);
-           cce=CCE_Clustering1(spin_collection, clu_para);
+           cce=CCE_Clustering(spin_collection, clu_para);
+
            cluster_collection=ClusterIterator(spin_collection,cce);
            obj.keyVariables('cluster_collection')=cluster_collection;
-
+           toc
+           
            center_spin_name=para.SetCentralSpin.name;
            para_central_spin=para.SetCentralSpin; 
            center_spin=eval(strcat(center_spin_name,'(','para_central_spin',')'));
