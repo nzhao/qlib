@@ -14,68 +14,70 @@ classdef CCE_Clustering < model.phy.SpinCollection.Iterator.ClusterIteratorGen.A
             disp('cluster_matrix_gen: building the clusters...');
             nspin=obj.spin_collection.getLength();
             maxorder=obj.parameters.max_order;
+            disp(['The number of ' num2str(1) '-spin clusters is: ' num2str(nspin) '.']); 
             
-            cluster_list=eye(nspin);
+            cluster_list_current=speye(nspin);
+            
+            cluster_list_cell=cell(maxorder,1);
+            cluster_list_cell{1,1}=cluster_list_current;
+            
+            nclu=cell(maxorder,2);
+            nclu{1,1}=['CCE-' num2str(1)];
+            nclu{1,2}=nspin;
+            
             for n=1:(maxorder-1)
                 fprintf('generating clusters of order n=%d ...\n', n+1);
-                neighbor_matrix=logical(cluster_list*obj.connection_matrix); neighbor_matrix(logical(cluster_list))=0;
-                new_cluster_list_size=nnz(neighbor_matrix)+nnz(sum(neighbor_matrix,2)==0);
-                new_cluster_list=zeros(new_cluster_list_size,nspin);%,new_cluster_list_size*(n+1)
+
+                neighbor_matrix=logical(cluster_list_current*obj.connection_matrix); neighbor_matrix(logical(cluster_list_current))=0;
+                n_new_clusters=nnz(neighbor_matrix);
+                nnz_new_cluster=n_new_clusters*(n+1);
+                
+                row_index=1;
+                row=ones(nnz_new_cluster,1);
+                col=ones(nnz_new_cluster,1);
+                val=zeros(nnz_new_cluster,1);
                 pos=1;
-                for k=1:size(cluster_list,1)
+                for k=1:size(cluster_list_current,1)                    
                     spins_to_add=find(neighbor_matrix(k,:));
                     if isempty(spins_to_add)
-                        new_cluster_list(pos,:)=cluster_list(k,:);
-                        pos=pos+1;
-                    else
-                        for m=spins_to_add
-                            new_cluster_list(pos,:)=cluster_list(k,:);
-                            new_cluster_list(pos,m)=1;
-                            pos=pos+1;
-                        end
-                    end
-                end
 
-                   cluster_list=unique([cluster_list;new_cluster_list],'rows');
+                    else
+                        for m=spins_to_add                           
+                            row(pos:pos+n,1)=row_index*ones(n+1,1);                            
+                            col_to_add=[find(cluster_list_current(k,:)),m]';
+                            if length(col_to_add)~=(n+1)
+                               error('the number of spins of the last order cluster is wrong'); 
+                            end
+                            col(pos:pos+n,1)=col_to_add;
+                            val(pos:pos+n,1)=ones(n+1,1);
+                            row_index=row_index+1;
+                            pos=pos+n+1;
+                        end
+                    end                   
+                end
+                cluster_list_current=unique(sparse(row,col,val,n_new_clusters,nspin),'rows');
+                ncluster=size(cluster_list_current,1);
+                nclu{n+1,1}=['CCE-' num2str(n+1)];
+                nclu{n+1,2}=ncluster;
+                disp(['The number of ' num2str(n+1) '-spin clusters is: ' num2str(ncluster) '.']); 
+
+                cluster_list_cell{n+1,1}=cluster_list_current;
             end
-            obj.cluster_matrix=cluster_list;
-            disp('cluster matrix generated');
-            [nc, ~]=size(obj.cluster_matrix);
             
-            obj.sort_cluster();
+            obj.cluster_info.cluster_number_list=nclu;
+            cluster_matrix=cell2mat(cluster_list_cell);
+            obj.cluster_matrix=cluster_matrix;
+            disp('cluster matrix generated');
+            
+            [nc, ~]=size(obj.cluster_matrix);
+            obj.cluster_info.cluster_number=nc;
             idx_list=cell(nc, 1);
             for k=1:nc
                 idx_list{k}=find(obj.cluster_matrix(k,:));
             end
             obj.cluster_info.subcluster_list=obj.generate_subclusters();
+            
         end
-        %% sort clusters        
-        function sort_cluster(obj)
-            cluster_list=obj.cluster_matrix;
-            [nrow,ncol]=size(cluster_list);
-            nz_list=zeros(nrow,1);%none zero list of state list
-            for n=1:nrow
-                nz_list(n,1)=nnz(cluster_list(n,:));
-            end
-
-            A=[cluster_list,nz_list];
-            cols=fliplr(1:(ncol+1));
-            A=sortrows(A,cols);
-            cluster_list=A(:,1:ncol);
-            obj.cluster_matrix=sparse(logical(cluster_list));
-            obj.cluster_info.cluster_number=nrow;
-
-            max_order=obj.parameters.max_order;
-            nclu=cell(max_order,2);
-            for n=1:max_order
-            ncluster=length(find(nz_list==n));
-            nclu{n,1}=['CCE-' num2str(n)];
-            nclu{n,2}=ncluster;
-            disp(['The number of ' num2str(n) '-spin clusters is: ' num2str(ncluster) '.']);               
-            end
-            obj.cluster_info.cluster_number_list=nclu; 
-        end
-        
          %%  Building the cluster-cluster cross-membership matrix and generate sub clusters
         function subcluster_list=generate_subclusters(obj)   
                 disp('building subclusters list...');

@@ -64,7 +64,6 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
             import model.phy.SpinCollection.Iterator.ClusterIterator
             import model.phy.SpinCollection.Iterator.ClusterIteratorGen.CCE_Clustering
 
-
           %% Set Condition
             Condition=LabCondition.getCondition;
             Condition.setValue('magnetic_field', para.MagneticField);
@@ -85,23 +84,33 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
            
            clu_para.cutoff=para.CutOff;
            clu_para.max_order=para.MaxOrder;
+           disp('clustering begins...')
+           tic
            % the cce strategy can be change
            cce=CCE_Clustering(spin_collection, clu_para);
+
            cluster_collection=ClusterIterator(spin_collection,cce);
            obj.keyVariables('cluster_collection')=cluster_collection;
-
+           toc
+           
            center_spin_name=para.SetCentralSpin.name;
            para_central_spin=para.SetCentralSpin; 
            center_spin=eval(strcat(center_spin_name,'(','para_central_spin',')'));
            obj.keyVariables('center_spin')=center_spin;
-           strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.ECCEClusterCoherence();
-           total_coherence=model.phy.Solution.CCESolution.CCECoherenceStrategy.CCETotalCoherence(cluster_collection,center_spin,strategy);
-           total_coherence.calculate_total_coherence(para);
+           
+           center_spin_states=para.SetCentralSpin.CentralSpinStates;
+           timelist=para.TimeList;
+           npulse=para.NPulse;
+           is_secular=para.IsSecularApproximation;
+           
+           strategy_name='ECCEClusterCoherence';        
+           total_coherence=model.phy.Solution.CCESolution.CCECoherenceStrategy.CCETotalCoherence(cluster_collection,center_spin,strategy_name);           
+           total_coherence.calculate_total_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
            obj.keyVariables('coherence_matrix')=total_coherence.coherence_matrix;
            obj.keyVariables('cluster_coherence_tilde_matrix')=total_coherence.cluster_coherence_tilde_matrix;
            obj.keyVariables('coherence')=total_coherence.coherence;
-%             obj.render=dynamics.render;
-%             obj.result=obj.render.get_result();
+%            obj.render=dynamics.render;
+%            obj.result=obj.render.get_result();
         end
 %         function cluster=getCluster(obj,index)
 %            import model.phy.SpinCollection.SpinCollection

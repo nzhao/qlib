@@ -37,7 +37,7 @@ classdef NV < model.phy.PhysicalObject.PhysicalObject
             obj.magnetic_field=condition.getValue('magnetic_field');
             
             obj.nspin=model.phy.PhysicalObject.Spin(isotope, coordinate);
-            coord_espin=coordinate ;%+ orientation*DIAMOND_LATTICE_CONST/4
+            coord_espin=coordinate + orientation*DIAMOND_LATTICE_CONST/4;%
             para.ZFS=2*pi*2.87e9;
             para.principle_axis=orientation;
             obj.espin=model.phy.PhysicalObject.Spin('NVespin',coord_espin);
