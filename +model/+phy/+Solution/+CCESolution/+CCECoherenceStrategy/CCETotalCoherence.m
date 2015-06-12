@@ -57,33 +57,39 @@ classdef CCETotalCoherence < handle
            CoherenceMatrix=zeros(ncluster,ntime);
            clu_cell=obj.cluster_cell;
            strategy_name=obj.cluster_coherence_strategy;
+           strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.(strategy_name);
            disp('calculate the cluster-coherence matrix ...');
            tic
-           for n=1:ncluster              
+           parfor n=1:ncluster              
               cluster=clu_cell{n};
-              strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.(strategy_name);
               strategy.generate(cluster);
               CoherenceMatrix(n,:)=strategy.calculate_cluster_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
-            end
-            obj.coherence_matrix=CoherenceMatrix;
+           end
+            delete(gcp('nocreate'));
             toc
             disp('calculation of the cluster-coherence matrix finished.');
 
-            obj.CoherenceTilde(CoherenceMatrix);            
+            obj.CoherenceTilde(CoherenceMatrix);
+            obj.coherence.timelist=timelist;
+            if ncluster<20000
+                obj.coherence_matrix=CoherenceMatrix;
+            else
+                clear CoherenceMatrix;
+            end
         end
         function CoherenceTilde(obj,cohmat)
             subcluster_list=obj.cluster_iter.cluster_info.subcluster_list;
             cluster_number_list=[obj.cluster_iter.cluster_info.cluster_number_list{:,2}];
             
-            nclusters=length(subcluster_list);
+            ncluster=length(subcluster_list);
             ntime=length(cohmat(1,:));
-            coh_tilde_mat=zeros(nclusters,ntime);
+            coh_tilde_mat=zeros(ncluster,ntime);
             coh_total=ones(1,ntime);
             coh=struct();
             
             cceorder=1;
             endpoints=cumsum(cluster_number_list);
-            for m=1:nclusters
+            for m=1:ncluster
                 subcluster=subcluster_list{m};
                 nsubcluster=length(subcluster);
                 coh_tilde=cohmat(m,:);
@@ -105,8 +111,11 @@ classdef CCETotalCoherence < handle
                 end
             end
             coh.('coherence')= coh_total; 
-            
-            obj.cluster_coherence_tilde_matrix=coh_tilde_mat;
+           if ncluster<20000          
+               obj.cluster_coherence_tilde_matrix=coh_tilde_mat;
+           else
+               clear coh_tilde_mat;
+           end
             obj.coherence=coh;
         end
 

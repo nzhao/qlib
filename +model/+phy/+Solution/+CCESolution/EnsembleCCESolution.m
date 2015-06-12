@@ -38,6 +38,7 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
             obj.parameters.MagneticField=p.get_parameter('Condition', 'MagneticField');
             obj.parameters.IsSecularApproximation=p.get_parameter('Interaction', 'IsSecular');
  
+            obj.parameters.CCEStrategy=p.get_parameter('Dynamics','CCEStrategy');
             NTime=p.get_parameter('Dynamics', 'NTime');
             TMax=p.get_parameter('Dynamics', 'TMax');
             dt=TMax/(NTime-1);
@@ -103,11 +104,15 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
            npulse=para.NPulse;
            is_secular=para.IsSecularApproximation;
            
-           strategy_name='ECCEClusterCoherence';        
+           strategy_name=para.CCEStrategy;        
            total_coherence=model.phy.Solution.CCESolution.CCECoherenceStrategy.CCETotalCoherence(cluster_collection,center_spin,strategy_name);           
            total_coherence.calculate_total_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
-           obj.keyVariables('coherence_matrix')=total_coherence.coherence_matrix;
-           obj.keyVariables('cluster_coherence_tilde_matrix')=total_coherence.cluster_coherence_tilde_matrix;
+           
+           ncluster=cluster_collection.cluster_info.cluster_number;
+           if ncluster<20000;
+               obj.keyVariables('coherence_matrix')=total_coherence.coherence_matrix;
+               obj.keyVariables('cluster_coherence_tilde_matrix')=total_coherence.cluster_coherence_tilde_matrix;
+           end
            obj.keyVariables('coherence')=total_coherence.coherence;
 %            obj.render=dynamics.render;
 %            obj.result=obj.render.get_result();
