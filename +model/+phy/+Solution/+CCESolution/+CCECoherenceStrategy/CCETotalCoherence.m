@@ -3,6 +3,7 @@ classdef CCETotalCoherence < handle
     
     properties
         cluster_iter
+        cluster_number
         cluster_coherence_strategy
         center_spin
         cluster_cell
@@ -21,19 +22,25 @@ classdef CCETotalCoherence < handle
         
         function generate_cluster_cell(obj)
             iter=obj.cluster_iter;
+            ncluster=iter.cluster_info.cluster_number;
+            obj.cluster_number=ncluster;
             iter.setCursor(1);
             ncluster=length(iter.index_list);
             clu_cell=cell(1,ncluster);
-%             while ~iter.isLast() 
+
             for n=1:ncluster
-%                 bath_cluster=iter.currentItem();
-                bath_cluster=iter.getItem(n);
-                central_espin={obj.center_spin.espin};
-                cluster=model.phy.SpinCollection.SpinCollection();
-                cluster.spin_source=model.phy.SpinCollection.Strategy.FromSpinList([central_espin, bath_cluster]);
-                cluster.generate();
-                clu_cell{1,n}=cluster;
-%                 iter.moveForward();
+
+               bath_cluster=iter.getItem(n);
+               central_espin={obj.center_spin.espin};
+               cluster=model.phy.SpinCollection.SpinCollection();
+               cluster.spin_source=model.phy.SpinCollection.Strategy.FromSpinList([central_espin, bath_cluster]);
+               cluster.generate();
+                
+               strategy_name=obj.cluster_coherence_strategy;
+               cluster_strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.(strategy_name);
+               cluster_strategy.generate(cluster);
+               clu_cell{1,n}=cluster_strategy;
+
             end
             obj.cluster_cell=clu_cell;
         end
@@ -44,30 +51,32 @@ classdef CCETotalCoherence < handle
            addRequired(p,'timelist');
            addOptional(p,'npulse',0,@isnumeric);
            addOptional(p,'is_secular',0,@isnumeric); 
-            
+           addOptional(p,'magnetic_field',[0,0,0]);
            parse(p,center_spin_states,timelist,varargin{:});
             
            center_spin_states=p.Results.center_spin_states;
            is_secular=p.Results.is_secular;
            timelist=p.Results.timelist;
            npulse=p.Results.npulse;
+           MagneticField=p.Results.magnetic_field;
             
            ncluster=obj.cluster_iter.getLength;
            ntime=length(timelist);
            CoherenceMatrix=zeros(ncluster,ntime);
            clu_cell=obj.cluster_cell;
-           strategy_name=obj.cluster_coherence_strategy;
-           strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.(strategy_name);
+
            disp('calculate the cluster-coherence matrix ...');
            tic
-           parfor n=1:ncluster              
-              cluster=clu_cell{n};
-              strategy.generate(cluster);
-              CoherenceMatrix(n,:)=strategy.calculate_cluster_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
+           parfor n=1:ncluster 
+              Condition=model.phy.LabCondition.getCondition;
+              Condition.setValue('magnetic_field',MagneticField);
+              cluster=clu_cell{1,n};
+              CoherenceMatrix(n,:)=cluster.calculate_cluster_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
+              clu_cell{1,n}=0;
            end
-            delete(gcp('nocreate'));
-            toc
-            disp('calculation of the cluster-coherence matrix finished.');
+           delete(gcp('nocreate'));
+           toc
+           disp('calculation of the cluster-coherence matrix finished.');
 
             obj.CoherenceTilde(CoherenceMatrix);
             obj.coherence.timelist=timelist;

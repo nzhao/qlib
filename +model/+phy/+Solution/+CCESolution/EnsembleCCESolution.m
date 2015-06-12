@@ -103,10 +103,11 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
            timelist=para.TimeList;
            npulse=para.NPulse;
            is_secular=para.IsSecularApproximation;
+           MagneticField=para.MagneticField;
            
            strategy_name=para.CCEStrategy;        
            total_coherence=model.phy.Solution.CCESolution.CCECoherenceStrategy.CCETotalCoherence(cluster_collection,center_spin,strategy_name);           
-           total_coherence.calculate_total_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
+           total_coherence.calculate_total_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular,'magnetic_field',MagneticField);
            
            ncluster=cluster_collection.cluster_info.cluster_number;
            if ncluster<20000;

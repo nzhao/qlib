@@ -6,3 +6,10 @@
 +controller/+output/ButaneDynamics20150608_122702.mat
 
 +controller/+ouput/**
+
+*.mat
+
++controller/+input/*.xml
+
++controller/+input/*.xyz
+
