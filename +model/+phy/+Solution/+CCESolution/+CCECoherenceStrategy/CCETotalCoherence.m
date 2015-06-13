@@ -3,6 +3,7 @@ classdef CCETotalCoherence < handle
     
     properties
         cluster_iter
+        cluster_number
         cluster_coherence_strategy
         center_spin
         cluster_cell
@@ -21,19 +22,25 @@ classdef CCETotalCoherence < handle
         
         function generate_cluster_cell(obj)
             iter=obj.cluster_iter;
+            ncluster=iter.cluster_info.cluster_number;
+            obj.cluster_number=ncluster;
             iter.setCursor(1);
             ncluster=length(iter.index_list);
             clu_cell=cell(1,ncluster);
-%             while ~iter.isLast() 
+
             for n=1:ncluster
-%                 bath_cluster=iter.currentItem();
-                bath_cluster=iter.getItem(n);
-                central_espin={obj.center_spin.espin};
-                cluster=model.phy.SpinCollection.SpinCollection();
-                cluster.spin_source=model.phy.SpinCollection.Strategy.FromSpinList([central_espin, bath_cluster]);
-                cluster.generate();
-                clu_cell{1,n}=cluster;
-%                 iter.moveForward();
+
+               bath_cluster=iter.getItem(n);
+               central_espin={obj.center_spin.espin};
+               cluster=model.phy.SpinCollection.SpinCollection();
+               cluster.spin_source=model.phy.SpinCollection.Strategy.FromSpinList([central_espin, bath_cluster]);
+               cluster.generate();
+                
+               strategy_name=obj.cluster_coherence_strategy;
+               cluster_strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.(strategy_name);
+               cluster_strategy.generate(cluster);
+               clu_cell{1,n}=cluster_strategy;
+
             end
             obj.cluster_cell=clu_cell;
         end
@@ -44,46 +51,54 @@ classdef CCETotalCoherence < handle
            addRequired(p,'timelist');
            addOptional(p,'npulse',0,@isnumeric);
            addOptional(p,'is_secular',0,@isnumeric); 
-            
+           addOptional(p,'magnetic_field',[0,0,0]);
            parse(p,center_spin_states,timelist,varargin{:});
             
            center_spin_states=p.Results.center_spin_states;
            is_secular=p.Results.is_secular;
            timelist=p.Results.timelist;
            npulse=p.Results.npulse;
+           MagneticField=p.Results.magnetic_field;
             
            ncluster=obj.cluster_iter.getLength;
            ntime=length(timelist);
            CoherenceMatrix=zeros(ncluster,ntime);
            clu_cell=obj.cluster_cell;
-           strategy_name=obj.cluster_coherence_strategy;
+
            disp('calculate the cluster-coherence matrix ...');
            tic
-           for n=1:ncluster              
-              cluster=clu_cell{n};
-              strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.(strategy_name);
-              strategy.generate(cluster);
-              CoherenceMatrix(n,:)=strategy.calculate_cluster_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
-            end
-            obj.coherence_matrix=CoherenceMatrix;
-            toc
-            disp('calculation of the cluster-coherence matrix finished.');
+           parfor n=1:ncluster 
+              Condition=model.phy.LabCondition.getCondition;
+              Condition.setValue('magnetic_field',MagneticField);
+              cluster=clu_cell{1,n};
+              CoherenceMatrix(n,:)=cluster.calculate_cluster_coherence(center_spin_states,timelist,'npulse',npulse,'is_secular',is_secular);
+              clu_cell{1,n}=0;
+           end
+           delete(gcp('nocreate'));
+           toc
+           disp('calculation of the cluster-coherence matrix finished.');
 
-            obj.CoherenceTilde(CoherenceMatrix);            
+            obj.CoherenceTilde(CoherenceMatrix);
+            obj.coherence.timelist=timelist;
+            if ncluster<20000
+                obj.coherence_matrix=CoherenceMatrix;
+            else
+                clear CoherenceMatrix;
+            end
         end
         function CoherenceTilde(obj,cohmat)
             subcluster_list=obj.cluster_iter.cluster_info.subcluster_list;
             cluster_number_list=[obj.cluster_iter.cluster_info.cluster_number_list{:,2}];
             
-            nclusters=length(subcluster_list);
+            ncluster=length(subcluster_list);
             ntime=length(cohmat(1,:));
-            coh_tilde_mat=zeros(nclusters,ntime);
+            coh_tilde_mat=zeros(ncluster,ntime);
             coh_total=ones(1,ntime);
             coh=struct();
             
             cceorder=1;
             endpoints=cumsum(cluster_number_list);
-            for m=1:nclusters
+            for m=1:ncluster
                 subcluster=subcluster_list{m};
                 nsubcluster=length(subcluster);
                 coh_tilde=cohmat(m,:);
@@ -105,8 +120,11 @@ classdef CCETotalCoherence < handle
                 end
             end
             coh.('coherence')= coh_total; 
-            
-            obj.cluster_coherence_tilde_matrix=coh_tilde_mat;
+           if ncluster<20000          
+               obj.cluster_coherence_tilde_matrix=coh_tilde_mat;
+           else
+               clear coh_tilde_mat;
+           end
             obj.coherence=coh;
         end
 
