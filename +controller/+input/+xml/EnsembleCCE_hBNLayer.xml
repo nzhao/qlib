@@ -36,6 +36,8 @@
        <Coordinate type="eval">[0,0,25]</Coordinate>
    </SetCentralSpin>
    <Clustering>
+        <LoadCluterIterator type="double">0</LoadCluterIterator>
+        <CluterIteratorName type="char">0</CluterIteratorName>
 		<CutOff type="double">3</CutOff>
 		<MaxOrder type="double">4</MaxOrder>
    </Clustering>
