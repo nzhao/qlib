@@ -1,7 +1,7 @@
 function path = OUTPUT_FILE_PATH(  )
 %INPUT_FILE_PATH Summary of this function goes here
 %   Detailed explanation goes here
-if ismac
+if ismac || isunix
     path=[QLIB_PATH, '+controller/+output/'];
 else
     path=[QLIB_PATH, '+controller\+output\'];
