@@ -77,6 +77,7 @@ classdef CCETotalCoherence < handle
            delete(gcp('nocreate'));
            toc
            disp('calculation of the cluster-coherence matrix finished.');
+           save([OUTPUT_FILE_PATH, 'coherence_matrix', obj.timeTag, '.mat'],'CoherenceMatrix');
 
             obj.CoherenceTilde(CoherenceMatrix);
             obj.coherence.timelist=timelist;
@@ -120,6 +121,7 @@ classdef CCETotalCoherence < handle
                 end
             end
             coh.('coherence')= coh_total; 
+            save([OUTPUT_FILE_PATH, 'coherence_tilde_matrix', obj.timeTag, '.mat'],'coh_tilde_mat');
            if ncluster<20000          
                obj.cluster_coherence_tilde_matrix=coh_tilde_mat;
            else
