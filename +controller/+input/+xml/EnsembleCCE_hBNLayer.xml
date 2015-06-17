@@ -4,11 +4,11 @@
        <SolutionName type="char">hBNLayer</SolutionName>
    </Name>
    <Condition>
-      <MagneticField type="eval">806*1e-4*[0 0 1]</MagneticField>
+      <MagneticField type="eval">801*1e-4*[0 0 1]</MagneticField>
    </Condition>
    <Dynamics>
-      <NTime type="double">11</NTime>
-      <TMax type="eval">2e-4</TMax>
+      <NTime type="double">21</NTime>
+      <TMax type="eval">6e-4</TMax>
       <NPulse type="double">1</NPulse>
       <CCEStrategy type='char'>ECCEClusterCoherence</CCEStrategy>
    </Dynamics>
@@ -22,9 +22,9 @@
    </SpinCollection>
    <Clustering>
        <LoadCluterIterator type="double">1</LoadCluterIterator>
-       <CluterIteratorName type="char">cluster_iterator20150616_084615.mat</CluterIteratorName>
+       <CluterIteratorName type="char">cluster_iterator500.mat</CluterIteratorName>
        <CutOff type="double">3</CutOff>
-       <MaxOrder type="double">5</MaxOrder>
+       <MaxOrder type="double">1</MaxOrder>
    </Clustering>
    <SetBathSpins>
        <SetSpin type="double">1</SetSpin>
