@@ -56,7 +56,6 @@ classdef CCETotalCoherence < handle
            timelist=p.Results.timelist;
            npulse=p.Results.npulse;
            MagneticField=p.Results.magnetic_field;
-           timeTag=datestr(clock,'yyyymmdd_HHMMSS');
             
            ncluster=obj.cluster_iter.getLength;
            ntime=length(timelist);
@@ -74,14 +73,16 @@ classdef CCETotalCoherence < handle
            end
            delete(gcp('nocreate'));
            toc
-           disp('calculation of the cluster-coherence matrix finished.');
-           save([OUTPUT_FILE_PATH, 'coherence_matrix', timeTag, '.mat'],'CoherenceMatrix');
+           disp('calculation of the cluster-coherence matrix finished.');          
 
             obj.CoherenceTilde(CoherenceMatrix);
             obj.coherence.timelist=timelist;
+            
             if ncluster<20000
                 obj.coherence_matrix=CoherenceMatrix;
             else
+                timeTag=datestr(clock,'yyyymmdd_HHMMSS');
+                save([OUTPUT_FILE_PATH, 'coherence_matrix', timeTag, '.mat'],'CoherenceMatrix');
                 clear CoherenceMatrix;
             end
         end
@@ -118,12 +119,12 @@ classdef CCETotalCoherence < handle
                     cceorder=cceorder+1;
                 end
             end
-            coh.('coherence')= coh_total;
-            timeTag=datestr(clock,'yyyymmdd_HHMMSS');
-            save([OUTPUT_FILE_PATH, 'coherence_tilde_matrix', timeTag, '.mat'],'coh_tilde_mat');
+            coh.('coherence')= coh_total;            
            if ncluster<20000          
                obj.cluster_coherence_tilde_matrix=coh_tilde_mat;
            else
+               timeTag=datestr(clock,'yyyymmdd_HHMMSS');
+               save([OUTPUT_FILE_PATH, 'coherence_tilde_matrix', timeTag, '.mat'],'coh_tilde_mat');
                clear coh_tilde_mat;
            end
             obj.coherence=coh;
