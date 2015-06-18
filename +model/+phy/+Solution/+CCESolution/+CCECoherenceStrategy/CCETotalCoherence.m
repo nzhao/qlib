@@ -5,8 +5,7 @@ classdef CCETotalCoherence < handle
         cluster_iter
         cluster_number
         cluster_coherence_strategy
-        center_spin
-        cluster_cell
+        center_spin        
         coherence_matrix
         cluster_coherence_tilde_matrix
         coherence
@@ -17,16 +16,15 @@ classdef CCETotalCoherence < handle
             obj.cluster_iter=cluster_iter;
             obj.center_spin=center_spin;
             obj.cluster_coherence_strategy=strategy;
-            obj.generate_cluster_cell();
         end
         
-        function generate_cluster_cell(obj)
+        function cluster_cell=generate_cluster_cell(obj)
             iter=obj.cluster_iter;
             ncluster=iter.cluster_info.cluster_number;
             obj.cluster_number=ncluster;
             iter.setCursor(1);
             ncluster=length(iter.index_list);
-            clu_cell=cell(1,ncluster);
+            cluster_cell=cell(1,ncluster);
 
             for n=1:ncluster
 
@@ -39,10 +37,9 @@ classdef CCETotalCoherence < handle
                strategy_name=obj.cluster_coherence_strategy;
                cluster_strategy=model.phy.Solution.CCESolution.CCECoherenceStrategy.(strategy_name);
                cluster_strategy.generate(cluster);
-               clu_cell{1,n}=cluster_strategy;
+               cluster_cell{1,n}=cluster_strategy;
 
             end
-            obj.cluster_cell=clu_cell;
         end
         
         function calculate_total_coherence(obj,center_spin_states,timelist,varargin)
@@ -63,7 +60,7 @@ classdef CCETotalCoherence < handle
            ncluster=obj.cluster_iter.getLength;
            ntime=length(timelist);
            CoherenceMatrix=zeros(ncluster,ntime);
-           clu_cell=obj.cluster_cell;
+           clu_cell=obj.generate_cluster_cell();
 
            disp('calculate the cluster-coherence matrix ...');
            tic
@@ -76,14 +73,16 @@ classdef CCETotalCoherence < handle
            end
            delete(gcp('nocreate'));
            toc
-           disp('calculation of the cluster-coherence matrix finished.');
-           save([OUTPUT_FILE_PATH, 'coherence_matrix', obj.timeTag, '.mat'],'CoherenceMatrix');
+           disp('calculation of the cluster-coherence matrix finished.');          
 
             obj.CoherenceTilde(CoherenceMatrix);
             obj.coherence.timelist=timelist;
+            
             if ncluster<20000
                 obj.coherence_matrix=CoherenceMatrix;
             else
+                timeTag=datestr(clock,'yyyymmdd_HHMMSS');
+                save([OUTPUT_FILE_PATH, 'coherence_matrix', timeTag, '.mat'],'CoherenceMatrix');
                 clear CoherenceMatrix;
             end
         end
@@ -120,11 +119,12 @@ classdef CCETotalCoherence < handle
                     cceorder=cceorder+1;
                 end
             end
-            coh.('coherence')= coh_total; 
-            save([OUTPUT_FILE_PATH, 'coherence_tilde_matrix', obj.timeTag, '.mat'],'coh_tilde_mat');
+            coh.('coherence')= coh_total;            
            if ncluster<20000          
                obj.cluster_coherence_tilde_matrix=coh_tilde_mat;
            else
+               timeTag=datestr(clock,'yyyymmdd_HHMMSS');
+               save([OUTPUT_FILE_PATH, 'coherence_tilde_matrix', timeTag, '.mat'],'coh_tilde_mat');
                clear coh_tilde_mat;
            end
             obj.coherence=coh;
