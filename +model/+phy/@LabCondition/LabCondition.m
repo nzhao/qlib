@@ -1,6 +1,12 @@
 classdef LabCondition < handle
-    %ABSTRACTCONDITION Summary of this class goes here
-    %   Detailed explanation goes here
+    %LabCondition is a singleton pattern organizing conditions.
+    %   The content is stored in a containters.Map variable. Use the
+    %   following methods to access the content.
+    %
+    %   val = LabCondition.getValue(key)
+    %   LabCondition.setValue(key, val) 
+    %   LabCondition.list()
+    
     properties (Access = private)
         value
     end
@@ -24,10 +30,25 @@ classdef LabCondition < handle
     
     methods
         function setValue(obj, key, val)
+            % ********** set the value a given key.
             obj.value(key)=val;
         end
         function val=getValue(obj, key)
+            % ********** return the value a given key.
             val=obj.value(key);
+        end
+        
+        function list(obj)
+            % ********** list all the key-value pairs.
+            keys=obj.value.keys();
+            disp('==============');
+            for k=1:obj.value.length
+                key=keys{k};
+                fprintf('#%d:\t%s\n', k, key);
+                disp(obj.getValue(key));
+                disp('==============');
+            end
+            
         end
     end
     

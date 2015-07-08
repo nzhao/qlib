@@ -18,6 +18,8 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
     
     methods
         function obj=DipolarCoupledSpinEvolution(xml_file)
+            %Constructor needs xml file as an input. On constructing a DipolarCoupledSpinEvolution, the constructor calls the _get_parameters_ method to parse the xml file
+            
             obj@model.phy.Solution.AbstractSolution(xml_file);
         end
         function get_parameters(obj, p)
