@@ -44,7 +44,7 @@ classdef ECCEClusterCoherence < model.phy.Solution.CCESolution.CCECoherenceStrat
             obs.setMatrix(1);
 
             % Evolution
-            d_mat_evolution=model.phy.Dynamics.EvolutionKernel.DensityMatrixEvolution(hami_list,hami_prefactor);
+            d_mat_evolution=model.phy.Dynamics.EvolutionKernel.ObservableMatrixEvolution(hami_list,hami_prefactor);
             dynamics=model.phy.Dynamics.QuantumDynamics(d_mat_evolution);
             dynamics.set_initial_state(denseMat,'Hilbert');
 

@@ -30,6 +30,7 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
                 obj.parameters.SpinCollectionStrategy=p.get_parameter('SpinCollection', 'Source');
                 obj.parameters.InputFile=p.get_parameter('SpinCollection', 'FileName');
                 obj.BathSpinParameters(p);
+                disp('spin collection loaded.');
             end
                         
             obj.parameters.load_cluster_iter=p.get_parameter('Clustering','LoadCluterIterator');
@@ -37,6 +38,7 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
                 CluterIteratorName=p.get_parameter('Clustering','CluterIteratorName');
                 data=load([OUTPUT_FILE_PATH,CluterIteratorName]);
                 obj.keyVariables('cluster_iterator')=data.cluster_iterator;
+                disp('cluster_iterator loaded.');
             else
                 obj.parameters.CutOff=p.get_parameter('Clustering', 'CutOff');
                 obj.parameters.MaxOrder=p.get_parameter('Clustering', 'MaxOrder');
