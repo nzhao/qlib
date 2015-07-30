@@ -67,7 +67,7 @@ classdef SpinCollection < handle
 
                 mat1=1;
                 for q=1:length(ss)
-                    mat_q=eval(['ss{q}.',spin_mat_str{k}{q}]);
+                    mat_q=eval(['ss{q}.',spin_mat_str{k}{q}]);                    
                     mat1=kron(mat1, mat_q);
                 end
                 mat{k}={mat1};
@@ -82,6 +82,8 @@ classdef SpinCollection < handle
             strCell=cell(1, nspin);
             for k=1:nspin
                 strCell{k}=['1.0 * eigenValues()_', num2str(k)];
+                spin=obj.spin_list{k};
+                spin.selfHamiltonian();
             end            
             self_int=model.phy.SpinInteraction.InteractionString(obj, strCell);
             selfOP.addInteraction(self_int);

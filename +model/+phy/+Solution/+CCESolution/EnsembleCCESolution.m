@@ -90,6 +90,8 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
                        if para.SetBathSpins.SetSpin;
                            paraCell=para.SetBathSpins.BathSpinsSettingCell;
                            spin_collection.set_spin(paraCell);
+                       else
+                           spin_collection.set_spin();
                        end
                    case 'SpinList'
                        error('not surported so far.');

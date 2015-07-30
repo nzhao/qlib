@@ -28,7 +28,7 @@ spin_collection.spin_source = FromFile(...
     [INPUT_FILE_PATH, '+xyz/BenzeneProtonZPlane.xyz']...
      );
 spin_collection.generate();
-
+spin_collection.set_spin();
 %% SpinInteraction
 
 hami=Hamiltonian(spin_collection);
@@ -49,7 +49,7 @@ obs1=Observable(spin_collection, 'sz1', '1.0 * sz_1');
 %% Evolution
 
 dynamics=QuantumDynamics( MatrixVectorEvolution(liou) );
-dynamics.set_initial_state(denseMat);
+dynamics.set_initial_state(denseMat,'Liouville');
 dynamics.set_time_sequence(0:20e-6:100e-3);
 dynamics.addObervable([obs1]);
 dynamics.calculate_mean_values();
