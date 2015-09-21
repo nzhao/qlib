@@ -38,6 +38,23 @@ classdef ZeemanInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
                 mat=mat+mat2;
             end
         end
+        
+        function dataCell=data_cell(obj)
+            nTerms=obj.iter.getLength;
+            dataCell=cell(1, nTerms);
+            
+            obj.iter.setCursor(1);
+            for ii=1:nTerms
+                spin=obj.iter.currentItem{1};
+                spin_idx=obj.iter.currentIndex;
+
+                mat=obj.calculate_matrix();
+                
+                dataCell{ii}={1.0, obj.nbody, spin_idx, spin.dim, reshape(mat, [], 1)};
+                obj.iter.nextItem;
+            end
+        end
+        
     end
     
 end

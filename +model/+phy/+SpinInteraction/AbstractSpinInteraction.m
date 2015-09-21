@@ -23,6 +23,7 @@ classdef AbstractSpinInteraction < handle
     methods (Abstract)
         calculate_coeff(obj, item);
         calculate_matrix(obj);
+        %data_cell(obj);
     end
     
 end
