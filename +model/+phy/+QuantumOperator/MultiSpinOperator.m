@@ -55,7 +55,7 @@
                 for kk=0:nbody-1
                     pos_k=data_i{3+kk*3}; fwrite(fileID, pos_k,'int');
                     dim_k=data_i{3+kk*3+1}; fwrite(fileID, dim_k,'int');
-                    mat_k=data_i{3+kk*3+2}; fwrite(fileID, mat_k,'double');
+                    mat_k=data_i{3+kk*3+2}; fwrite(fileID, real(mat_k),'double'); fwrite(fileID, imag(mat_k),'double');
                 end
             end
             

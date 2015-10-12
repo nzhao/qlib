@@ -7,13 +7,13 @@
         <MagneticField type="eval">1e-4*[0 0 100]</MagneticField>
     </Condition>
     <Dynamics>
-        <TimeList type="eval">0:20e-6:5e-3</TimeList>
+        <TimeList type="eval">0:20e-6:1e-3</TimeList>
     </Dynamics>
     <InitialState>
         <DensityMatrix type="char">1.0 * p(2)_1 * p(1)_2 * p(1)_3 * p(1)_4 * p(1)_5 * p(1)_6</DensityMatrix>
     </InitialState>
     <Interaction>
-        <IsSecular type="double">1</IsSecular>
+        <IsSecular type="double">0</IsSecular>
     </Interaction>
     <Observable>
         <ObservableNumber type="double">6</ObservableNumber>
