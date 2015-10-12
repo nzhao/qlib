@@ -12,11 +12,11 @@ function uHe = esHamiltonian( obj, J, magB )
     if J==1.5
 %        Ae=hP*84.852e6;%P3/2 dipole coefficient in erg
 %        Be=hP*12.611e6;%P3/2 quadrupole coupling coefficient in erg
-        Ae=obj.parameters.hf_es2A;
-        Be=obj.parameters.hf_es2B;
+        Ae=obj.parameters.hf_es2A*e6;
+        Be=obj.parameters.hf_es2B*e6;
     elseif J==0.5
 %        Ae=hP*409e6;%P1/2 dipole coupling coefficient in erg
-        Ae=obj.parameters.hf_es1;
+        Ae=obj.parameters.hf_es1*e6;
     else
         disp('Error J');
     end

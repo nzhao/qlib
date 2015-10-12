@@ -28,7 +28,7 @@ classdef AtomicStructure
                     parameters.abundance=0.2783;    %natural abundance
                     parameters.spin_I=3./2.;        %nuclear spin number
                     parameters.mu_I=2.75182;        %nuclear magnetic moment in [mu_N]
-                    parameters.hf_gs=6834.682610;   % hf coeff of ground state S_1/2 in MHz
+                    parameters.hf_gs=3417.35;   % hf coeff of ground state S_1/2 in MHz
                     parameters.hf_es1=406.12;       %hf coeff of excited state P_1/2 in MHz
                     parameters.hf_es2A=84.72;       %hf coeff_A of excited state P_3/2 state in MHz
                     parameters.hf_es2B=12.50;       %hf coeff_B of excited state P_3/2 state in MHz

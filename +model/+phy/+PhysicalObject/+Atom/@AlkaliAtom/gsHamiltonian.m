@@ -9,7 +9,7 @@ function uHg = gsHamiltonian( obj, magB )
     gI=2*I+1; gS=2*S+1; 
     LgS=obj.parameters.LgS;% Lande g-value of S1/2 state
     muI=obj.parameters.mu_I*muN;%nuclear moment in erg/G
-    Ag=obj.parameters.hf_gs;
+    Ag=obj.parameters.hf_gs*e6;
 
     sIp=diag(sqrt((1:2*I).*(2*I:-1:1)),1);
     sIj(:,:,1)=(sIp+sIp')/2;
