@@ -1,6 +1,6 @@
 function z = zeroFieldDipElement( obj, L1,L,J1,J,F1,F,MF1,MF,q )
 %zeroFieldDipElement Summary of this function goes here
-%   Detailed explanation goes here
+
     S=obj.parameters.spin_S;
     I=obj.parameters.spin_I;
     
