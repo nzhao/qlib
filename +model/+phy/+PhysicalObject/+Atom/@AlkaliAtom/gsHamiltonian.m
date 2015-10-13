@@ -9,7 +9,7 @@ function uHg = gsHamiltonian( obj, magB )
     gI=2*I+1; gS=2*S+1; 
     LgS=obj.parameters.LgS;% Lande g-value of S1/2 state
     muI=obj.parameters.mu_I*muN;%nuclear moment in erg/G
-    Ag=obj.parameters.hf_gs*e6;
+    Ag=obj.parameters.hf_gs*2.0*pi;
 
     sIp=diag(sqrt((1:2*I).*(2*I:-1:1)),1);
     sIj(:,:,1)=(sIp+sIp')/2;
@@ -29,6 +29,6 @@ function uHg = gsHamiltonian( obj, magB )
         umug(:,:,k)=-LgS*muB*gSj(:,:,k)+(muI/(I+eps))*aIjg(:,:,k);
     end
     uIS=matdot(aIjg,gSj);%uncoupled I.S
-    uHg=Ag*uIS-umug(:,:,3)*magB;%uncoupled Hamiltonian
+    uHg=Ag*uIS-umug(:,:,3)*magB*1e-6/hbar;%uncoupled Hamiltonian, in [2pi*MHz]
 end
 

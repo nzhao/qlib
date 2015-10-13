@@ -12,11 +12,11 @@ function uHe = esHamiltonian( obj, J, magB )
     if J==1.5
 %        Ae=hP*84.852e6;%P3/2 dipole coefficient in erg
 %        Be=hP*12.611e6;%P3/2 quadrupole coupling coefficient in erg
-        Ae=obj.parameters.hf_es2A*e6;
-        Be=obj.parameters.hf_es2B*e6;
+        Ae=obj.parameters.hf_es2A*2.0*pi;
+        Be=obj.parameters.hf_es2B*2.0*pi;
     elseif J==0.5
 %        Ae=hP*409e6;%P1/2 dipole coupling coefficient in erg
-        Ae=obj.parameters.hf_es1*e6;
+        Ae=obj.parameters.hf_es1*2.0*pi;
     else
         disp('Error J');
     end
@@ -39,7 +39,7 @@ function uHe = esHamiltonian( obj, J, magB )
         umue(:,:,k)=-LgJ*muB*gJj(:,:,k)+(muI/(I+eps))*aIje(:,:,k);
     end
     uIJ=matdot(aIje,gJj);%uncoupled I.J
-    uHe=Ae*uIJ - umue(:,:,3)*magB;%Hamiltonian without quadrupole interaction
+    uHe=Ae*uIJ - umue(:,:,3)*magB*1e-6/hbar;%Hamiltonian without quadrupole interaction, in [2pi*MHz]
     if J>1/2 && I>1/2
         uHe = uHe+Be*(3*uIJ^2+1.5*uIJ-I*(I+1)*J*(J+1)*eye(ge))...
             /(2*I*(2*I-1)*J*(2*J-1));%add quadrupole interaction
