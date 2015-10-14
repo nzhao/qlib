@@ -32,6 +32,8 @@ classdef AtomicStructure
                     parameters.hf_es1=406.12;       %hf coeff of excited state P_1/2 in MHz
                     parameters.hf_es2A=84.72;       %hf coeff_A of excited state P_3/2 state in MHz
                     parameters.hf_es2B=12.50;       %hf coeff_B of excited state P_3/2 state in MHz
+                case '133Cs'
+                    %
                 otherwise
                         error('no atomic data.');
             end
