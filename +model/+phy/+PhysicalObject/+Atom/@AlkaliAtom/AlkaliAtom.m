@@ -1,8 +1,7 @@
 classdef AlkaliAtom < model.phy.PhysicalObject.Atom.AbstractAtom
     %ALKALIATOM Summary of this class goes here
     %   Detailed explanation goes here
-    %   test
-    
+        
     properties
     end
     
