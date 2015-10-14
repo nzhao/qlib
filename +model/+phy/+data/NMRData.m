@@ -10,8 +10,7 @@ classdef NMRData
     
     methods (Static)
         function [dim, gamma] = get_spin(name)
-%              ZFS=0;
-%              eta=0;
+
             switch char(name)
                 case 'NVespin'
                     dim=3;
