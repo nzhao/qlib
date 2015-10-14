@@ -28,12 +28,19 @@ spin_collection.spin_source = FromFile(...
     [INPUT_FILE_PATH, '+xyz/BenzeneProtonZPlane.xyz']...
      );
 spin_collection.generate();
+<<<<<<< Updated upstream
 spin_collection.set_spin();
+=======
+clu_para.cutoff=para.CutOff;
+clu_para.max_order=para.MaxOrder;
+
+>>>>>>> Stashed changes
 %% SpinInteraction
 
 hami=Hamiltonian(spin_collection);
 hami.addInteraction( ZeemanInteraction(spin_collection) );
 hami.addInteraction( DipolarInteraction(spin_collection) );
+<<<<<<< Updated upstream
 hami.apply_approximation( SpinSecularApproximation(spin_collection) );
 
 liou=hami.circleC();
@@ -63,3 +70,5 @@ dynamics.render.fft('sz1', @abs, para);
 figure();
 hold on;
 dynamics.render.plot('sz1', @abs);
+=======
+>>>>>>> Stashed changes
