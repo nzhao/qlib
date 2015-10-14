@@ -14,6 +14,9 @@ classdef AbstractSolution < handle
     
     methods
         function obj=AbstractSolution(config_file)
+            % On constructing a _AbstractSolution_, the constructor calls
+            % the get_parameters method to parse the xml file
+            
             obj.timeTag=datestr(clock,'yyyymmdd_HHMMSS');
             obj.keyVariables=containers.Map();
             p=obj.config_parser(config_file);

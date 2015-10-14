@@ -1,4 +1,6 @@
 function spin_collection=GetSpinList(obj)
+% create/return a spin list, according to the
+% parameters defined in the xml file.
     import model.phy.SpinCollection.SpinCollection
     import model.phy.SpinCollection.Strategy.FromFile
     para=obj.parameters;

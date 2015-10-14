@@ -28,6 +28,40 @@
                 error('inconsistency detected.')
             end
         end
+        
+        function data=interaction_data(obj)
+            nInt=length(obj.interaction_list);
+            data=[];
+            for ii=1:nInt
+                interaction=obj.interaction_list{ii};
+                data=[data, interaction.data_cell()];
+            end
+        end
+        
+        function export_interaction_data(obj, filename)
+            data=obj.interaction_data;
+            nSpin=length(obj.spin_collection.spin_list);
+            nInt=length(data);
+
+            fileID = fopen(filename,'w');
+            fwrite(fileID, nSpin,'int');
+            fwrite(fileID, nInt,'int');
+            
+            for ii=1:nInt
+                data_i=data{ii};
+                
+                coeff=data_i{1};  fwrite(fileID, coeff,'double');
+                nbody=data_i{2};  fwrite(fileID, nbody,'int');
+                for kk=0:nbody-1
+                    pos_k=data_i{3+kk*3}; fwrite(fileID, pos_k,'int');
+                    dim_k=data_i{3+kk*3+1}; fwrite(fileID, dim_k,'int');
+                    mat_k=data_i{3+kk*3+2}; fwrite(fileID, real(mat_k),'double'); fwrite(fileID, imag(mat_k),'double');
+                end
+            end
+            
+            fclose(fileID);
+ 
+        end
             
         
         function v=getVector(obj)
