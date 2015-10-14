@@ -24,7 +24,7 @@ s3=Spin('13C', [11,11,11]);
 spin_collection=SpinCollection();
 spin_collection.spin_source = FromSpinList([s1, s2, s3]);
 spin_collection.generate();
-
+spin_collection.set_spin();
 %% SpinInteraction
 Condition=LabCondition.getCondition;
 Condition.setValue('magnetic_field', 1e-4*[0 0 1]);
@@ -50,7 +50,7 @@ obs=obs1.project_operator(1, 1);
 
 %% dynamics
 dynamics=QuantumDynamics( MatrixVectorEvolution(lv) );
-dynamics.set_initial_state(denseMat);
+dynamics.set_initial_state(denseMat,'Liouville');
 dynamics.set_time_sequence(0:50e-6:100e-3);
 dynamics.addObervable(obs);
 dynamics.calculate_mean_values();
