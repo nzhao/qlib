@@ -1,13 +1,14 @@
-function steadyVersusDetuning(Gmc,S1,Dnu,thetaD,phiD,Etheta,Ephi,J,I,S,B)
+S=obj.parameters.spin_S;
+I=obj.parameters.spin_I;
 Dw=2*pi*1e6*Dnu;
 if J==1.5
-    te=25.5e-9;%spontaneous P1/2 lifetime in s
+    te=obj.parameters.te1;%spontaneous P1/2 lifetime in s
 elseif J==0.5
-    te=28.5e-9;%spontaneous P1/2 lifetime in s
+    te=obj.parameters.te2;%spontaneous P1/2 lifetime in s
 end
 gS=2*S+1;gI=2*I+1;gJ=2*J+1;gg=gI*gS;ge=gI*gJ;gt=(gg+ge)^2;
 nw=21;dw=linspace(Dw-3/te,Dw+3/te,nw); rhow= zeros(gt,nw);
-[~,G0,G1,G2,dGdw]=evolutionOperator(Gmc,S1,Dnu,thetaD,phiD,Etheta,Ephi,J,I,S,B);
+[~,G0,G1,G2,dGdw]=obj.evolutionOperator(Gmc,Sl,Dnu,thetaD,phiD,Etheta,Ephi,J,magB);
 Pg=eye(gg);Pe=eye(ge);cPe=Pe(:);cPg=Pg(:);
 cNe=[cPe;zeros(gt-ge*ge,1)];rNe=cNe';LrNe=logical(rNe);
 cNg=[zeros(gt-gg*gg,1);cPg];rNg=cNg';LrNg=logical(rNg);

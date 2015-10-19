@@ -1,8 +1,9 @@
-function Dj=happerMatrixCoupled(J,I,B)
-S=0.5;
+function Dj=happerMatrixCoupled(obj,J,magB)
+I=obj.parameters.spin_I;
+S=obj.parameters.spin_S;
 %statistical weights
 gI=2*I+1; gS=2*S+1; gJ=2*J+1;gg=gS*gI;ge=gJ*gI;
-[~,Ug,~,Ue]=eigenValueVector(I,J,B);
+[~,Ug,~,Ue]=obj.eigenValueVector(J,magB);
 sDs=zeros(gS,gJ,3); %spherical projections in electronic space
 for k=J:-1:-J
     for l=1:-1:-1
