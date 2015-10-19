@@ -16,6 +16,9 @@ function Djss = dipoleMatrix( obj, J, magB )
             end
         end
     end
+    gDs=zeros(gJ*gI,gS*gI);
+    Djs=zeros(gJ*gI,gS*gI);
+    Djss=zeros(gJ*gI,gS*gI);
     for k=1:3
         gDs(:,:,k)=kron(eye(gI),sDs(:,:,k));
     end

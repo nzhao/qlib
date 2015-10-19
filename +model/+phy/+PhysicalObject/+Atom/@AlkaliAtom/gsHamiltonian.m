@@ -20,6 +20,9 @@ function uHg = gsHamiltonian( obj, magB )
     sSj(:,:,2)=(sSp-sSp')/(2*1j);
     sSj(:,:,3)=diag(S:-1:-S);
     %operators in uncoupled space
+    aIjg=zeros(gg,gg);
+    gSj=zeros(gg,gg);
+    umug=zeros(gg,gg);
     for k=1:3
         aIjg(:,:,k)=kron(sIj(:,:,k),eye(gS));
         gSj(:,:,k)=kron(eye(gI),sSj(:,:,k));
