@@ -1,9 +1,6 @@
 function uHe = esHamiltonian( obj, J, magB )
 %ESHAMILTONIAN Summary of this function goes here
 %   Detailed explanation goes here
-
-    %constant;
-    S=obj.parameters.spin_S;
     I=obj.parameters.spin_I;
     
     gI=2*I+1; gJ=2*J+1;ge=gI*gJ;
@@ -30,6 +27,9 @@ function uHe = esHamiltonian( obj, J, magB )
     sJj(:,:,2)=(sJp-sJp')/(2*1j);
     sJj(:,:,3)=diag(J:-1:-J);
     %operators in uncoupled space
+    aIje=zeros(ge,ge);
+    gJj=zeros(ge,ge);
+    umue=zeros(ge,ge);
     for k=1:3
         aIje(:,:,k)=kron(sIj(:,:,k),eye(gJ));
         gJj(:,:,k)=kron(eye(gI),sJj(:,:,k));
