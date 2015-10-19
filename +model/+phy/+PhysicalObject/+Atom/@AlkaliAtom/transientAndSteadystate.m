@@ -1,3 +1,4 @@
+function transientAndSteadystate(obj,rt,Gmc,Sl,Dnu,thetaD,phiD,Etheta,Ephi,J,magB)
 S=obj.parameters.spin_S;
 I=obj.parameters.spin_I;
 gS=2*S+1;gI=2*I+1;gJ=2*J+1;gg=gI*gS;ge=gI*gJ;gt=(gg+ge)^2;

@@ -1,3 +1,4 @@
+function steadyVersusDetuning(obj,Gmc,Dnu,Sl,thetaD,phiD,Etheta,Ephi,J,magB)
 S=obj.parameters.spin_S;
 I=obj.parameters.spin_I;
 Dw=2*pi*1e6*Dnu;

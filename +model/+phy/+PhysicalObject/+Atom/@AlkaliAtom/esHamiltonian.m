@@ -2,7 +2,6 @@ function uHe = esHamiltonian( obj, J, magB )
 %ESHAMILTONIAN Summary of this function goes here
 %   Detailed explanation goes here
     I=obj.parameters.spin_I;
-    
     gI=2*I+1; gJ=2*J+1;ge=gI*gJ;
     LgJ=gJ/3;%approximate Lande g-value of PJ state
     muI=obj.parameters.mu_I*muN;%nuclear moment in erg/G
