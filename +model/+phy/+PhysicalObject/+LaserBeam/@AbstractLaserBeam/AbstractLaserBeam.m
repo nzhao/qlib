@@ -3,15 +3,23 @@ classdef AbstractLaserBeam < model.phy.PhysicalObject.PhysicalObject
     %   Detailed explanation goes here
     
     properties
-        name
+        wavelength
+        intensity
+        k
+        
+        aNNZ
+        bNNZ
     end
     
     
     methods
-        function obj=AbstractLaserBeam(name)
+        function obj=AbstractLaserBeam(name, wavelength, intensity)
             obj.name=name;
+            obj.wavelength=wavelength;
+            obj.intensity=intensity;
+            obj.k=2.0*pi/wavelength;
         end
-        
+                
     end
     
     

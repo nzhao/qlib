@@ -24,7 +24,10 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
         function obj = Spin(name, coord)
             obj.name=name;
             [obj.dim, obj.gamma] = model.phy.data.NMRData.get_spin(name);
-            obj.coordinate=coord;
+            
+            if nargin > 1
+                obj.coordinate=coord;
+            end
           
             obj.S= 0.5*(obj.dim-1);
             obj.S2= obj.S*(obj.S+1);
