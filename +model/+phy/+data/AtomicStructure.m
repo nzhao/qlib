@@ -13,10 +13,7 @@ classdef AtomicStructure
                     parameters.dim=8+8+16;
                     parameters.spin_S=0.5;
                     parameters.LgS=2.00231;% Lande g-value of S1/2 state
-                    parameters.hP=6.6262e-34;%Plank's constant in J/Hz
-                    parameters.hbar=hP/2*pi;%in J s
-                    parameters.c=2.9979e8;%speed of light in m/s
-                    parameters.re=2.816e-15;%classical electron radius in m
+
                     % fine-structure parameters
                     parameters.config='[Kr]5s';     %electron configuation
                     parameters.IP=4.1771;           %ionization potential in eV
