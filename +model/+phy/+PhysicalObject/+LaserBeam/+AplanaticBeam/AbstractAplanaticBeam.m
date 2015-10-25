@@ -7,20 +7,34 @@ classdef AbstractAplanaticBeam <  model.phy.PhysicalObject.LaserBeam.AbstractLas
         l
         f0
         na
-        n1
-        n2
+        
+        eps0
+        mu0
+        epsM
+        muM
+        n0
+        nMedium
+        Z
+        
         aMax
         gs_order
     end
     
     methods
-        function obj=AbstractAplanaticBeam(wavelength, intensity, f0, na, n1, n2, p, l)
+        function obj=AbstractAplanaticBeam(wavelength, intensity, f0, na, eps_0, mu_0, eps_medium, mu_medium, p, l)
             obj@model.phy.PhysicalObject.LaserBeam.AbstractLaserBeam('AbstractAplanaticBeam',wavelength, intensity);
             obj.f0=f0;
             obj.na=na;
-            obj.n1=n1;
-            obj.n2=n2;
-            obj.aMax=asin(na/n2);
+
+            obj.eps0=eps_0;          % epsilon outside lens
+            obj.mu0=mu_0;            % mu outside lens
+            obj.epsM=eps_medium;
+            obj.muM=mu_medium;
+            obj.n0=sqrt(eps_0*mu_0);
+            obj.nMedium=sqrt(eps_medium*mu_medium);
+            obj.Z=sqrt(mu_medium/eps_medium)*Z0;
+            
+            obj.aMax=asin(na/mu_medium);
             obj.p=p;
             obj.l=l;
             obj.gs_order=GS_INT_ORDER;

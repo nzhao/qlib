@@ -7,7 +7,7 @@ function [ pmn, qmn ] = vswf_coeff( obj, m, n, Qa, cosA, wList )
         import model.phy.PhysicalObject.LaserBeam.assist.gammaMN
         import model.phy.PhysicalObject.LaserBeam.assist.pi_tauMN
         
-        prefactor=0.5*sqrt(obj.n1/obj.n2)*sqrt( gammaMN(m,n) );
+        prefactor=0.5*sqrt(obj.n0/obj.nMedium)*sqrt( gammaMN(m,n) );
         [pi_mn, tau_mn]=pi_tauMN(m, n, cosA);
         
         if m==obj.l+1

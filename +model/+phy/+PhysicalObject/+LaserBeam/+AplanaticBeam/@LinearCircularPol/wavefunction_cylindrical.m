@@ -25,15 +25,14 @@ function val = wavefunction_cylindrical( obj, rho, phi, z )
     e1phi=exp(1.j*phi); e2phi=e1phi*e1phi; elphi=(1.j*e1phi)^l;
     e1phi1=e1phi'; e2phi1=e2phi';
     pp=px+1.j*py; pm=px-1.j*py;
-    Z=1.;
 
     ex=Qa.*exp_kz.*(pp*e2phi1.*f1 + pm*e2phi.*f2 + 2.0*px*f3) * 0.5*elphi;
     ey=Qa.*exp_kz.*(pp*e2phi1.*f1 - pm*e2phi.*f2 - 2.0*py*f3) * 0.5*1.j*elphi;
     ez=Qa.*exp_kz.*(pp*e1phi1.*f4 - pm*e1phi.*f5 )            * 0.5*1.j*elphi;
 
-    hx=  Qa.*exp_kz.*(pp*e2phi1.*f1 - pm*e2phi.*f2 + 2.0*1.j*py*f3) * 0.5*1.j*elphi/Z;
-    hy= -Qa.*exp_kz.*(pp*e2phi1.*f1 + pm*e2phi.*f2 - 2.0*px*f3)     * 0.5*elphi/Z;
-    hz= -Qa.*exp_kz.*(pp*e1phi1.*f4 + pm*e1phi.*f5 )                * 0.5*elphi/Z;
+    hx=  Qa.*exp_kz.*(pp*e2phi1.*f1 - pm*e2phi.*f2 + 2.0*1.j*py*f3) * 0.5*1.j*elphi/obj.Z;
+    hy= -Qa.*exp_kz.*(pp*e2phi1.*f1 + pm*e2phi.*f2 - 2.0*px*f3)     * 0.5*elphi/obj.Z;
+    hz= -Qa.*exp_kz.*(pp*e1phi1.*f4 + pm*e1phi.*f5 )                * 0.5*elphi/obj.Z;
 
     val=[ex; ey; ez; hx; hy; hz]*wList';
 end

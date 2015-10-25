@@ -8,8 +8,8 @@ classdef LinearCircularPol < model.phy.PhysicalObject.LaserBeam.AplanaticBeam.Ab
     end
     
     methods
-        function obj=LinearCircularPol(wavelength, intensity, f0, na, n1, n2, px, py, p, l)
-            obj@model.phy.PhysicalObject.LaserBeam.AplanaticBeam.AbstractAplanaticBeam(wavelength, intensity, f0, na, n1, n2, p, l);
+        function obj=LinearCircularPol(wavelength, intensity, f0, na, eps0, mu0, epsM, muM, px, py, p, l)
+            obj@model.phy.PhysicalObject.LaserBeam.AplanaticBeam.AbstractAplanaticBeam(wavelength, intensity, f0, na, eps0, mu0, epsM, muM, p, l);
             obj.px=px;
             obj.py=py;
         end
