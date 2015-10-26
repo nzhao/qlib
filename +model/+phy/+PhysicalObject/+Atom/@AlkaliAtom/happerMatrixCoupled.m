@@ -1,4 +1,9 @@
-function Dj=happerMatrixCoupled(obj,J,magB)
+function Dj=happerMatrixCoupled(obj,J,magB, projection)
+
+if nargin<4
+    projection='cartesian';
+end
+
 I=obj.parameters.spin_I;
 S=obj.parameters.spin_S;
 %statistical weights
@@ -14,13 +19,19 @@ for k=J:-1:-J
         end
     end
 end
-sDj(:,:,1)=(-sDs(:,:,1)+sDs(:,:,3))/sqrt(2);
-sDj(:,:,2)=(-sDs(:,:,1)-sDs(:,:,3))/(1j*sqrt(2));
-sDj(:,:,3)=sDs(:,:,2); %Cartesian projections in electronic space
+
+if strcmp(projection, 'cartesian')
+        sD(:,:,1)=(-sDs(:,:,1)+sDs(:,:,3))/sqrt(2);
+        sD(:,:,2)=(-sDs(:,:,1)-sDs(:,:,3))/(1j*sqrt(2));
+        sD(:,:,3)=sDs(:,:,2); %Cartesian projections in electronic space
+else %'spherical'
+        sD=sDs;
+end
+
 gDj=zeros(gg,ge);
 Dj=zeros(gg,ge);
 for k=1:3
-    gDj(:,:,k)=kron(eye(gI),sDj(:,:,k));% grave matrix;
+    gDj(:,:,k)=kron(eye(gI),sD(:,:,k));% grave matrix;
 end
 
 for j=1:3;
