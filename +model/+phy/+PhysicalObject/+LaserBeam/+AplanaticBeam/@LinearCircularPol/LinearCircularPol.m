@@ -6,13 +6,13 @@ classdef LinearCircularPol < model.phy.PhysicalObject.LaserBeam.AplanaticBeam.Ab
     end
     
     methods
-        function obj=LinearCircularPol(lens, paraxial_inc_beam)
-            obj@model.phy.PhysicalObject.LaserBeam.AplanaticBeam.AbstractAplanaticBeam(lens, paraxial_inc_beam);
+        function obj=LinearCircularPol(lens, inc_beam)
+            obj@model.phy.PhysicalObject.LaserBeam.AplanaticBeam.AbstractAplanaticBeam(lens, inc_beam);
         end
         
         function val=wavefunction(obj, x, y, z)
             [rho, phi, z1]=model.math.misc.Cart2Cylind(x, y, z);
-            val1=obj.wavefunction_cylindrical(rho, phi, z1);
+            val1=obj.wavefunction_cylindrical(rho, phi, z1)*obj.amplitude_factor;
             val=val1(1:3)'*val1(1:3);
         end
         
@@ -35,8 +35,8 @@ classdef LinearCircularPol < model.phy.PhysicalObject.LaserBeam.AplanaticBeam.Ab
             [ai, aj, av]=find(a);
             [bi, bj, bv]=find(b);
             
-            obj.aNNZ=[aj, ai-maxN-1, av];
-            obj.bNNZ=[bj, bi-maxN-1, bv];
+            obj.focBeam.aNNZ=[aj, ai-maxN-1, av];
+            obj.focBeam.bNNZ=[bj, bi-maxN-1, bv];
         end
 
         

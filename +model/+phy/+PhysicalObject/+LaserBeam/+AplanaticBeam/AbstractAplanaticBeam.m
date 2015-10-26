@@ -1,36 +1,32 @@
-classdef AbstractAplanaticBeam <  model.phy.PhysicalObject.LaserBeam.AbstractLaserBeam
+classdef AbstractAplanaticBeam < model.phy.PhysicalObject.PhysicalObject 
     %ABSTRACTAPLANATICBEAM Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
         lens
         incBeam
+        focBeam
         
         f0
+        amplitude_factor
         gs_order
     end
     
     methods
-        function obj=AbstractAplanaticBeam(lens, paraxial_inc_beam)
-            obj@model.phy.PhysicalObject.LaserBeam.AbstractLaserBeam('AbstractAplanaticBeam',...
-                paraxial_inc_beam.wavelength, paraxial_inc_beam.power, 1, 'air');
-            
+        function obj=AbstractAplanaticBeam(lens, inc_beam)            
             obj.lens=lens;
-            obj.incBeam=paraxial_inc_beam;
+            obj.incBeam=inc_beam;
+            obj.amplitude_factor= obj.get_amplitude_factor();
+            
+            medium2=lens.work_medium;
+            wavelength2=inc_beam.wavelength/medium2.n;
+            obj.focBeam=model.phy.PhysicalObject.LaserBeam.LaserBeamPartialWave('FocusedField', wavelength2, medium2.name);
+            obj.focBeam.setAmplitude(obj.amplitude_factor);
 
-            obj.f0=paraxial_inc_beam.w0/lens.focal_distance/sin(lens.aMax);
+            obj.f0=inc_beam.w0/lens.focal_distance/sin(lens.aMax);
             obj.gs_order=GS_INT_ORDER;
         end
         
-        
-        function val=wavefunction(obj, r, theta, phi)%#ok<INUSD>
-            val= 0.0;
-        end        
-        
-        function [a, b]=getVSWFcoeff(maxN)
-            a=zeros(1, maxN);
-            b=zeros(1, maxN);
-        end
         
         function [aList, wList]=alpha_sampling(obj, nPiece)
             nOrder=obj.gs_order;
@@ -45,7 +41,7 @@ classdef AbstractAplanaticBeam <  model.phy.PhysicalObject.LaserBeam.AbstractLas
             end            
         end
         
-        function val=unitFactor(obj)
+        function val=get_amplitude_factor(obj)
             f=obj.lens.focal_distance;
             abs_E0= obj.incBeam.abs_E0;
             k=obj.incBeam.k;
@@ -55,7 +51,11 @@ classdef AbstractAplanaticBeam <  model.phy.PhysicalObject.LaserBeam.AbstractLas
             val=abs_E0*eta_f;
         end
         
-
+    end
+    
+    methods (Abstract)
+        wavefunction(obj, x, y, z)
+        getVSWFcoeff(obj, maxN)
     end
 
     

@@ -13,7 +13,8 @@ px=1.0; py=0.0; p=0; l=-1;
 incBeam=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px, py);
 
 lg2=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(lens, incBeam);
-lg2.wavefunction(0, 0, 0)
 lg2.getVSWFcoeff(80);
-figure;dataF1=lg2.lineCut([-1, 0, 0], [1, 0, 0], 100, 'field');
-figure;dataD1=lg2.lineCut([-1, 0, 0], [1, 0, 0], 100);
+
+val1=lg2.wavefunction(0, 0, 0.);
+val2=lg2.focBeam.wavefunction(0, 0, 0.)*lg2.focBeam.wavefunction(0, 0, 0.)';
+

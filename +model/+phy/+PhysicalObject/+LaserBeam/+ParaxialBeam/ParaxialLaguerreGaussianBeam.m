@@ -1,4 +1,4 @@
-classdef ParaxialLaguerreGaussianBeam < model.phy.PhysicalObject.LaserBeam.ParaxialBeam.AbstractGaussianBeam
+classdef ParaxialLaguerreGaussianBeam < model.phy.PhysicalObject.LaserBeam.ParaxialBeam.AbstractParaxialBeam
     %PARAXIALL Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -15,7 +15,7 @@ classdef ParaxialLaguerreGaussianBeam < model.phy.PhysicalObject.LaserBeam.Parax
                 medium='air';
             end
             
-            obj@model.phy.PhysicalObject.LaserBeam.ParaxialBeam.AbstractGaussianBeam(wavelength, power, waist, center, medium);
+            obj@model.phy.PhysicalObject.LaserBeam.ParaxialBeam.AbstractParaxialBeam(wavelength, power, waist, center, medium);
             obj.p=p;
             obj.l=l;
             obj.px=px;

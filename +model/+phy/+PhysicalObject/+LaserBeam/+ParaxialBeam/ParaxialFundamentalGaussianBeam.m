@@ -1,4 +1,4 @@
-classdef ParaxialGaussianBeam < model.phy.PhysicalObject.LaserBeam.ParaxialBeam.AbstractGaussianBeam
+classdef ParaxialFundamentalGaussianBeam < model.phy.PhysicalObject.LaserBeam.ParaxialBeam.AbstractParaxialBeam
     %PARAXIALGAUSSIANBEAM Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -6,8 +6,8 @@ classdef ParaxialGaussianBeam < model.phy.PhysicalObject.LaserBeam.ParaxialBeam.
     end
     
     methods
-        function obj=ParaxialGaussianBeam(wavelength, intensity, waist, center)
-            obj@model.phy.PhysicalObject.LaserBeam.ParaxialBeam.AbstractGaussianBeam(wavelength, intensity, waist, center);
+        function obj=ParaxialFundamentalGaussianBeam(wavelength, intensity, waist, center)
+            obj@model.phy.PhysicalObject.LaserBeam.ParaxialBeam.AbstractParaxialBeam(wavelength, intensity, waist, center);
         end
         
         function val=wavefunction(obj, x, y, z)            
