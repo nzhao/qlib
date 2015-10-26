@@ -5,13 +5,21 @@ classdef ParaxialLaguerreGaussianBeam < model.phy.PhysicalObject.LaserBeam.Parax
     properties
         p
         l
+        px
+        py
     end
     
     methods
-        function obj=ParaxialLaguerreGaussianBeam(wavelength, intensity, waist, center, p, l)
-            obj@model.phy.PhysicalObject.LaserBeam.ParaxialBeam.AbstractGaussianBeam(wavelength, intensity, waist, center);
+        function obj=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px, py, medium)
+            if nargin < 9
+                medium='air';
+            end
+            
+            obj@model.phy.PhysicalObject.LaserBeam.ParaxialBeam.AbstractGaussianBeam(wavelength, power, waist, center, medium);
             obj.p=p;
             obj.l=l;
+            obj.px=px;
+            obj.py=py;
         end
         
         function val=wavefunction(obj, x, y, z)

@@ -3,15 +3,11 @@ classdef LinearCircularPol < model.phy.PhysicalObject.LaserBeam.AplanaticBeam.Ab
     %   Detailed explanation goes here
     
     properties
-        px
-        py
     end
     
     methods
-        function obj=LinearCircularPol(wavelength, intensity, f0, na, eps0, mu0, epsM, muM, px, py, p, l)
-            obj@model.phy.PhysicalObject.LaserBeam.AplanaticBeam.AbstractAplanaticBeam(wavelength, intensity, f0, na, eps0, mu0, epsM, muM, p, l);
-            obj.px=px;
-            obj.py=py;
+        function obj=LinearCircularPol(lens, paraxial_inc_beam)
+            obj@model.phy.PhysicalObject.LaserBeam.AplanaticBeam.AbstractAplanaticBeam(lens, paraxial_inc_beam);
         end
         
         function val=wavefunction(obj, x, y, z)
@@ -24,7 +20,7 @@ classdef LinearCircularPol < model.phy.PhysicalObject.LaserBeam.AplanaticBeam.Ab
             [aList, wList]=obj.alpha_sampling(maxN);
 
             sinA=sin(aList); cosA=cos(aList); 
-            Qa=obj.Qpl(obj.p, obj.l, sinA, cosA);
+            Qa=obj.Qpl(obj.incBeam.p, obj.incBeam.l, sinA, cosA);
             
             a=zeros(2*maxN+1, maxN);
             b=zeros(2*maxN+1, maxN);

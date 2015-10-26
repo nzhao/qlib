@@ -3,40 +3,22 @@ classdef AbstractAplanaticBeam <  model.phy.PhysicalObject.LaserBeam.AbstractLas
     %   Detailed explanation goes here
     
     properties
-        p
-        l
+        lens
+        incBeam
+        
         f0
-        na
-        
-        eps0
-        mu0
-        epsM
-        muM
-        n0
-        nMedium
-        Z
-        
-        aMax
         gs_order
     end
     
     methods
-        function obj=AbstractAplanaticBeam(wavelength, intensity, f0, na, eps_0, mu_0, eps_medium, mu_medium, p, l)
-            obj@model.phy.PhysicalObject.LaserBeam.AbstractLaserBeam('AbstractAplanaticBeam',wavelength, intensity);
-            obj.f0=f0;
-            obj.na=na;
-
-            obj.eps0=eps_0;          % epsilon outside lens
-            obj.mu0=mu_0;            % mu outside lens
-            obj.epsM=eps_medium;
-            obj.muM=mu_medium;
-            obj.n0=sqrt(eps_0*mu_0);
-            obj.nMedium=sqrt(eps_medium*mu_medium);
-            obj.Z=sqrt(mu_medium/eps_medium)*Z0;
+        function obj=AbstractAplanaticBeam(lens, paraxial_inc_beam)
+            obj@model.phy.PhysicalObject.LaserBeam.AbstractLaserBeam('AbstractAplanaticBeam',...
+                paraxial_inc_beam.wavelength, paraxial_inc_beam.power, 1, 'air');
             
-            obj.aMax=asin(na/mu_medium);
-            obj.p=p;
-            obj.l=l;
+            obj.lens=lens;
+            obj.incBeam=paraxial_inc_beam;
+
+            obj.f0=paraxial_inc_beam.w0/lens.focal_distance/sin(lens.aMax);
             obj.gs_order=GS_INT_ORDER;
         end
         
@@ -54,7 +36,7 @@ classdef AbstractAplanaticBeam <  model.phy.PhysicalObject.LaserBeam.AbstractLas
             nOrder=obj.gs_order;
             aList=zeros(1, nPiece*nOrder);
             wList=zeros(1, nPiece*nOrder);
-            dx=obj.aMax/nPiece;
+            dx=obj.lens.aMax/nPiece;
             for kk=1:nPiece
                 x1=(kk-1)*dx; x2=x1+dx;
                 [x, w] = model.math.misc.lgwt(nOrder, x1, x2);
@@ -62,6 +44,18 @@ classdef AbstractAplanaticBeam <  model.phy.PhysicalObject.LaserBeam.AbstractLas
                 wList( (kk-1)*nOrder+1: kk*nOrder ) = w(end:-1:1);
             end            
         end
+        
+        function val=unitFactor(obj)
+            f=obj.lens.focal_distance;
+            abs_E0= obj.incBeam.abs_E0;
+            k=obj.incBeam.k;
+
+            ikf=1.j* k * f;
+            eta_f= ikf*exp(-ikf);
+            val=abs_E0*eta_f;
+        end
+        
+
     end
 
     

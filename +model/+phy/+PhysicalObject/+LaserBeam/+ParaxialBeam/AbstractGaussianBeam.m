@@ -6,14 +6,17 @@ classdef AbstractGaussianBeam < model.phy.PhysicalObject.LaserBeam.AbstractLaser
         w0
         zR
         rc
+        abs_E0
     end
     
     methods
-        function obj=AbstractGaussianBeam(wavelength, intensity, waist, center)
-            obj@model.phy.PhysicalObject.LaserBeam.AbstractLaserBeam('GaussianBeam', wavelength, intensity);
+        function obj=AbstractGaussianBeam(wavelength, power, waist, center, medium_name)
+            area = pi*waist*waist;
+            obj@model.phy.PhysicalObject.LaserBeam.AbstractLaserBeam('GaussianBeam', wavelength, power, area, medium_name);
             obj.w0=waist;
             obj.zR=pi*waist*waist/wavelength;
             obj.rc= center;
+            obj.abs_E0= sqrt(2.0*obj.intensity*obj.medium.Z);
         end
         function val=wavefunction(obj, x, y, z)            
             x0=obj.rc(1); y0=obj.rc(2); 

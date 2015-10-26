@@ -11,6 +11,7 @@ function [eField, hField] = field(obj, x, y, z)
         kr=eps;
     end
     
+    Z=obj.lens.work_medium.Z;
     for kk=1:length(obj.aNNZ)
         aTerm=obj.aNNZ(kk,:);
         n=aTerm(1); m=aTerm(2); amn=aTerm(3);
@@ -18,7 +19,7 @@ function [eField, hField] = field(obj, x, y, z)
         prefact = (1.j)^(n-1)* sqrt(4.0*pi);% See Doc: VSWF.m
         [M_mode, N_mode] = ott13.vswfcart(n,m,kr,theta,phi,3);
         eField=eField+ amn* prefact *N_mode;
-        hField=hField+ amn* prefact *M_mode / (1.j*obj.Z);
+        hField=hField+ amn* prefact *M_mode / (1.j*Z);
     end
 
     for kk=1:length(obj.bNNZ)
@@ -27,8 +28,10 @@ function [eField, hField] = field(obj, x, y, z)
         prefact = (1.j)^(n-1)* sqrt(4.0*pi);% See Doc: VSWF.m
         [M_mode,~] = ott13.vswfcart(n,m,kr,theta,phi,3);
         eField=eField+ bmn* prefact *M_mode;
-        hField=hField+ bmn* prefact *N_mode / (1.j*obj.Z);
+        hField=hField+ bmn* prefact *N_mode / (1.j*Z);
     end
     
+    eField=eField*obj.unitFactor();
+    hField=hField*obj.unitFactor();
 end
 
