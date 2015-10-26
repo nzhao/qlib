@@ -10,10 +10,12 @@ classdef LinearCircularPol < model.phy.PhysicalObject.LaserBeam.AplanaticBeam.Ab
             obj@model.phy.PhysicalObject.LaserBeam.AplanaticBeam.AbstractAplanaticBeam(lens, inc_beam);
         end
         
-        function val=wavefunction(obj, x, y, z)
+        function [eField, hField]=wavefunction(obj, x, y, z)
             [rho, phi, z1]=model.math.misc.Cart2Cylind(x, y, z);
-            val1=obj.wavefunction_cylindrical(rho, phi, z1)*obj.amplitude_factor;
-            val=val1(1:3)'*val1(1:3);
+            [eField, hField]=obj.wavefunction_cylindrical(rho, phi, z1);
+            eField=eField*obj.amplitude_factor;
+            hField=hField*obj.amplitude_factor;
+
         end
         
         function [a, b]=getVSWFcoeff(obj, maxN)

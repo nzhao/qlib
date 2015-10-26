@@ -1,4 +1,4 @@
-classdef AbstractAplanaticBeam < model.phy.PhysicalObject.PhysicalObject 
+classdef AbstractAplanaticBeam < model.phy.PhysicalObject.LaserBeam.OpticalField 
     %ABSTRACTAPLANATICBEAM Summary of this class goes here
     %   Detailed explanation goes here
     

@@ -1,4 +1,4 @@
-classdef LaserBeamPartialWave < model.phy.PhysicalObject.PhysicalObject
+classdef LaserBeamPartialWave < model.phy.PhysicalObject.LaserBeam.OpticalField
     %LASERBEAM Summary of this class goes here
     %   Detailed explanation goes here
     

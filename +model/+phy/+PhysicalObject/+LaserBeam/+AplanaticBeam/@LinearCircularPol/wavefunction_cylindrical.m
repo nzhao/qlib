@@ -1,4 +1,4 @@
-function val = wavefunction_cylindrical( obj, rho, phi, z )
+function [eField, hField] = wavefunction_cylindrical( obj, rho, phi, z )
 %WAVEFUNCTION_CYLINDRICAL Summary of this function goes here
 %   Detailed explanation goes here
     kz=obj.incBeam.k*z;
@@ -34,6 +34,9 @@ function val = wavefunction_cylindrical( obj, rho, phi, z )
     hx=  Qa.*exp_kz.*(pp*e2phi1.*f1 - pm*e2phi.*f2 + 2.0*1.j*py*f3) * 0.5*1.j*elphi/Z;
     hy= -Qa.*exp_kz.*(pp*e2phi1.*f1 + pm*e2phi.*f2 - 2.0*px*f3)     * 0.5*elphi/Z;
     hz= -Qa.*exp_kz.*(pp*e1phi1.*f4 + pm*e1phi.*f5 )                * 0.5*elphi/Z;
+    
+    eField=wList*[ex; ey; ez]';
+    hField=wList*[hx; hy; hz]';
 
-    val=([ex; ey; ez; hx; hy; hz]*wList');%*obj.unitFactor();
+    %val=([ex; ey; ez; hx; hy; hz]*wList');%*obj.unitFactor();
 end
