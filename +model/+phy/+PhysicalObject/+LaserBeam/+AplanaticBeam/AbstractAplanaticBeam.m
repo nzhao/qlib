@@ -8,20 +8,19 @@ classdef AbstractAplanaticBeam < model.phy.PhysicalObject.LaserBeam.OpticalField
         focBeam
         
         f0
-        amplitude_factor
         gs_order
+        
+        amplitude=1.0;
     end
     
     methods
         function obj=AbstractAplanaticBeam(lens, inc_beam)            
             obj.lens=lens;
             obj.incBeam=inc_beam;
-            obj.amplitude_factor= obj.get_amplitude_factor();
             
             medium2=lens.work_medium;
             wavelength2=inc_beam.wavelength/medium2.n;
             obj.focBeam=model.phy.PhysicalObject.LaserBeam.LaserBeamPartialWave('FocusedField', wavelength2, medium2.name);
-            obj.focBeam.setAmplitude(obj.amplitude_factor);
 
             obj.f0=inc_beam.w0/lens.focal_distance/sin(lens.aMax);
             obj.gs_order=GS_INT_ORDER;

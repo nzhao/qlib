@@ -13,7 +13,7 @@ function [eField, hField] = wavefunction_cylindrical( obj, rho, phi, z )
 
     exp_kz=exp(1.j*kz*cosA);
 
-    x=kr*sinA;  l=abs(obj.incBeam.l);
+    x=kr*sinA;  l=obj.incBeam.l;%abs(obj.incBeam.l);
     f1=besselj(l-2, x).*sinA2;
     f2=besselj(l+2, x).*sinA2;
     f3=besselj(l, x).*cosA2;
@@ -26,9 +26,9 @@ function [eField, hField] = wavefunction_cylindrical( obj, rho, phi, z )
     e1phi1=e1phi'; e2phi1=e2phi';
     pp=px+1.j*py; pm=px-1.j*py;
 
-    ex=Qa.*exp_kz.*(pp*e2phi1.*f1 + pm*e2phi.*f2 + 2.0*px*f3) * 0.5*elphi;
-    ey=Qa.*exp_kz.*(pp*e2phi1.*f1 - pm*e2phi.*f2 - 2.0*py*f3) * 0.5*1.j*elphi;
-    ez=Qa.*exp_kz.*(pp*e1phi1.*f4 - pm*e1phi.*f5 )            * 0.5*1.j*elphi;
+    ex=Qa.*exp_kz.*(pp*e2phi1.*f1 + pm*e2phi.*f2 + 2.0*px*f3)     * 0.5*elphi;
+    ey=Qa.*exp_kz.*(pp*e2phi1.*f1 - pm*e2phi.*f2 - 2.0*1.j*py*f3) * 0.5*1.j*elphi;
+    ez=Qa.*exp_kz.*(pp*e1phi1.*f4 - pm*e1phi.*f5 )                * 0.5*1.j*elphi;
 
     Z=obj.lens.work_medium.Z;
     hx=  Qa.*exp_kz.*(pp*e2phi1.*f1 - pm*e2phi.*f2 + 2.0*1.j*py*f3) * 0.5*1.j*elphi/Z;
