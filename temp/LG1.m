@@ -1,5 +1,4 @@
-clear; clc;
-
+clear; 
 import model.phy.PhysicalObject.Lens
 import model.phy.PhysicalObject.LaserBeam.ParaxialBeam.ParaxialLaguerreGaussianBeam
 
@@ -27,6 +26,6 @@ x=1.0; y=0.1; z=0.1;
 [e2minus, h2minus]=lg2.focBeam.wavefunction(x, y, z);
 
 [e1minus; e1plus]
-[e2minus; e2minus]
+[e2minus; e2plus]
 
 
