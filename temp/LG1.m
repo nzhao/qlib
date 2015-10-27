@@ -28,4 +28,5 @@ x=1.0; y=0.1; z=0.1;
 [e1minus; e1plus]
 [e2minus; e2plus]
 
+lg1.lineCut([-1, 0, 0], [1, 0, 0], 50, 'Ea')
 
