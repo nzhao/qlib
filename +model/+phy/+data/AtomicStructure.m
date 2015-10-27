@@ -13,6 +13,7 @@ classdef AtomicStructure
                     parameters.dim=8+8+16;
                     parameters.spin_S=0.5;
                     parameters.LgS=2.00231;% Lande g-value of S1/2 state
+
                     % fine-structure parameters
                     parameters.config='[Kr]5s';     %electron configuation
                     parameters.IP=4.1771;           %ionization potential in eV
@@ -28,6 +29,10 @@ classdef AtomicStructure
                     parameters.abundance=0.2783;    %natural abundance
                     parameters.spin_I=3./2.;        %nuclear spin number
                     parameters.mu_I=2.75182;        %nuclear magnetic moment in [mu_N]
+                    parameters.lamJ1=7800e-10;       %D2 wavelength in m when J=1.5
+                    parameters.te1=25.5e-9;          %spontaneous P1/2 lifetime in s  J=1.5
+                    parameters.lamJ2=7947e-10;        %D1 wavelength in m    J=0.5
+                    parameters.te2=28.5e-9;          %spontaneous P1/2 lifetime in when J=0.5
                     parameters.hf_gs=3417.35;   % hf coeff of ground state S_1/2 in MHz
                     parameters.hf_es1=406.12;       %hf coeff of excited state P_1/2 in MHz
                     parameters.hf_es2A=84.72;       %hf coeff_A of excited state P_3/2 state in MHz

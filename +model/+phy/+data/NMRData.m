@@ -17,10 +17,10 @@ classdef NMRData
                     gamma=-1.760859708e11; 
                 case 'J1/2'
                     dim=2;
-                    gamma=-1.760859708e11; % CODATA 2013
+                    gamma=-1.760859708e11; % (2J+1)/3 * muB
                 case 'J3/2'
                     dim=4;
-                    gamma=-1.760859708e11; % CODATA 2013
+                    gamma=-1.760859708e11; % (2J+1)/3 * muB
                 case 'E'  % Electron
                     dim=2;
                     gamma=-1.760859708e11; % CODATA 2013
