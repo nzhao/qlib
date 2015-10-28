@@ -1,4 +1,4 @@
-clear; clc
+clear; clc;
 
 import model.phy.PhysicalObject.Lens
 import model.phy.PhysicalObject.LaserBeam.ParaxialBeam.ParaxialLaguerreGaussianBeam
@@ -9,23 +9,22 @@ lens=Lens(f, NA, working_medium);
 
 power=1.0; 
 wavelength=0.5; waist=1000.0; center=[0, 0, 0];  %in micron
-px=1.0; py=0.0; p=0; l=+1; 
-incBeam=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px, py, 'vacuum');
+px=1.0; py=0.0; p=0; l=1; 
+incBeam1=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px, py, 'vacuum');
+incBeam2=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, -l, px, py, 'vacuum');
 
-lg2=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(lens, incBeam);
+lg1=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(lens, incBeam1);
+lg2=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(lens, incBeam2);
+
+lg1.getVSWFcoeff(80);
 lg2.getVSWFcoeff(80);
 
-[val1e, val1h]=lg2.wavefunction(1, 0, 0.0);val1e
-[val2e, val2h]=lg2.focBeam.wavefunction(1, 0, 0.0);val2e
+x=1.0; y=0.1; z=2.1;
+[eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
+[eplus1s, hplus1s]=lg1.focBeam.wavefunction(x, y, z);
 
-l=-1; 
-incBeam=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px, py, 'vacuum');
+[eminus1d, hminus1d]=lg2.wavefunction(x, y, z);
+[eminus1s, hminus1s]=lg2.focBeam.wavefunction(x, y, z);
 
-lg2=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(lens, incBeam);
-lg2.getVSWFcoeff(80);
-
-[val1e, val1h]=lg2.wavefunction(1, 0, 0.0);val1e
-[val2e, val2h]=lg2.focBeam.wavefunction(1, 0, 0.0);val2e
-
-change 1 at csrc.
-
+[eplus1d; eplus1s]
+[eminus1d; eminus1s]
