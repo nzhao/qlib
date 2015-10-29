@@ -10,21 +10,17 @@ power=1.0;
 wavelength=0.5; waist=1000.0; center=[0, 0, 0];  %in micron
 px=1.0; py=0.0; p=0; l=1; 
 incBeam1=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px, py, 'vacuum');
-%incBeam2=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, -l, px, py, 'vacuum');
 
 lg1=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(lens, incBeam1);
-%lg2=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(lens, incBeam2);
 
 Nmax=40;
 lg1.getVSWFcoeff(Nmax);
-%lg2.getVSWFcoeff(Nmax);
 
 % x=1.0; y=0.1; z=0.1;
 % [e1plus, h1plus]=lg1.wavefunction(x, y, z);
 % [e2plus, h2plus]=lg1.focBeam.wavefunction(x, y, z);
-% 
-% [e1minus, h1minus]=lg2.wavefunction(x, y, z);
-% [e2minus, h2minus]=lg2.focBeam.wavefunction(x, y, z);
+% [e1plus;e2plus]
+% [h1plus;h2plus]
 
 a0=lg1.focBeam.aNNZ(:,3);
 b0=lg1.focBeam.bNNZ(:,3);
