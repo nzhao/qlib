@@ -40,6 +40,8 @@ classdef LinearCircularPol < model.phy.PhysicalObject.LaserBeam.AplanaticBeam.Ab
             obj.focBeam.aNNZ=[aj, ai-maxN-1, av];
             obj.focBeam.bNNZ=[bj, bi-maxN-1, bv];
         end
+        
+        AmpFactor(Obj, Ppower);
 
         
     end
