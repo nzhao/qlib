@@ -8,4 +8,3 @@ function Qa = Qpl( obj, p, l, sinA, cosA )
     Pa=y.^abs(l) .* laguerreL(p, abs(l), y.*y);
     Qa=sqrt(n1/n2)*Pa.*exp(-0.5*y.*y).*sinA.*sqrt(cosA);
 end
-
