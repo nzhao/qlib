@@ -1,6 +1,7 @@
 function [eField, hField] = wavefunction_cylindrical( obj, rho, phi, z )
 %WAVEFUNCTION_CYLINDRICAL Summary of this function goes here
 %   Detailed explanation goes here
+    k=obj.incBeam.k;
     kz=obj.incBeam.k*z;
     kr=obj.incBeam.k*rho;
     px=obj.incBeam.px; py=obj.incBeam.py; %#ok<*PROP>
@@ -20,10 +21,10 @@ function [eField, hField] = wavefunction_cylindrical( obj, rho, phi, z )
     f4=besselj(l-1, x).*sinA;
     f5=besselj(l+1, x).*sinA;
     
-    Qa=obj.Qpl(obj.incBeam.p, obj.incBeam.l, sinA, cosA);
+    [Qa,Q1a,Q2a]=obj.Qpl(obj.incBeam.p, obj.incBeam.l, sinA, cosA);
 
     e1phi=exp(1.j*phi); e2phi=e1phi*e1phi; elphi=(1.j*e1phi)^l;
-    e1phi1=e1phi'; e2phi1=e2phi';
+    e1phi1=e1phi.'; e2phi1=e2phi.';
     pp=px+1.j*py; pm=px-1.j*py;
 
     ex=Qa.*exp_kz.*(pp*e2phi1.*f1 + pm*e2phi.*f2 + 2.0*px*f3)     * 0.5*elphi;
@@ -39,4 +40,9 @@ function [eField, hField] = wavefunction_cylindrical( obj, rho, phi, z )
     hField=wList*[hx; hy; hz].';
 
     %val=([ex; ey; ez; hx; hy; hz]*wList');%*obj.unitFactor();
+    %     also calculate the relative power in focal plane.
+    P1=pi/4/k^2*(abs(px)^2+abs(py)^2).*Q1a;
+    P2=-pi/8/k^2*(abs(pp)^2+abs(pm)^2).*Q2a;
+    P=wList*P1.'+wList*P2.';
+    obj.amplitude=Ppower/P;
 end
