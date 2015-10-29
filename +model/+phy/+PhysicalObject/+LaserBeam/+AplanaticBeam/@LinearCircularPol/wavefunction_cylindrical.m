@@ -35,8 +35,8 @@ function [eField, hField] = wavefunction_cylindrical( obj, rho, phi, z )
     hy= -Qa.*exp_kz.*(pp*e2phi1.*f1 + pm*e2phi.*f2 - 2.0*px*f3)     * 0.5*elphi/Z;
     hz= -Qa.*exp_kz.*(pp*e1phi1.*f4 + pm*e1phi.*f5 )                * 0.5*elphi/Z;
     
-    eField=wList*[ex; ey; ez].';
-    hField=wList*[hx; hy; hz].';
+    eField=wList*[ex; ey; ez]';
+    hField=wList*[hx; hy; hz]';
 
     %val=([ex; ey; ez; hx; hy; hz]*wList');%*obj.unitFactor();
 end
