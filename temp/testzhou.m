@@ -27,5 +27,3 @@ lg2.getVSWFcoeff(80);
 [val1e, val1h]=lg2.wavefunction(1, 0, 0.0);val1e
 [val2e, val2h]=lg2.focBeam.wavefunction(1, 0, 0.0);val2e
 
-change 1 at csrc.
-
