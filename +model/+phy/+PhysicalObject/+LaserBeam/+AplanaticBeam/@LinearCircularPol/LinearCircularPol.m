@@ -18,7 +18,7 @@ classdef LinearCircularPol < model.phy.PhysicalObject.LaserBeam.AplanaticBeam.Ab
 
         end
         
-        function [a, b]=getVSWFcoeff(obj, maxN)
+        function getVSWFcoeff(obj, maxN)
             [aList, wList]=obj.alpha_sampling(maxN);
 
             sinA=sin(aList); cosA=cos(aList); 
