@@ -10,6 +10,7 @@ function [data, fig]= lineCut(obj, r0, r1, n, component)
     for kk=1:n+1
         r=r0+(kk-1)*dr;
         x(kk)=(kk-1)*drNorm;
+        x(kk)=r0(1)+(kk-1)*drNorm;% for x axis only
         [eField, hField]=obj.wavefunction(r(1), r(2), r(3));
         data(kk,:)=[r, eField, hField];
     end
