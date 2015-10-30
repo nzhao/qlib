@@ -16,7 +16,7 @@ classdef Lens < model.phy.PhysicalObject.PhysicalObject
             obj.NA=na;
             
             if nargin<4
-                incident_medium='air';
+                incident_medium='vacuum';
             end
             
             obj.work_medium =model.phy.data.MediumData.get_parameters(working_medium);
