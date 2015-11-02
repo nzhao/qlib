@@ -1,6 +1,6 @@
-%% Initial
+%% This note repeated Lin's result with our code, and got the right result.
+%% The input parameters.
 % clear; clc;
-
 import model.phy.PhysicalObject.Lens
 import model.phy.PhysicalObject.LaserBeam.ParaxialBeam.ParaxialLaguerreGaussianBeam
 import model.phy.PhysicalObject.LaserBeam.OpticalField
@@ -24,6 +24,7 @@ k=lg1.focBeam.k; n_relative=1.46; radius =0.05;
 Nmax=60;%It's fast in Fortran.Also in example_lg. But not ours, strange.
 Nmax=ott13.ka2nmax(k*radius);Nmax=Nmax*5;
 
+%% get ab and T matrix.
 lg1.getVSWFcoeff(Nmax);
 lg1.focBeam.aNNZ;
 a0=lg1.focBeam.aNNZ(:,3);
@@ -35,8 +36,7 @@ m=lg1.focBeam.aNNZ(:,2);
 [a,b,n,m] = ott13.make_beam_vector(a0,b0,n,m);
 
 T = ott13.tmatrix_mie(Nmax,k,k*n_relative,radius);
-%%
-
+%% plot Qz
 z = linspace(-2,2,80);
 r = linspace(-2,2,80);
 z = z/wavelength;
@@ -54,7 +54,7 @@ b=b/pwr;
 
 %calculate the force along z
 for nz = 1:length(z)
-    nz
+%     nz
     [A,B] = ott13.translate_z(Nmax,z(nz));
     a2 = ( A*a + B*b );
     b2 = ( A*b + B*a );
@@ -67,42 +67,21 @@ for nz = 1:length(z)
     
 end
 
-zeroindex=find(fz<0,1);
-
-if length(zeroindex)~=0
-    %fit to third order polynomial the local points. (only works when dz
-    %sufficiently small)
-    pz=polyfit(z(max([zeroindex-2,1]):min([zeroindex+2,length(z)])),fz(max([zeroindex-2,1]):min([zeroindex+2,length(z)])),2);
-    root_z=roots(pz); %find roots of 3rd order poly.
-    dpz=[3*pz(1),2*pz(2),1*pz(3)]; %derivative of 3rd order poly.
-    
-    real_z=root_z(imag(root_z)==0); % finds real roots only.
-    
-    rootsofsign=polyval(dpz,real_z); %roots that are stable
-    zeq=real_z(rootsofsign<0); %there is at most 1 stable root. critical roots give error.
-    try
-        zeq=zeq(abs(zeq-z(zeroindex))==min(abs(zeq-z(zeroindex))));
-    end
-else
-    zeq=[];
-end
-
-if length(zeq)==0
-    warning('No axial equilibrium in range!')
-    zeq=0;
-end
-
-% equilibrium probably only correct to 1 part in 1000.
-
-figure; plot(z*wavelength,fz);
-xlabel('{\it z} (x\lambda)');
+figure; 
+plot(z*wavelength,fz);
+xlabel('{\it z} (x\mum)');
 ylabel('{\it Q_z}');
 aa = axis;
 hold on
 line(aa(1:2),[ 0 0 ],'linestyle',':');
 line([0 0],aa(3:4),'linestyle',':');
+%compare with Lin
+open('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\Qz50nmzhou.fig');
+%Nieminen's result.
+open('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\Qz50nmNie.fig');
 
-%% calculate the x-axis coefficients for force calculation.
+%% plot Qx
+%calculate the x-axis coefficients for force calculation.
 %now work out spherical coordinates along that axis:
 zeq=0;
 [rt,theta,phi]=ott13.xyz2rtp(r,0,zeq);
@@ -110,7 +89,7 @@ Rx = ott13.z_rotation_matrix(pi/2,0);
 Dx = ott13.wigner_rotation_matrix(Nmax,Rx);
 
 for nr = 1:length(r)
-    nr
+%     nr
     R = ott13.z_rotation_matrix(theta(nr),phi(nr)); %calculates an appropriate axis rotation off z.
     D = ott13.wigner_rotation_matrix(Nmax,R);
     
@@ -133,13 +112,16 @@ end
 
 
 figure; plot(r*wavelength,fr);
-xlabel('{\it r} (x\lambda)');
-ylabel('{\it Q_r}');
+xlabel('{x} (x\mum)');
+ylabel('{Q_x}');
 aa = axis;
 hold on
 line(aa(1:2),[ 0 0 ],'linestyle',':');
 line([0 0],aa(3:4),'linestyle',':');
-
+%compare with Lin
+open('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\Qx50nmzhou.fig');
+%Nieminen's result.
+open('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\Qr50nmNie.fig');
 
 
 

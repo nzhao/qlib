@@ -116,7 +116,6 @@ end
 % plot(log([4:length(timetakes)])/log(10),log(timetakes(4:end)-timetakes(3:end-1))/log(10))
 % plot([1:length(timetakes)-1],timetakes(2:end)-timetakes(1:end-1))
 
-toc
 figure; plot(z,fz);
 xlabel('{\it z} (x\lambda)');
 ylabel('{\it Q_z}');
