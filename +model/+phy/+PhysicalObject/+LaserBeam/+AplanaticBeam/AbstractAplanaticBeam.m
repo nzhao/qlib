@@ -7,10 +7,10 @@ classdef AbstractAplanaticBeam < model.phy.PhysicalObject.LaserBeam.OpticalField
         incBeam
         focBeam
         
-        f0
         gs_order
         
-        amplitude=1.0;
+        f0 %filling factor
+        AmplitudeFactor=1.0;%Factor to transform to focal plane power.
     end
     
     methods

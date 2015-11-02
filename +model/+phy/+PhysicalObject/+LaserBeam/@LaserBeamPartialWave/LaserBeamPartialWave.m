@@ -8,6 +8,7 @@ classdef LaserBeamPartialWave < model.phy.PhysicalObject.LaserBeam.OpticalField
         wavelength
         
         amplitude=1;
+        AmplitudeFactor=1;
         
         aNNZ
         bNNZ
@@ -26,8 +27,8 @@ classdef LaserBeamPartialWave < model.phy.PhysicalObject.LaserBeam.OpticalField
             obj.k=2.0*pi/wavelength;        %wave number in medium
         end
                 
-        function setAmplitude(obj, amp)
-            obj.amplitude=amp;
+        function setAmplitudeFactor(obj, amp)
+            obj.AmplitudeFactor=amp;
         end
         
         function [eField, hField]=wavefunction(obj, x, y, z)
@@ -60,8 +61,8 @@ classdef LaserBeamPartialWave < model.phy.PhysicalObject.LaserBeam.OpticalField
                 eField=eField+ bmn* prefact *M_mode;
                 hField=hField+ bmn* prefact *N_mode / (1.j*Z);
             end
-            eField=eField*obj.amplitude;
-            hField=hField*obj.amplitude;
+            eField=eField*obj.AmplitudeFactor;
+            hField=hField*obj.AmplitudeFactor;
         end
                 
     end

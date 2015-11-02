@@ -1,5 +1,5 @@
-function AmpFactor( obj, Ppower)
-%AmpFactor function get the amplitude coefficient for an incident beam 
+function calcAmpFactor( obj, Ppower)
+%calcAmpFactor function get the amplitude coefficient for an incident beam 
 %with focal plane power Ppower
 %
 %   Detailed explanation goes here
@@ -24,5 +24,6 @@ function AmpFactor( obj, Ppower)
     P2=-pi/8/k^2*(abs(pp)^2+abs(pm)^2).*Q2a;
     Pfocal=wList*P1.'+wList*P2.'; 
     amp=sqrt(Ppower/Pfocal)*1e6; % the 1e6 is because we use um as unit.
-    obj.amplitude=amp;
+    obj.AmplitudeFactor=amp;
+    obj.focBeam.setAmplitudeFactor(amp);
 end
