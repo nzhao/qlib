@@ -7,8 +7,8 @@ classdef SphereScatter < model.phy.PhysicalObject.Scatterer.AbstractScatterer
     end
     
     methods
-        function obj = SphereScatter(x,y,z,radius,scatter_medium)
-            obj@model.phy.PhysicalObject.Scatterer.AbstractScatterer(x,y,z,scatter_medium);            
+        function obj = SphereScatter(r_center,radius,scatter_medium)
+            obj@model.phy.PhysicalObject.Scatterer.AbstractScatterer(r_center,scatter_medium);            
             obj.radius=radius;            
         end
     end

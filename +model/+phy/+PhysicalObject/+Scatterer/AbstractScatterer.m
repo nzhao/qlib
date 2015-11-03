@@ -10,11 +10,11 @@ classdef AbstractScatterer < model.phy.PhysicalObject.PhysicalObject
     end
     
     methods
-        function obj = AbstractScatterer(x,y,z,scatter_medium)            
-            obj.x=x;
-            obj.y=y;
-            obj.z=z;
-            %             if nargin<4
+        function obj = AbstractScatterer(r_center,scatter_medium)
+            obj.x=r_center(1);
+            obj.y=r_center(2);
+            obj.z=r_center(3);
+            %             if nargin<2
             %                 scatter_medium='silica';
             %             end
             obj.scatter_medium=model.phy.data.MediumData.get_parameters(scatter_medium);

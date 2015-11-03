@@ -60,20 +60,13 @@ q = pq(length(pq)/2+1:end);
 %center.
 
 %% compare single point
-x=3.0; y=1.0; z=7.0;
+x=2.0; y=2.0; z=7.0;
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
 [eplus1p, hplus1p]=lg1.focBeam.wavefunction(x, y, z);
-[eplus1s, hplus1s]=scattedwavefunction(x, y, z);%The total field amplitude after scattering.
-[eplus1d; eplus1p;eplus1s]
-%% Line compare.
-figure; plot(r*wavelength,fr);
-xlabel('{x} (x\mum)');
-ylabel('{Q_x}');
-aa = axis;
-hold on
-line(aa(1:2),[ 0 0 ],'linestyle',':');
-line([0 0],aa(3:4),'linestyle',':');
-toc
+[ n,m,a,b ] = flatab2ab( n,m,a2,b2 );[a0,b0,n,m]=abNie2Lin(a0,b0,n,m);
+r=[x,y,z];r0=r_sph;
+[eplus1s, hplus1s]=scattedwavefunction(r,r_sph,n,m,a,b,lg1.focBeam,scat1);%The total field amplitude after scattering.
+[eplus1d; eplus1p; eplus1s]
 
 
 
