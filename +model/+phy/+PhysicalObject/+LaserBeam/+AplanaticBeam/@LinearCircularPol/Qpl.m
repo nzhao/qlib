@@ -1,5 +1,5 @@
 function Qa = Qpl( obj, p, l, sinA, cosA )
-%QPL Summary of this function goes here
+%QPL Qpl generate the Q(aplha) in Lin's note with arbitrary (p,l).
 %   Detailed explanation goes here
     n1=obj.lens.inc_medium.n;
     n2=obj.lens.work_medium.n;

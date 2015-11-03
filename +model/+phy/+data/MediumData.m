@@ -13,11 +13,11 @@ classdef MediumData
             medium.mu=muM;
             medium.n=sqrt(eM*muM);
             medium.v=c_velocity/medium.n;
-            medium.Z=sqrt(muM/eM)*Z0;            
+            medium.Z=sqrt(muM/eM)*Z0;
         end
         
         function [epsilon_M, mu_M]=data(name)
-
+            
             switch char(name)
                 case 'vacuum'
                     epsilon_M = 1.0;
@@ -27,6 +27,23 @@ classdef MediumData
                     mu_M      = 1.0;
                 case 'water'
                     epsilon_M = 1.3330;
+                case 'silica'
+                    epsilon_M = 1.458;% Tongcang Li's thesis P180.
+                    mu_M      = 1.0;
+                case 'diamond'
+                    epsilon_M = 2.418;% Tongcang Li's thesis P180.
+                    mu_M      = 1.0;
+                case 'ice'
+                    epsilon_M = 1.31;% Tongcang Li's thesis P180.
+                    mu_M      = 1.0;
+                case 'acetone'
+                    epsilon_M = 1.359;% Tongcang Li's thesis P180.
+                    mu_M      = 1.0;
+                case 'glycol'
+                    epsilon_M = 1.432;% Tongcang Li's thesis P180.
+                    mu_M      = 1.0;
+                case 'polystyrene'
+                    epsilon_M = 1.59;% Tongcang Li's thesis P180.
                     mu_M      = 1.0;
                 case 'oil1.3'
                     epsilon_M = 1.3;
@@ -45,7 +62,7 @@ classdef MediumData
             end
         end
     end
-
+    
     
 end
 
