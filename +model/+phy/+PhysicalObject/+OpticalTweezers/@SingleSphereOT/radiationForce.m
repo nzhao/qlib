@@ -1,6 +1,7 @@
 function force = radiationForce( obj, path )
 %RADIATIONFORCE Summary of this function goes here
 %   Detailed explanation goes here
+    path=path/obj.beam.focBeam.wavelength;
     nmax=obj.Nmax;
     Rx = ott13.z_rotation_matrix(pi/2,0);
     Dx = ott13.wigner_rotation_matrix(nmax,Rx);

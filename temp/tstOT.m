@@ -24,8 +24,10 @@ sphere=SphereParticle(sphere_radius, 'sillica');
 sys=SingleSphereOT(lens, incBeam, sphere);
 sys.prepare_coeff();
 
-xlist=linspace(-2,2,80)/wavelength;
-path=[xlist; zeros(1, 80); zeros(1, 80)];
+path=zeros(3, 80);
+xlist=linspace(-2,2,80);
+path(1,:)=xlist;
 force=sys.radiationForce(path);
+
 figure;
-plot(xlist*wavelength, force(1, :))
+plot(xlist, force(1, :))
