@@ -41,7 +41,7 @@ classdef MediumData
                     epsilon_M = 1.6;
                     mu_M      = 1.0;
                 case 'sillica'
-                    epsilon_M = 1.46;
+                    epsilon_M = 1.46*1.46;
                     mu_M      = 1.0;
                 otherwise
                     error([name ' - unknown medium.']);
