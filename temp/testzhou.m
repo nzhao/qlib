@@ -1,7 +1,7 @@
 %% This is an example of calculate 
 %% The input parameters.
 % clear; 
-clc;
+% clc;
 tic;
 import model.phy.PhysicalObject.Lens
 import model.phy.PhysicalObject.LaserBeam.ParaxialBeam.ParaxialLaguerreGaussianBeam
@@ -30,7 +30,7 @@ scat1=model.phy.PhysicalObject.Scatterer.SphereScatter(r_sph,radius,scatter_medi
 
 k=lg1.focBeam.k;
 n_relative=scat1.scatter_medium.n/len.work_medium.n; %The relative unit is the wavelength in working medium of len.
-Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;%Nmax=15;
+Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;%Nmax=40;
 lg1.getVSWFcoeff(Nmax);
 
 %% calculation
@@ -63,9 +63,10 @@ q = pq(length(pq)/2+1:end);
 x=2.0; y=2.0; z=7.0;
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
 [eplus1p, hplus1p]=lg1.focBeam.wavefunction(x, y, z);
-[ n,m,a,b ] = flatab2ab( n,m,a2,b2 );[a0,b0,n,m]=abNie2Lin(a0,b0,n,m);
+[ n,m,a,b ] = flatab2ab( n,m,a2,b2 );%[a0,b0,n,m]=abNie2Lin(a0,b0,n,m);
 r=[x,y,z];r0=r_sph;
-[eplus1s, hplus1s]=scattedwavefunction(r,r_sph,n,m,a,b,lg1.focBeam,scat1);%The total field amplitude after scattering.
+[ n,m,a,b ] = flatab2ab( n,m,a,b );r0=[0,0,0];
+[eplus1s, hplus1s]=scattedwavefunction(r,r0,n,m,a,b,lg1.focBeam,scat1);%The total field amplitude after scattering.
 [eplus1d; eplus1p; eplus1s]
 
 
