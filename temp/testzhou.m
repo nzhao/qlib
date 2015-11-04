@@ -1,13 +1,17 @@
-%% Initial
-% clear; clc;
-
+%% This is an example of calculate 
+%% The input parameters.
+% clear; 
+clc;
+tic;
 import model.phy.PhysicalObject.Lens
 import model.phy.PhysicalObject.LaserBeam.ParaxialBeam.ParaxialLaguerreGaussianBeam
 import model.phy.PhysicalObject.LaserBeam.OpticalField
+import model.phy.PhysicalObject.Scatterer.SphereScatter
+import model.phy.PhysicalObject.Scatterer.AbstractScatterer
 %%Lens
 f=1.0;%focal distance in mm
 NA=0.95; working_medium='vacuum';
-lens=Lens(f, NA, working_medium);
+len=Lens(f, NA, working_medium);
 %%incBeam
 power=0.1;
 % This power is used to calc the incbeam parameters. 
@@ -16,130 +20,53 @@ wavelength=1.064; waist=950.0; center=[0, 0, 0];  %in micron
 %filling_factor = n_work_medium*waist/(f*1000)/NA
 px=1.0; py=0.0; p=0; l=1; 
 incBeam1=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px, py, 'vacuum');
-lg1=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(lens, incBeam1);
+lg1=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(len, incBeam1);
 lg1.calcAmpFactor(power);
 %%scatter
-k=lg1.focBeam.k; n_relative=1.46; radius =0.05;
-%%Now begin calcualte.
-Nmax=60;%It's fast in Fortran.Also in example_lg. But not ours, strange.
-Nmax=ott13.ka2nmax(k*radius);Nmax=Nmax*5;
+r_sph=[3,1,2];%scatter_center=[0,0,0];
+radius =0.05;%unit um
+scatter_medium='silica';
+scat1=model.phy.PhysicalObject.Scatterer.SphereScatter(r_sph,radius,scatter_medium);
 
+k=lg1.focBeam.k;
+n_relative=scat1.scatter_medium.n/len.work_medium.n; %The relative unit is the wavelength in working medium of len.
+Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;%Nmax=15;
 lg1.getVSWFcoeff(Nmax);
-lg1.focBeam.aNNZ;
+
+%% calculation
+%get ab and T matrix.
 a0=lg1.focBeam.aNNZ(:,3);
 b0=lg1.focBeam.bNNZ(:,3);
 n=lg1.focBeam.aNNZ(:,1);
 m=lg1.focBeam.aNNZ(:,2);
-
 [a0,b0,n,m]=abLin2Nie(a0,b0,n,m);
 [a,b,n,m] = ott13.make_beam_vector(a0,b0,n,m);
 
-T = ott13.tmatrix_mie(Nmax,k,k*n_relative,radius);
-%%
+T = ott13.tmatrix_mie(Nmax,k,k*n_relative,scat1.radius);
 
-z = linspace(-2,2,80);
-r = linspace(-2,2,80);
-z = z/wavelength;
-r = z/wavelength;
+[rt,theta,phi]=ott13.xyz2rtp(scat1.x,scat1.y,scat1.z);
 
-fz = zeros(size(z));
-fr = zeros(size(r));
+R = ott13.z_rotation_matrix(theta,phi); %calculates an appropriate axis rotation off z.
+D = ott13.wigner_rotation_matrix(Nmax,R);
 
-%root power for nomalization to a and b individually.
-pwr = sqrt(sum( abs(a).^2 + abs(b).^2 ));
+[A,B] = ott13.translate_z(Nmax,rt);
+a2 = D'*(  A * D*a +  B * D*b ); % Wigner matricies here are hermitian. Therefore in MATLAB the D' operator is the inverse of D.
+b2 = D'*(  A * D*b +  B * D*a ); % In MATLAB operations on vectors are done first, therefore less calculation is done on the matricies.
 
-%normalize total momentum of wave sum to 1. Not good for SI EM field.
-a=a/pwr;
-b=b/pwr;
+pq = T * [ a2; b2 ];
+p = pq(1:length(pq)/2);
+q = pq(length(pq)/2+1:end);
+%It's noticed that [a2,b2,p,q] are incident-scatter beam formula at sphere
+%center.
 
-%calculate the force along z
-for nz = 1:length(z)
-    nz
-    [A,B] = ott13.translate_z(Nmax,z(nz));
-    a2 = ( A*a + B*b );
-    b2 = ( A*b + B*a );
-    
-    pq = T * [ a2; b2 ];
-    p = pq(1:length(pq)/2);
-    q = pq(length(pq)/2+1:end);
-    
-    fz(nz) = ott13.force_z(n,m,a2,b2,p,q);
-    
-end
-
-zeroindex=find(fz<0,1);
-
-if length(zeroindex)~=0
-    %fit to third order polynomial the local points. (only works when dz
-    %sufficiently small)
-    pz=polyfit(z(max([zeroindex-2,1]):min([zeroindex+2,length(z)])),fz(max([zeroindex-2,1]):min([zeroindex+2,length(z)])),2);
-    root_z=roots(pz); %find roots of 3rd order poly.
-    dpz=[3*pz(1),2*pz(2),1*pz(3)]; %derivative of 3rd order poly.
-    
-    real_z=root_z(imag(root_z)==0); % finds real roots only.
-    
-    rootsofsign=polyval(dpz,real_z); %roots that are stable
-    zeq=real_z(rootsofsign<0); %there is at most 1 stable root. critical roots give error.
-    try
-        zeq=zeq(abs(zeq-z(zeroindex))==min(abs(zeq-z(zeroindex))));
-    end
-else
-    zeq=[];
-end
-
-if length(zeq)==0
-    warning('No axial equilibrium in range!')
-    zeq=0;
-end
-
-% equilibrium probably only correct to 1 part in 1000.
-
-figure; plot(z*wavelength,fz);
-xlabel('{\it z} (x\lambda)');
-ylabel('{\it Q_z}');
-aa = axis;
-hold on
-line(aa(1:2),[ 0 0 ],'linestyle',':');
-line([0 0],aa(3:4),'linestyle',':');
-
-%% calculate the x-axis coefficients for force calculation.
-%now work out spherical coordinates along that axis:
-zeq=0;
-[rt,theta,phi]=ott13.xyz2rtp(r,0,zeq);
-Rx = ott13.z_rotation_matrix(pi/2,0);
-Dx = ott13.wigner_rotation_matrix(Nmax,Rx);
-
-for nr = 1:length(r)
-    nr
-    R = ott13.z_rotation_matrix(theta(nr),phi(nr)); %calculates an appropriate axis rotation off z.
-    D = ott13.wigner_rotation_matrix(Nmax,R);
-    
-    [A,B] = ott13.translate_z(Nmax,rt(nr));
-    a2 = D'*(  A * D*a +  B * D*b ); % Wigner matricies here are hermitian. Therefore in MATLAB the D' operator is the inverse of D.
-    b2 = D'*(  A * D*b +  B * D*a ); % In MATLAB operations on vectors are done first, therefore less calculation is done on the matricies.
-    
-    pq = T * [ a2; b2 ];
-    p = pq(1:length(pq)/2);
-    q = pq(length(pq)/2+1:end);
-    
-    fr(nr) = ott13.force_z(n,m,Dx*a2,Dx*b2,Dx*p,Dx*q); %Dx makes the z-force calculation the x-force calculation.
-    
-end
-%     timetakes(ii)=toc;
-% end
-%
-% plot(log([4:length(timetakes)])/log(10),log(timetakes(4:end)-timetakes(3:end-1))/log(10))
-% plot([1:length(timetakes)-1],timetakes(2:end)-timetakes(1:end-1))
-
-
-figure; plot(r*wavelength,fr);
-xlabel('{\it r} (x\lambda)');
-ylabel('{\it Q_r}');
-aa = axis;
-hold on
-line(aa(1:2),[ 0 0 ],'linestyle',':');
-line([0 0],aa(3:4),'linestyle',':');
-
+%% compare single point
+x=2.0; y=2.0; z=7.0;
+[eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
+[eplus1p, hplus1p]=lg1.focBeam.wavefunction(x, y, z);
+[ n,m,a,b ] = flatab2ab( n,m,a2,b2 );[a0,b0,n,m]=abNie2Lin(a0,b0,n,m);
+r=[x,y,z];r0=r_sph;
+[eplus1s, hplus1s]=scattedwavefunction(r,r_sph,n,m,a,b,lg1.focBeam,scat1);%The total field amplitude after scattering.
+[eplus1d; eplus1p; eplus1s]
 
 
 
