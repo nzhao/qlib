@@ -1,6 +1,7 @@
 function [ pmn, qmn ] = vswf_coeff( obj, m, n, Qa, cosA, wList )
 %VSWF_COEFF Summary of this function goes here
 %   Detailed explanation goes here
+%   This vswf_coeff calculate Eq(50) in note.
     if m~=obj.incBeam.l+1 && m~=obj.incBeam.l-1
         pmn=0.0; qmn=0.0;
     else

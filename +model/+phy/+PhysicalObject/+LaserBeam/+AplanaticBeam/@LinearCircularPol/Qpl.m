@@ -1,5 +1,5 @@
 function Qa = Qpl( obj, p, l, sinA, cosA )
-%QPL Summary of this function goes here
+%QPL Qpl generate the Q(aplha) in Lin's note with arbitrary (p,l).
 %   Detailed explanation goes here
     n1=obj.lens.inc_medium.n;
     n2=obj.lens.work_medium.n;
@@ -8,4 +8,3 @@ function Qa = Qpl( obj, p, l, sinA, cosA )
     Pa=y.^abs(l) .* laguerreL(p, abs(l), y.*y);
     Qa=sqrt(n1/n2)*Pa.*exp(-0.5*y.*y).*sinA.*sqrt(cosA);
 end
-
