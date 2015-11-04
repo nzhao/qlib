@@ -23,7 +23,7 @@ incBeam1=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px
 lg1=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(len, incBeam1);
 lg1.calcAmpFactor(power);
 %%scatter
-r_sph=[3,1,2];%scatter_center=[0,0,0];
+r_sph=[3,1,2];%r_sph=[0,0,0];
 radius =0.05;%unit um
 scatter_medium='silica';
 scat1=model.phy.PhysicalObject.Scatterer.SphereScatter(r_sph,radius,scatter_medium);
@@ -37,10 +37,10 @@ lg1.getVSWFcoeff(Nmax);
 %get ab and T matrix.
 a0=lg1.focBeam.aNNZ(:,3);
 b0=lg1.focBeam.bNNZ(:,3);
-n=lg1.focBeam.aNNZ(:,1);
-m=lg1.focBeam.aNNZ(:,2);
-[a0,b0,n,m]=abLin2Nie(a0,b0,n,m);
-[a,b,n,m] = ott13.make_beam_vector(a0,b0,n,m);
+n0=lg1.focBeam.aNNZ(:,1);
+m0=lg1.focBeam.aNNZ(:,2);
+[a1,b1,n1,m1]=abLin2Nie(a0,b0,n0,m0);
+[a,b,n,m] = ott13.make_beam_vector(a1,b1,n1,m1);
 
 T = ott13.tmatrix_mie(Nmax,k,k*n_relative,scat1.radius);
 
@@ -63,12 +63,22 @@ q = pq(length(pq)/2+1:end);
 x=2.0; y=2.0; z=7.0;
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
 [eplus1p, hplus1p]=lg1.focBeam.wavefunction(x, y, z);
-[ n,m,a,b ] = flatab2ab( n,m,a2,b2 );%[a0,b0,n,m]=abNie2Lin(a0,b0,n,m);
+r0=r_sph;
+% [ n,m,a,b ] = flatab2ab( n,m,a2,b2 );%[a0,b0,n,m]=abNie2Lin(a0,b0,n,m);
+%test1:OK.
+r=[x,y,z];r0=[0,0,0];
+[eplus1s, hplus1s]=scattedwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
+[eplus1d; eplus1p; eplus1s];
+%test2:OK
+r=[x,y,z];r0=[0,0,0];
+[ n1,m1,a1,b1 ] = flatab2ab( n,m,a,b );[a0,b0,n0,m0]=abNie2Lin(a1,b1,n1,m1);
+[eplus1s, hplus1s]=scattedwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
+[eplus1d; eplus1p; eplus1s];
+%test3:
 r=[x,y,z];r0=r_sph;
-[ n,m,a,b ] = flatab2ab( n,m,a,b );r0=[0,0,0];
-[eplus1s, hplus1s]=scattedwavefunction(r,r0,n,m,a,b,lg1.focBeam,scat1);%The total field amplitude after scattering.
+[ n1,m1,a1,b1 ] = flatab2ab( n,m,a2,b2 );[a0,b0,n0,m0]=abNie2Lin(a1,b1,n1,m1);
+[eplus1s, hplus1s]=scattedwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
 [eplus1d; eplus1p; eplus1s]
-
 
 
 
