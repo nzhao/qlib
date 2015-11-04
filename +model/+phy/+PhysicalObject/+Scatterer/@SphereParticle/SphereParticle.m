@@ -10,6 +10,7 @@ classdef SphereParticle < model.phy.PhysicalObject.Scatterer.AbstractScatterer
     
     methods
         function obj=SphereParticle(radius, medium)
+            obj@model.phy.PhysicalObject.Scatterer.AbstractScatterer([0, 0, 0], medium);
             if ischar(medium)
                 medium={medium};
             end
