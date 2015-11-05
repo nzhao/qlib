@@ -19,6 +19,7 @@ function L_single=gen_superoperator_single(obj,spin,kk)
             else
                 mat_m=speye(dim_list(mm));
                 mat_p=speye(dim_list(mm));
+                mat_z=speye(dim_list(mm));
             end
             sigma_m=kron(sigma_m,mat_m);    
             sigma_p=kron(sigma_p,mat_p);
