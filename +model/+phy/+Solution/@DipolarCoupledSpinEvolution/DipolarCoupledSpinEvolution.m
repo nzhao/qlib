@@ -29,7 +29,13 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
             obj.parameters.InputFile                 = p.get_parameter('SpinCollection', 'FileName');
             obj.parameters.MagneticField             = p.get_parameter('Condition',      'MagneticField');
             obj.parameters.IsSecularApproximation    = p.get_parameter('Interaction',    'IsSecular');
-            obj.parameters.InitialState              = p.get_parameter('InitialState',   'DensityMatrix');
+            
+            obj.parameters.InitialStateType          = p.get_parameter('InitialState',   'Type');
+            if strcmp(obj.parameters.InitialStateType, 'MixedState')
+                obj.parameters.InitialState              = p.get_parameter('InitialState',   'DensityMatrix');
+            else
+                obj.parameters.InitialState              = p.get_parameter('InitialState',   'StateVector');
+            end
             
             obj.parameters.ObservableNumber          = p.get_parameter('Observable',     'ObservableNumber');
             nObs=obj.parameters.ObservableNumber;
@@ -48,12 +54,12 @@ classdef DipolarCoupledSpinEvolution < model.phy.Solution.AbstractSolution
 
             spin_collection            = obj.GetSpinList();
             [hamiltonian, liouvillian] = obj.GetHamiltonianLiouvillian(spin_collection);
-            density_matrix             = obj.GetDensityMatrix(spin_collection);
+            initial_state               = obj.GetDensityMatrix(spin_collection);
             observables                = obj.GetObservables(spin_collection);
-            dynamics                   = obj.StateEvolve(liouvillian, density_matrix);
-            mean_values                = obj.GetMeanValues(dynamics, observables);
+            dynamics                   = obj.StateEvolve(hamiltonian, liouvillian, initial_state);
+            %mean_values                = obj.GetMeanValues(dynamics, observables);
             
-            obj.StoreKeyVariables(spin_collection, hamiltonian, density_matrix, observables, dynamics, mean_values);
+            %obj.StoreKeyVariables(spin_collection, hamiltonian, initial_state, observables, dynamics, mean_values);
         end
 
     end
