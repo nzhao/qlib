@@ -12,3 +12,6 @@ kVec=[thetaD, phiD]; pol=[eTheta, ePhi];
 rb.setBeam( 'D1', kVec, pol, Sl)
 
 tV=rb.electricDipoleInteraction(j, magB);
+
+Dnu=1.0;
+G=rb.evolutionOperator(Dnu, j, magB);
