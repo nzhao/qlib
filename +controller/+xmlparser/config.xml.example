@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+   <CCE>
+      <max_order type="double">4</max_order>
+   </CCE>
+   <SpinBath>
+      <cut_off type="double">500</cut_off>
+      <method type="char">random</method>
+   </SpinBath>
+</config>
