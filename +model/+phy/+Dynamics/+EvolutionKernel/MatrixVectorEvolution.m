@@ -6,10 +6,11 @@ classdef MatrixVectorEvolution < model.phy.Dynamics.AbstractEvolutionKernel
         matrix
         result
         matrix_prefactor
+        initial_state_type
     end
     
     methods
-        function obj=MatrixVectorEvolution(qOperator, prefactor)
+        function obj=MatrixVectorEvolution(qOperator, initial_state_type, prefactor)
             try
                 obj.matrix=qOperator.getMatrix();
             catch
@@ -17,7 +18,9 @@ classdef MatrixVectorEvolution < model.phy.Dynamics.AbstractEvolutionKernel
             end
             obj.result=[];
             
-            if nargin > 1
+            obj.initial_state_type=initial_state_type;
+            
+            if nargin > 2
                 obj.matrix_prefactor= prefactor;
             else
                 obj.matrix_prefactor= -1.j;
@@ -43,14 +46,26 @@ classdef MatrixVectorEvolution < model.phy.Dynamics.AbstractEvolutionKernel
         end
         
         function mean_val=mean_value(obj, obs_list)
-            [len_res_dim, ~]=size(obj.result);
+            [len_res_dim, len_res]=size(obj.result);
             len_obs=length(obs_list);
             
-            obs_mat=zeros(len_obs, len_res_dim);
-            for k=1:len_obs
-                obs_mat(k,:)=obs_list{k}.getVector()';
+            if strcmp(obj.initial_state_type, 'MixedState')
+                obs_mat=zeros(len_obs, len_res_dim);
+                for k=1:len_obs
+                    obs_mat(k,:)=obs_list{k}.getVector()';
+                end
+                mean_val=obs_mat*obj.result;
+                
+            elseif strcmp(obj.initial_state_type, 'PureState')
+                mean_val=zeros(len_obs, len_res);
+                for ii=1:len_obs
+                    mat=obs_list{ii}.getMatrix();
+                    mat_on_state=mat*obj.result;
+                    mean_val=sum(conj(obj.result).*mat_on_state);
+                end
+            else
+                error('not supported.');
             end
-            mean_val=obs_mat*obj.result;
         end
         
     end
