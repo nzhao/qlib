@@ -1,0 +1,14 @@
+*.m~
+*.asv
+*.mat
+*.xyz
+
+doc/output/
+
++controller/+input/+xml/EnsembleCCE_hBNLayer.xml
+
++controller/+output/BenzeneDynamics20150608_122343.mat
+
++controller/+output/ButaneDynamics20150608_122702.mat
+
+

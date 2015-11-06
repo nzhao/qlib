@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+   <Name>
+       <SolutionName type="char">hBNLayer</SolutionName>
+   </Name>
+   <Condition>
+      <MagneticField type="eval">815*1e-4*[0 0 1]</MagneticField>
+   </Condition>
+   <Dynamics>
+      <NTime type="double">21</NTime>
+      <TMax type="eval">2e-4</TMax>
+      <NPulse type="double">1</NPulse>
+      <CCEStrategy type='char'>ECCEClusterCoherence</CCEStrategy>
+   </Dynamics>
+   <Interaction>
+      <IsSecular type="double">0</IsSecular>
+   </Interaction>
+   <SpinCollection>
+      <LoadSpinCollection type="double">0</LoadSpinCollection>
+      <FileName type="char">+xyz/hBNLayer500.xyz</FileName>
+      <Source type="char">File</Source>
+   </SpinCollection>
+   <Clustering>
+       <LoadCluterIterator type="double">1</LoadCluterIterator>
+       <CluterIteratorName type="char">cluster_iterator500.mat</CluterIteratorName>
+       <CutOff type="double">3</CutOff>
+       <MaxOrder type="double">2.6</MaxOrder>
+   </Clustering>
+   <SetBathSpins>
+       <SetSpin type="double">1</SetSpin>
+       <SpeciesNumber type="double">4</SpeciesNumber>
+       <Name type="eval">['10B'; '11B'; '14N'; '15N']</Name>
+       <ZFS type="eval">[2*pi*1.48e5;2*pi*7.267e5;2*pi*1.05e5;0]</ZFS>
+       <eta type="char">default</eta>
+       <principle_axis type="char">default</principle_axis>       
+   </SetBathSpins>
+   <SetCentralSpin>
+       <Name type="char">NV</Name>
+       <CentralSpinStates type="eval">[1,2]</CentralSpinStates>
+       <SetSpin type="double">1</SetSpin>
+       <Orientation type="eval">[0,0,1]</Orientation>
+       <Isotope type="char">14N</Isotope>
+       <Coordinate type="eval">[0,0,30]</Coordinate>
+   </SetCentralSpin>
+</config>
