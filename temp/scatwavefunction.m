@@ -1,4 +1,4 @@
-function [eField, hField] = scattedwavefunction(r,r0, n2, m2, a2, b2,objf,objs )
+function [eField, hField] = scatwavefunction(r,r0, n2, m2, a2, b2,objf,objs )
 %scattedwavefunction Summary of this function goes here
 %   Detailed explanation goes here
 %   objf is the an object of FocBeam, objs is an object of Spherescatter.
