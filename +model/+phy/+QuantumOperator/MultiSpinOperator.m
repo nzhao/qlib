@@ -77,7 +77,7 @@
                     idx=idx+1;
                 end
             end
-            fwrite(fileID, pos_list,'int');
+            fwrite(fileID, pos_list-1,'int');%for C applications: count from 0 
             fwrite(fileID, dim_list,'int');
 
             for ii=1:nInt
@@ -94,21 +94,8 @@
                     fwrite(fileID, imag(mat_k),'double'); 
                 end
             end
-
-%             for ii=1:nInt
-%                 data_i=data{ii};
-%                 
-%                 coeff=data_i{1};  fwrite(fileID, coeff,'double');
-%                 nbody=data_i{2};  fwrite(fileID, nbody,'int');
-%                 for kk=0:nbody-1
-%                     pos_k=data_i{3+kk*3}; fwrite(fileID, pos_k,'int');
-%                     dim_k=data_i{3+kk*3+1}; fwrite(fileID, dim_k,'int');
-%                     mat_k=data_i{3+kk*3+2}; fwrite(fileID, real(mat_k),'double'); fwrite(fileID, imag(mat_k),'double');
-%                 end
-%             end
             
             fclose(fileID);
- 
         end
             
         
