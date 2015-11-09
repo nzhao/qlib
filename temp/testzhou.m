@@ -30,7 +30,7 @@ scat1=model.phy.PhysicalObject.Scatterer.SphereScatter(r_sph,radius,scatter_medi
 
 k=lg1.focBeam.k;
 n_relative=scat1.scatter_medium.n/len.work_medium.n; %The relative unit is the wavelength in working medium of len.
-Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;Nmax=80;
+Nmax=ott13.ka2nmax(k*scat1.radius);%Nmax=Nmax*5;Nmax=80;
 lg1.getVSWFcoeff(Nmax);
 
 %% calculation
@@ -89,11 +89,11 @@ r=[x,y,z];r0=r_sph;%r0=[0,0,0];
 
 Fldtmp=ott13.electromagnetic_field_xyz(r-r_sph,[n;m],[a2;b2],[],[]);
 eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
-[eplus1d; eplus1p; eplus1s;eplus1ott]
+[eplus1d; eplus1p;eplus1ott]
 
 Fldtmp=ott13.electromagnetic_field_xyz(r,[n;m],[a2;b2],[],[]);
 eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
-[eplus1d; eplus1p; eplus1s;eplus1ott]
+[eplus1d; eplus1p;eplus1ott]
 
 
 
