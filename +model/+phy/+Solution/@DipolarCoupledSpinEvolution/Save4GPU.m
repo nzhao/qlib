@@ -1,7 +1,10 @@
 function Save4GPU(obj, filename, path )
 %SAVE4GPU Summary of this function goes here
 %   Detailed explanation goes here
-    if nargin < 3
+    if nargin < 2
+        path=OUTPUT_FILE_PATH;
+        filename='Data_';
+    elseif nargin < 3
         path=OUTPUT_FILE_PATH;
     end
     
@@ -10,11 +13,13 @@ function Save4GPU(obj, filename, path )
     st = obj.GetInitialState(sc);
     [hm, lv] = obj.GetHamiltonianLiouvillian(sc);
     
-    hm.export_interaction_data([path, obj.solutionName, '_mat.dat']);
-    st.export_vector([path, obj.solutionName, '_vec.dat']);
+    full_name=[path, filename, obj.solutionName, '_', obj.timeTag, '.dat'];
+    
+    hm.export_interaction_data(full_name);
+    st.export_vector(full_name);
     
     tlist=obj.parameters.TimeList;
-    fileID = fopen([path, obj.solutionName, '_time.dat'],'w');
+    fileID = fopen(full_name,'a');
     fwrite(fileID, length(tlist), 'uint64'); 
     fwrite(fileID, tlist,'double');
     fclose(fileID);

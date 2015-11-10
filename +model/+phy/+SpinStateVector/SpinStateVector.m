@@ -13,7 +13,7 @@ classdef SpinStateVector < model.phy.SpinStateVector.AbstractSpinStateVector
         
         function export_vector(obj, filename)
             v=obj.getVector();
-            fileID = fopen(filename,'w');
+            fileID = fopen(filename,'a');
             fwrite(fileID, real(v),'double'); 
             fwrite(fileID, imag(v),'double');
             fclose(fileID);
