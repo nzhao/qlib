@@ -44,16 +44,16 @@
             nInt=length(data);
 
             fileID = fopen(filename,'w');
-            fwrite(fileID, nSpin,'int');
-            fwrite(fileID, nInt,'int');
-            fwrite(fileID, obj.dim,'int');
+            fwrite(fileID, nSpin,'uint64');
+            fwrite(fileID, nInt,'uint64');
+            fwrite(fileID, obj.dim,'uint64');
             
             spin_dim=zeros(1, nSpin);
             for ii=1:nSpin
                 spin=obj.spin_collection.spin_list{ii};
                 spin_dim(ii)=spin.dim;
             end
-            fwrite(fileID, spin_dim,'int');
+            fwrite(fileID, spin_dim,'uint64');
             
             coeff_list=zeros(1, nInt);
             nbody_list=zeros(1, nInt);
@@ -64,7 +64,7 @@
             end
             total_nbody=sum(nbody_list);
             fwrite(fileID, coeff_list,'double');
-            fwrite(fileID, nbody_list,'int');
+            fwrite(fileID, nbody_list,'uint64');
             
             idx=1;
             pos_list=zeros(1, total_nbody);
@@ -77,8 +77,8 @@
                     idx=idx+1;
                 end
             end
-            fwrite(fileID, pos_list-1,'int');%for C applications: count from 0 
-            fwrite(fileID, dim_list,'int');
+            fwrite(fileID, pos_list-1,'uint64');%for C applications: count from 0 
+            fwrite(fileID, dim_list,'uint64');
 
             for ii=1:nInt
                 data_i=data{ii};

@@ -15,7 +15,7 @@ function Save4GPU(obj, filename, path )
     
     tlist=obj.parameters.TimeList;
     fileID = fopen([path, obj.solutionName, '_time.dat'],'w');
-    fwrite(fileID, length(tlist), 'int'); 
+    fwrite(fileID, length(tlist), 'uint64'); 
     fwrite(fileID, tlist,'double');
     fclose(fileID);
 
