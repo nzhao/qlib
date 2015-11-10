@@ -1,7 +1,7 @@
 %% This is an example of calculate 
 %% The input parameters.
-% clear; 
-% clc;
+ clear; 
+ clc;
 tic;
 import model.phy.PhysicalObject.Lens
 import model.phy.PhysicalObject.LaserBeam.ParaxialBeam.ParaxialLaguerreGaussianBeam
@@ -30,10 +30,10 @@ scat1=model.phy.PhysicalObject.Scatterer.SphereScatter(r_sph,radius,scatter_medi
 
 k=lg1.focBeam.k;
 n_relative=scat1.scatter_medium.n/len.work_medium.n; %The relative unit is the wavelength in working medium of len.
-Nmax=ott13.ka2nmax(k*scat1.radius);%Nmax=Nmax*5;Nmax=80;
+Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;Nmax=60;
 lg1.getVSWFcoeff(Nmax);
 
-%% calculation
+%%calculation
 %get ab and T matrix.
 a0=lg1.focBeam.aNNZ(:,3);
 b0=lg1.focBeam.bNNZ(:,3);
@@ -59,29 +59,33 @@ q = pq(length(pq)/2+1:end);
 %It's noticed that [a2,b2,p,q] are incident-scatter beam formula at sphere
 %center.
 
-%% compare single point
-x=2.0; y=2.0; z=7.0;
+%%compare single point
+x=2.0; y=2.0; z=7.0;r=[x,y,z];
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
 [eplus1p, hplus1p]=lg1.focBeam.wavefunction(x, y, z);
 r0=r_sph;
-%%
-% [ n,m,a,b ] = flatab2ab( n,m,a2,b2 );%[a0,b0,n,m]=abNie2Lin(a0,b0,n,m);
-%test1:scatterwave function is OK.
-r=[x,y,z];r0=[0,0,0] %The new scatteredwavefunction is OK 
-[eplus1s, hplus1s]=scatwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
-[eplus1d; eplus1p; eplus1s]
-%test2:from spare ab to a0,b0 is OK
-r=[x,y,z];r0=[0,0,0];
-[ n1,m1,a1,b1 ] = flatab2ab( n,m,a,b );[a0,b0,n0,m0]=abNie2Lin(a1,b1,n1,m1);
-[eplus1s, hplus1s]=scatwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
-[eplus1d; eplus1p; eplus1s]
+% %%
+% % [ n,m,a,b ] = flatab2ab( n,m,a2,b2 );%[a0,b0,n,m]=abNie2Lin(a0,b0,n,m);
+% %test1:scatterwave function is OK.
+% r=[x,y,z];r0=[0,0,0]; %The new scatteredwavefunction is OK 
+% [eplus1s, hplus1s]=scatwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
+% [eplus1d; eplus1p; eplus1s];
+% %test2:from spare ab to a0,b0 is OK
+% r=[x,y,z];r0=[0,0,0];
+% [ n1,m1,a1,b1 ] = flatab2ab( n,m,a,b );[a0,b0,n0,m0]=abNie2Lin(a1,b1,n1,m1);
+% [eplus1s, hplus1s]=scatwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
+% [eplus1d; eplus1p; eplus1s];
 %% 
 %test3:from a2b2 is Wrong, why?
-r=[x,y,z];r0=r_sph;%r0=[0,0,0];
+r0=r_sph;%r0=[0,0,0];
 [ n1,m1,a1,b1 ] = flatab2ab( n,m,a2,b2 );[a0,b0,n0,m0]=abNie2Lin(a1,b1,n1,m1);
 [eplus1s, hplus1s]=scatwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
 [eplus1d; eplus1p; eplus1s]
 
+r=[x,y,z];r0=r_sph;%r0=[0,0,0];
+[ n1,m1,a1,b1 ] = flatab2ab( n,m,a2,b2 );[a0,b0,n0,m0]=abNie2Lin(a2,b2,n,m);
+[eplus1s, hplus1s]=scatwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
+[eplus1d; eplus1p; eplus1s]
 % figure;
 % [data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'Ea');
 
@@ -91,10 +95,16 @@ Fldtmp=ott13.electromagnetic_field_xyz(r-r_sph,[n;m],[a2;b2],[],[]);
 eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
 [eplus1d; eplus1p;eplus1ott]
 
-Fldtmp=ott13.electromagnetic_field_xyz(r,[n;m],[a2;b2],[],[]);
+Fldtmp=ott13.electromagnetic_field_xyz(r,[n;m],[a;b],[],[]);
 eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
 [eplus1d; eplus1p;eplus1ott]
 
+[abs(eplus1d)/abs(eplus1ott);
+abs(eplus1d(1))/abs(eplus1ott(1));
+abs(eplus1d(2))/abs(eplus1ott(2));
+abs(eplus1d(3))/abs(eplus1ott(3));]
 
+[sqrt(sum( abs(a0).^2 + abs(b0).^2 ));sqrt(sum( abs(a1).^2 + abs(b1).^2 ));
+sqrt(sum( abs(a).^2 + abs(b).^2 ));sqrt(sum( abs(a2).^2 + abs(b2).^2 ))]
 
 
