@@ -38,8 +38,8 @@ lg1.getVSWFcoeff(Nmax);
 a0=lg1.focBeam.aNNZ(:,3);
 b0=lg1.focBeam.bNNZ(:,3);
 n0=lg1.focBeam.aNNZ(:,1);
-m0=lg1.focBeam.aNNZ(:,2);
-[a1,b1,n1,m1]=abLin2Nie(a0,b0,n0,m0);
+m0t=lg1.focBeam.aNNZ(:,2);
+[a1,b1,n1,m1]=abLin2Nie(a0,b0,n0,m0t);
 [a,b,n,m] = ott13.make_beam_vector(a1,b1,n1,m1);
 
 T = ott13.tmatrix_mie(Nmax,k,k*n_relative,scat1.radius);
@@ -60,10 +60,10 @@ q = pq(length(pq)/2+1:end);
 %center.
 
 %%compare single point
-x=2.0; y=2.0; z=7.0;r=[x,y,z];
+x=2.0; y=1.0; z=3.0;
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
 [eplus1p, hplus1p]=lg1.focBeam.wavefunction(x, y, z);
-r0=r_sph;
+r=[x,y,z];r0=r_sph;
 % %%
 % % [ n,m,a,b ] = flatab2ab( n,m,a2,b2 );%[a0,b0,n,m]=abNie2Lin(a0,b0,n,m);
 % %test1:scatterwave function is OK.
@@ -77,14 +77,14 @@ r0=r_sph;
 % [eplus1d; eplus1p; eplus1s];
 %% 
 %test3:from a2b2 is Wrong, why?
-r0=r_sph;%r0=[0,0,0];
-[ n1,m1,a1,b1 ] = flatab2ab( n,m,a2,b2 );[a0,b0,n0,m0]=abNie2Lin(a1,b1,n1,m1);
-[eplus1s, hplus1s]=scatwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
+%r0=[0,0,0];
+[ n1t,m1t,a1t,b1t ] = flatab2ab( n,m,a2,b2 );[a0t,b0t,n0t,m0t]=abNie2Lin(a1t,b1t,n1t,m1t);
+[eplus1s, hplus1s]=scatwavefunction(r,r0,n0t,m0t,a0t,b0t,lg1.focBeam,scat1);%The total field amplitude after scattering.
 [eplus1d; eplus1p; eplus1s]
 
-r=[x,y,z];r0=r_sph;%r0=[0,0,0];
-[ n1,m1,a1,b1 ] = flatab2ab( n,m,a2,b2 );[a0,b0,n0,m0]=abNie2Lin(a2,b2,n,m);
-[eplus1s, hplus1s]=scatwavefunction(r,r0,n0,m0,a0,b0,lg1.focBeam,scat1);%The total field amplitude after scattering.
+r0=[0,0,0];
+[ n1t,m1t,a1t,b1t ] = flatab2ab( n,m,a,b );[a0t,b0t,n0t,m0t]=abNie2Lin(a1t,b1t,n1t,m1t);
+[eplus1s, hplus1s]=scatwavefunction(r,r0,n0t,m0t,a0t,b0t,lg1.focBeam,scat1);%The total field amplitude after scattering.
 [eplus1d; eplus1p; eplus1s]
 % figure;
 % [data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'Ea');
@@ -92,19 +92,14 @@ r=[x,y,z];r0=r_sph;%r0=[0,0,0];
 %%
 
 Fldtmp=ott13.electromagnetic_field_xyz(r-r_sph,[n;m],[a2;b2],[],[]);
-eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
+eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor/sqrt(4*pi);
 [eplus1d; eplus1p;eplus1ott]
 
 Fldtmp=ott13.electromagnetic_field_xyz(r,[n;m],[a;b],[],[]);
-eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
+eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor/sqrt(4*pi);
 [eplus1d; eplus1p;eplus1ott]
 
-[abs(eplus1d)/abs(eplus1ott);
-abs(eplus1d(1))/abs(eplus1ott(1));
-abs(eplus1d(2))/abs(eplus1ott(2));
-abs(eplus1d(3))/abs(eplus1ott(3));]
-
-[sqrt(sum( abs(a0).^2 + abs(b0).^2 ));sqrt(sum( abs(a1).^2 + abs(b1).^2 ));
-sqrt(sum( abs(a).^2 + abs(b).^2 ));sqrt(sum( abs(a2).^2 + abs(b2).^2 ))]
+[abs(eplus1d)/abs(eplus1ott),abs(eplus1d(1))/abs(eplus1ott(1)),...
+abs(eplus1d(2))/abs(eplus1ott(2)),abs(eplus1d(3))/abs(eplus1ott(3))]
 
 
