@@ -75,9 +75,7 @@ L_halfPi=kron(R_halfPi,R_halfPi);% superoperator of the rotation around the y ax
 %% DensityMatrix
 
 denseMat=DensityMatrix(spin_collection, '1.0 * p(2)_1 * p(1)_2 ');
-rho_vector0=L_halfPi*denseMat.getVector;
-
-
+rho_vector0=L_halfPi*denseMat.getVector;% a pi/2 pulse is applied to transfer the state from |0> to (|0> + |1>)/sqrt(2)
 %% Observable
 obs_z=Observable(spin_collection, 'sz1', '1.0 * sz_1');
 obs_x=Observable(spin_collection, 'sx1', '1.0 * sx_1');

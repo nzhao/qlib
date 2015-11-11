@@ -3,28 +3,18 @@ function L_single=gen_superoperator_single(obj,spin,kk)
     Gamma_p=obj.decay_rate_list.Gamma_parallel_list(kk);% the parallel decay rate
 
     if Gamma_v >0 || Gamma_p > 0
-        nspin=obj.spin_collection.getLength;
-        dim_list=obj.spin_collection.getDimList;
+
         dim_tot=obj.spin_collection.getDim;
- 
+        spin_collection=obj.spin_collection;
         %% generate ladder operators
-        sigma_m=1;%sigma_minus
-        sigma_p=1;%sigma_plus
-        sigma_z=1;
-        for mm=1:nspin
-            if mm==kk
-                mat_m=sparse([0,0;1,0]);
-                mat_p=sparse([0,1;0,0]);
-                mat_z=sparse([1,0;0,-1]);
-            else
-                mat_m=speye(dim_list(mm));
-                mat_p=speye(dim_list(mm));
-                mat_z=speye(dim_list(mm));
-            end
-            sigma_m=kron(sigma_m,mat_m);    
-            sigma_p=kron(sigma_p,mat_p);
-            sigma_z=kron(sigma_z,mat_z);
-        end
+        import model.phy.QuantumOperator.SpinOperator.Observable
+        Sm=Observable(spin_collection, 'sigma-', ['1.0 * mat([0,0;1,0])_' num2str(kk)]);
+        sigma_m=Sm.getMatrix;
+        Sp=Observable(spin_collection, 'sigam+', ['1.0 * mat([0,1;0,0])_' num2str(kk)]);
+        sigma_p=Sp.getMatrix;
+        Sz=Observable(spin_collection, 'sigmaz', ['1.0 * mat([1,0;0,-1])_'  num2str(kk)]);
+        sigma_z=Sz.getMatrix;
+
 
         %% generate supperoperator for the current spin
         if Gamma_v>0            
