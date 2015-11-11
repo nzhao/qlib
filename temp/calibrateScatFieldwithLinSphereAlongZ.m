@@ -62,84 +62,69 @@ cd = T2 * [ a2; b2 ];
 c = cd(1:length(cd)/2);
 d = cd(length(cd)/2+1:end);
 
-%%compare single point
+totalBeam1=totalBeam(n,m,a2,b2,p,q,c,d,scat1,lg1);
+%% compare single point
 x=2.0; y=1.0; z=3.0;
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
 [eplus1p, hplus1p]=lg1.focBeam.wavefunction(x, y, z);
-r=[x,y,z];r0=r_sph;
-
-%% 
-r0=r_sph;%r0=[0,0,0];
-[ n1t,m1t,a1t,b1t ] = flatab2ab( n,m,a2,b2 );[a0t,b0t,n0t,m0t]=abNie2Lin(a1t,b1t,n1t,m1t);
-[eplus1s, hplus1s]=scatwavefunction(r,r0,n0t,m0t,a0t,b0t,lg1.focBeam,scat1);%The total field amplitude after scattering.
+%a single point comparation with incident field.
+x=x-r_sph(1);y=y-r_sph(2);z=z-r_sph(3);
+[eplus1s, hplus1s]=totalBeam1.focBeamS.wavefunction(x, y, z);
 [eplus1d; eplus1p; eplus1s]
 
-%%
-totalBeam1=totalBeam(n,m,a2,b2,p,q,c,d,scat1,lg1);
-figure;
+%% each field
+%inside sphere field has been just listed below to test program. The line is completely
+%outside the sphere in this file.
+
 rstart=[-2,0.3,0.7];rstop=[2,0.3,0.7];
 rstart=rstart-r_sph;rstop=rstop-r_sph;
+figure;
 [data, fig]=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'ExR');
 figure;
 [data, fig]=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'ExR');
 figure;
 [data, fig]=totalBeam1.scatBeamcd.lineCut(rstart,rstop,50,'ExR');
 
-Nx=50;
-xx=linspace(-2,2,Nx+1);yy=zeros(1,Nx+1);
-for ii=1:Nx+1
-    x=xx(ii);y=0.3;z=0.7;
-    x=x-r_sph(1);y=y-r_sph(2);z=z-r_sph(3);
-[eplus1p, hplus1p]=totalBeam1.focBeamS.wavefunction(x, y, z);
-yy(ii)=real(eplus1p(1));
-[eplus1p, hplus1p]=totalBeam1.scatBeampq.wavefunction(x, y, z);
-yy(ii)=yy(ii)+real(eplus1p(1));
-end
-figure;plot(xx,yy)
-
-%% normal to SI unit and test line
-
-lg1.calcAmpFactor(power);
-
+% Nx=50;
+% xx=linspace(-2,2,Nx+1);yy=zeros(1,Nx+1);
+% for ii=1:Nx+1
+%     x=xx(ii);y=0.3;z=0.7;
+%     x=x-r_sph(1);y=y-r_sph(2);z=z-r_sph(3);
+% [eplus1p, hplus1p]=totalBeam1.focBeamS.wavefunction(x, y, z);
+% yy(ii)=real(eplus1p(1));
+% [eplus1p, hplus1p]=totalBeam1.scatBeampq.wavefunction(x, y, z);
+% yy(ii)=yy(ii)+real(eplus1p(1));
+% end
+% figure;plot(xx,yy)
+% hold on;
+% [data, fig]=totalBeam1.allBeam.lineCut(rstart,rstop,50,'ExR');
+%% Line compare
 data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\03fld_all1.txt');
 figure;
-[data, fig]=lg1.focBeam.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'ExR');
+[data, fig]=totalBeam1.allBeam.lineCut(rstart,rstop,50,'ExR');
 hold on;
 plot(data1(:,1),data1(:,4),'b--','Linewidth',2)
 figure;
-[data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'ExI');
-hold on;
-plot(data1(:,1),data1(:,5),'b--','Linewidth',2)
-figure;
 [data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'EyR');
 hold on;
-plot(data1(:,1),data1(:,6),'b--','Linewidth',2)
-figure;
-[data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'EyI');
-hold on;
-plot(data1(:,1),data1(:,7),'b--','Linewidth',2)
+plot(data1(:,1),data1(:,5),'b--','Linewidth',2)
+
 figure;
 [data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'EzR');
 hold on;
-plot(data1(:,1),data1(:,8),'b--','Linewidth',2)
-figure;
-[data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'EzI');
-hold on;
-plot(data1(:,1),data1(:,9),'b--','Linewidth',2)
+plot(data1(:,1),data1(:,6),'b--','Linewidth',2)
+
 figure;
 [data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'Ea');
 hold on;
-plot(data1(:,1),data1(:,10),'b--','Linewidth',2)
+plot(data1(:,1),data1(:,7),'b--','Linewidth',2)
 
-%%
-
-Fldtmp=ott13.electromagnetic_field_xyz((r-r_sph)/wavelength,[n;m],[a2;b2],[],[]);
+%% use the ott function get the same result
+r=[x,y,z];
+Fldtmp=ott13.electromagnetic_field_xyz(r/wavelength,[n;m],[a2;b2],[],[]);
 eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
-[eplus1d; eplus1p;eplus1ott]
+[eplus1d; eplus1p; eplus1s;eplus1ott]
 
-Fldtmp=ott13.electromagnetic_field_xyz(r/wavelength,[n;m],[a;b],[],[]);
-eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
-[eplus1d; eplus1p;eplus1ott]
 
 
 

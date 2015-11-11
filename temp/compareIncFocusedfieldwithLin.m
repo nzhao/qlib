@@ -35,7 +35,7 @@ lg1.calcAmpFactor(power);
 
 data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\02fld_inc1.txt');
 figure;
-[data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'ExR');
+[data, fig]=lg1.focBeam.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'ExR');
 hold on;
 plot(data1(:,1),data1(:,4),'b--','Linewidth',2)
 figure;
