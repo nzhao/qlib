@@ -1,7 +1,7 @@
 %% This is an example of calculate 
 %% The input parameters.
- clear; 
- clc;
+%  clear; 
+%  clc;
 tic;
 import model.phy.PhysicalObject.Lens
 import model.phy.PhysicalObject.LaserBeam.ParaxialBeam.ParaxialLaguerreGaussianBeam
@@ -23,8 +23,8 @@ incBeam1=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px
 lg1=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(len, incBeam1);
 lg1.calcAmpFactor(power);
 %%scatter
-r_sph=[0.3,0.1,0.2];%r_sph=[0,0,2];
-radius =0.05;%unit um
+r_sph=[0.0,0.2,0.5];%r_sph=[0,0,2];%test result:x=0 will OK,other not;Also,radius no effect.
+radius =0.15;%unit um
 scatter_medium='silica';
 scat1=model.phy.PhysicalObject.Scatterer.SphereScatter(r_sph,radius,scatter_medium);
 
@@ -63,7 +63,7 @@ c = cd(1:length(cd)/2);
 d = cd(length(cd)/2+1:end);
 
 totalBeam1=totalBeam(n,m,a2,b2,p,q,c,d,scat1,lg1);
-%% compare single point
+%%compare single point
 x=2.0; y=1.0; z=2.0;
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
 [eplus1p, hplus1p]=lg1.focBeam.wavefunction(x, y, z);
@@ -71,6 +71,7 @@ x=2.0; y=1.0; z=2.0;
 x=x-r_sph(1);y=y-r_sph(2);z=z-r_sph(3);
 [eplus1s, hplus1s]=totalBeam1.focBeamS.wavefunction(x, y, z);
 [eplus1d; eplus1p; eplus1s]
+[abs(eplus1p(1))/abs( eplus1s(1)),abs(eplus1p(2))/abs( eplus1s(2))]
 
 %% each field
 %inside sphere field has been just listed below to test program. The line is completely
