@@ -30,7 +30,7 @@ scat1=model.phy.PhysicalObject.Scatterer.SphereScatter(r_sph,radius,scatter_medi
 
 k=lg1.focBeam.k;
 n_relative=scat1.scatter_medium.n/len.work_medium.n; %The relative unit is the wavelength in working medium of len.
-Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;Nmax=60;
+Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;Nmax=40;
 lg1.getVSWFcoeff(Nmax);
 
 %%calculation
@@ -49,7 +49,7 @@ T = ott13.tmatrix_mie(Nmax,k,k*n_relative,scat1.radius);
 R = ott13.z_rotation_matrix(theta,phi); %calculates an appropriate axis rotation off z.
 D = ott13.wigner_rotation_matrix(Nmax,R);
 
-[A,B] = ott13.translate_z(Nmax,rt);
+[A,B] = ott13.translate_z(Nmax,rt/wavelength);
 a2 = D'*(  A * D*a +  B * D*b ); % Wigner matricies here are hermitian. Therefore in MATLAB the D' operator is the inverse of D.
 b2 = D'*(  A * D*b +  B * D*a ); % In MATLAB operations on vectors are done first, therefore less calculation is done on the matricies.
 
@@ -77,12 +77,12 @@ r=[x,y,z];r0=r_sph;
 % [eplus1d; eplus1p; eplus1s];
 %% 
 %test3:from a2b2 is Wrong, why?
-%r0=[0,0,0];
+r0=r_sph;%r0=[0,0,0];
 [ n1t,m1t,a1t,b1t ] = flatab2ab( n,m,a2,b2 );[a0t,b0t,n0t,m0t]=abNie2Lin(a1t,b1t,n1t,m1t);
 [eplus1s, hplus1s]=scatwavefunction(r,r0,n0t,m0t,a0t,b0t,lg1.focBeam,scat1);%The total field amplitude after scattering.
 [eplus1d; eplus1p; eplus1s]
 
-r0=[0,0,0];
+r0=r_sph;r0=[0,0,0];
 [ n1t,m1t,a1t,b1t ] = flatab2ab( n,m,a,b );[a0t,b0t,n0t,m0t]=abNie2Lin(a1t,b1t,n1t,m1t);
 [eplus1s, hplus1s]=scatwavefunction(r,r0,n0t,m0t,a0t,b0t,lg1.focBeam,scat1);%The total field amplitude after scattering.
 [eplus1d; eplus1p; eplus1s]
@@ -91,12 +91,12 @@ r0=[0,0,0];
 
 %%
 
-Fldtmp=ott13.electromagnetic_field_xyz(r-r_sph,[n;m],[a2;b2],[],[]);
-eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor/sqrt(4*pi);
+Fldtmp=ott13.electromagnetic_field_xyz((r-r_sph)/wavelength,[n;m],[a2;b2],[],[]);
+eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
 [eplus1d; eplus1p;eplus1ott]
 
-Fldtmp=ott13.electromagnetic_field_xyz(r,[n;m],[a;b],[],[]);
-eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor/sqrt(4*pi);
+Fldtmp=ott13.electromagnetic_field_xyz(r/wavelength,[n;m],[a;b],[],[]);
+eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
 [eplus1d; eplus1p;eplus1ott]
 
 [abs(eplus1d)/abs(eplus1ott),abs(eplus1d(1))/abs(eplus1ott(1)),...
