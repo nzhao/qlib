@@ -23,27 +23,27 @@ classdef MediumData
                     epsilon_M = 1.0;
                     mu_M      = 1.0;
                 case 'air'
-                    epsilon_M = 1.000293;%air in 0 degree-C, 1 atm
+                    epsilon_M = 1.000293.^2;%air in 0 degree-C, 1 atm
                     mu_M      = 1.0;
                 case 'water'
-                    epsilon_M = 1.3330;
+                    epsilon_M = 1.3330.^2;
                 case 'silica'
-                    epsilon_M = 1.458;% Tongcang Li's thesis P180.
+                    epsilon_M = 1.458.^2;% Tongcang Li's thesis P180.
                     mu_M      = 1.0;
                 case 'diamond'
-                    epsilon_M = 2.418;% Tongcang Li's thesis P180.
+                    epsilon_M = 2.418^2;% Tongcang Li's thesis P180.
                     mu_M      = 1.0;
                 case 'ice'
-                    epsilon_M = 1.31;% Tongcang Li's thesis P180.
+                    epsilon_M = 1.31^2;% Tongcang Li's thesis P180.
                     mu_M      = 1.0;
                 case 'acetone'
-                    epsilon_M = 1.359;% Tongcang Li's thesis P180.
+                    epsilon_M = 1.359^2;% Tongcang Li's thesis P180.
                     mu_M      = 1.0;
                 case 'glycol'
-                    epsilon_M = 1.432;% Tongcang Li's thesis P180.
+                    epsilon_M = 1.432^2;% Tongcang Li's thesis P180.
                     mu_M      = 1.0;
                 case 'polystyrene'
-                    epsilon_M = 1.59;% Tongcang Li's thesis P180.
+                    epsilon_M = 1.59^2;% Tongcang Li's thesis P180.
                     mu_M      = 1.0;
                 case 'oil1.3'
                     epsilon_M = 1.3;
