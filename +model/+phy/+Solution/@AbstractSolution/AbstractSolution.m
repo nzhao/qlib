@@ -47,6 +47,7 @@ classdef AbstractSolution < handle
     
     methods (Abstract)
         perform(obj)
+        SetCondition(obj)
     end
     
 end
