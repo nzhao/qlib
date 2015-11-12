@@ -1,7 +1,7 @@
 %% This is an example of calculate 
 %% The input parameters.
 %  clear; 
-%  clc;
+ clc;
 tic;
 import model.phy.PhysicalObject.Lens
 import model.phy.PhysicalObject.LaserBeam.ParaxialBeam.ParaxialLaguerreGaussianBeam
@@ -23,8 +23,8 @@ incBeam1=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px
 lg1=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(len, incBeam1);
 lg1.calcAmpFactor(power);
 %%scatter
-r_sph=[0.0,0.2,0.5];%r_sph=[0,0,2];%test result:x=0 will OK,other not;Also,radius no effect.
-radius =0.15;%unit um
+r_sph=[0.0,0.2,0.5];%r_sph=[0,0,2];%test result:x=0 will OK,others not.
+radius =0.05;%unit um
 scatter_medium='silica';
 scat1=model.phy.PhysicalObject.Scatterer.SphereScatter(r_sph,radius,scatter_medium);
 
@@ -70,7 +70,10 @@ x=2.0; y=1.0; z=2.0;
 %a single point comparation with incident field.
 x=x-r_sph(1);y=y-r_sph(2);z=z-r_sph(3);
 [eplus1s, hplus1s]=totalBeam1.focBeamS.wavefunction(x, y, z);
-[eplus1d; eplus1p; eplus1s]
+r=[x,y,z];
+Fldtmp=ott13.electromagnetic_field_xyz(r/wavelength,[n;m],[a2;b2],[],[]);
+eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
+[eplus1d; eplus1p; eplus1s;eplus1ott]
 [abs(eplus1p(1))/abs( eplus1s(1)),abs(eplus1p(2))/abs( eplus1s(2))]
 
 %% each field
@@ -107,11 +110,6 @@ figure;
 hold on;
 plot(data1(:,1),data1(:,7),'b--','Linewidth',2)
 
-%% use the ott function get the same result
-r=[x,y,z];
-Fldtmp=ott13.electromagnetic_field_xyz(r/wavelength,[n;m],[a2;b2],[],[]);
-eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
-[eplus1d; eplus1p; eplus1s;eplus1ott]
 
 
 
