@@ -3,7 +3,7 @@ function [data, fig]= lineCut(obj, r0, r1, n, component)
 %   Detailed explanation goes here
 
     x=zeros(n+1, 1);
-    data=zeros(n+1, 9);
+    data=zeros(n+1,9);
     dr=(r1-r0)/n;
     drNorm=norm(dr);
     
@@ -27,8 +27,9 @@ function [data, fig]= lineCut(obj, r0, r1, n, component)
         end
     end
     
+    if nargin>4
     Ex=data(:, 4); Ey=data(:, 5); Ez=data(:, 6); Ea=conj(Ex).*Ex+conj(Ey).*Ey+conj(Ez).*Ez;
-    Hx=data(:, 7); Hy=data(:, 8); Hz=data(:, 9); Ha=conj(Hx).*Hx+conj(Hy).*Hy+conj(Hz).*Hz;
+    Hx=data(:, 7); Hy=data(:, 8); Hz=data(:, 9); Ha=conj(Hx).*Hx+conj(Hy).*Hy+conj(Hz).*Hz; 
     switch char(component)
         case 'ExR'
             fig=plot(x, real(Ex), 'r-');
@@ -44,6 +45,7 @@ function [data, fig]= lineCut(obj, r0, r1, n, component)
             fig=plot(x, imag(Ez), 'r-');
         case 'Ea'
             fig=plot(x, Ea, 'r-');
+    end
     end
 
 end
