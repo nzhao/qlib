@@ -1,7 +1,7 @@
-%% This is an example of calculate 
+%% This is an example of calculate scatterred field with Lin
 %% The input parameters.
-%  clear; 
- clc;
+clear; 
+clc;
 tic;
 import model.phy.PhysicalObject.Lens
 import model.phy.PhysicalObject.LaserBeam.ParaxialBeam.ParaxialLaguerreGaussianBeam
@@ -23,14 +23,14 @@ incBeam1=ParaxialLaguerreGaussianBeam(wavelength, power, waist, center, p, l, px
 lg1=model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol(len, incBeam1);
 lg1.calcAmpFactor(power);
 %%scatter
-r_sph=[0.0,0.2,0.5];%r_sph=[0,0,2];%test result:x=0 will OK,others not.
+r_sph=[0.5,0.2,0.1];%r_sph=[0,0,2];%test result:x=0 will OK,others not.
 radius =0.05;%unit um
 scatter_medium='silica';
 scat1=model.phy.PhysicalObject.Scatterer.SphereScatter(r_sph,radius,scatter_medium);
 
 k=lg1.focBeam.k;
 n_relative=scat1.scatter_medium.n/len.work_medium.n; %The relative unit is the wavelength in working medium of len.
-Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;Nmax=40;
+Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;Nmax=20;
 lg1.getVSWFcoeff(Nmax);
 
 %%calculation
@@ -46,7 +46,7 @@ m0t=lg1.focBeam.aNNZ(:,2);
 
 [rt,theta,phi]=ott13.xyz2rtp(scat1.x,scat1.y,scat1.z);
 
-R = ott13.z_rotation_matrix(theta,phi); %calculates an appropriate axis rotation off z.
+R = ott13.z_rotation_matrix(-theta,-phi); %calculates an appropriate axis rotation off z.
 D = ott13.wigner_rotation_matrix(Nmax,R);
 
 [A,B] = ott13.translate_z(Nmax,rt/wavelength);
@@ -63,8 +63,8 @@ c = cd(1:length(cd)/2);
 d = cd(length(cd)/2+1:end);
 
 totalBeam1=totalBeam(n,m,a2,b2,p,q,c,d,scat1,lg1);
-%%compare single point
-x=2.0; y=1.0; z=2.0;
+%% compare single point
+x=2.0; y=0.3; z=0.7;
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
 [eplus1p, hplus1p]=lg1.focBeam.wavefunction(x, y, z);
 %a single point comparation with incident field.
@@ -79,36 +79,50 @@ eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
 %% each field
 %inside sphere field has been just listed below to test program. The line is completely
 %outside the sphere in this file.
-
-rstart=[-2,0.3,0.7];rstop=[2,0.3,0.7];
-rstart=rstart-r_sph;rstop=rstop-r_sph;
+% data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\02fld_inc2.txt');
+rstart0=[-2,0.3,0.7];rstop0=[2,0.3,0.7];
+rstart=rstart0-r_sph;rstop=rstop0-r_sph;
 figure;
 [data, fig]=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'ExR');
+% hold on;
+% plot(data1(:,1),data1(:,4),'b--','Linewidth',2)
 figure;
 [data, fig]=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'ExR');
 figure;
 [data, fig]=totalBeam1.scatBeamcd.lineCut(rstart,rstop,50,'ExR');
 
 %% Line compare
-data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\03fld_all1.txt');
+data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\03fld_all2.txt');
+rstart0=[-2,0.3,0.7];rstop0=[2,0.3,0.7];
+rstart=rstart0-r_sph;rstop=rstop0-r_sph;
 figure;
-[data, fig]=totalBeam1.allBeam.lineCut(rstart,rstop,50,'ExR');
+data=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'ExR');
+datapq=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'ExR');
+plot(r_sph(1)+data(:,1), real(data(:,4)+datapq(:,4)), 'r-');
 hold on;
 plot(data1(:,1),data1(:,4),'b--','Linewidth',2)
+
 figure;
-[data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'EyR');
+data=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'EyR');
+datapq=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'EyR');
+plot(r_sph(1)+data(:,1), real(data(:,5)+datapq(:,5)), 'r-');
 hold on;
 plot(data1(:,1),data1(:,5),'b--','Linewidth',2)
 
 figure;
-[data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'EzR');
+data=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'EzR');
+datapq=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'EzR');
+plot(r_sph(1)+data(:,1), real(data(:,6)+datapq(:,6)), 'r-');
 hold on;
 plot(data1(:,1),data1(:,6),'b--','Linewidth',2)
 
-figure;
-[data, fig]=lg1.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'Ea');
-hold on;
-plot(data1(:,1),data1(:,7),'b--','Linewidth',2)
+% figure;
+% data=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'Ea');
+% datapq=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'Ea');
+% plot(r_sph(1)+data(:,1), real(data(:,4)+datapq(:,)), 'r-');
+% hold on;
+% plot(data1(:,1),data1(:,7),'b--','Linewidth',2)
+
 
 
 
