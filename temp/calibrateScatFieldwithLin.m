@@ -1,4 +1,4 @@
-%% This is an example of calculate 
+%% This is an example of calculate scatterred field with Lin
 %% The input parameters.
 clear; 
 clc;
@@ -79,13 +79,13 @@ eplus1ott=Fldtmp.Eincident*lg1.focBeam.AmplitudeFactor;
 %% each field
 %inside sphere field has been just listed below to test program. The line is completely
 %outside the sphere in this file.
-data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\02fld_inc2.txt');
+% data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\02fld_inc2.txt');
 rstart0=[-2,0.3,0.7];rstop0=[2,0.3,0.7];
 rstart=rstart0-r_sph;rstop=rstop0-r_sph;
 figure;
 [data, fig]=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'ExR');
-hold on;
-plot(data1(:,1),data1(:,4),'b--','Linewidth',2)
+% hold on;
+% plot(data1(:,1),data1(:,4),'b--','Linewidth',2)
 figure;
 [data, fig]=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'ExR');
 figure;
