@@ -33,7 +33,8 @@ x=3.0; y=1.0; z=7.0;
 
 lg1.calcAmpFactor(power);
 
-data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\02fld_inc1.txt');
+% data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\02fld_inc1.txt');
+data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\02fld_inc.txt');
 figure;
 [data, fig]=lg1.focBeam.lineCut([-2,0.3,0.7],[2,0.3,0.7],50,'ExR');
 hold on;

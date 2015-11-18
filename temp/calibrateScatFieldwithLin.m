@@ -38,15 +38,15 @@ lg1.getVSWFcoeff(Nmax);
 a0=lg1.focBeam.aNNZ(:,3);
 b0=lg1.focBeam.bNNZ(:,3);
 n0=lg1.focBeam.aNNZ(:,1);
-m0t=lg1.focBeam.aNNZ(:,2);
-[a1,b1,n1,m1]=abLin2Nie(a0,b0,n0,m0t);
+m0=lg1.focBeam.aNNZ(:,2);
+[a1,b1,n1,m1]=abLin2Nie(a0,b0,n0,m0);
 [a,b,n,m] = ott13.make_beam_vector(a1,b1,n1,m1);
 
 [T, T2] = ott13.tmatrix_mie(Nmax,k,k*n_relative,scat1.radius);
 
 [rt,theta,phi]=ott13.xyz2rtp(scat1.x,scat1.y,scat1.z);
 
-R = ott13.z_rotation_matrix(-theta,-phi); %calculates an appropriate axis rotation off z.
+R = ott13.z_rotation_matrix(theta,phi); %calculates an appropriate axis rotation off z.
 D = ott13.wigner_rotation_matrix(Nmax,R);
 
 [A,B] = ott13.translate_z(Nmax,rt/wavelength);
@@ -63,6 +63,9 @@ c = cd(1:length(cd)/2);
 d = cd(length(cd)/2+1:end);
 
 totalBeam1=totalBeam(n,m,a2,b2,p,q,c,d,scat1,lg1);
+% tmp=[n,m,a2,b2,p,q];tmp=full(tmp)
+tmp=[totalBeam1.focBeamS.aNNZ,totalBeam1.focBeamS.bNNZ(:,3)];tmp=full(tmp)
+tmp=[n0,m0,a0,b0];tmp=full(tmp)
 %% compare single point
 x=2.0; y=0.3; z=0.7;
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
