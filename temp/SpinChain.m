@@ -12,4 +12,4 @@ sc=SpinCollection(From1Dchain(nspin, spin_type));
 hm=Hamiltonian(sc);
 hm.addInteraction(OnSiteEnergy(sc, onSiteParameter));
 hm.addInteraction(XYInteraction(sc, xyParameter) );
-hm.s
+hmMat=hm.getMatrix;
