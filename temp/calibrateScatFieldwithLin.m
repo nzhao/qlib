@@ -46,7 +46,7 @@ m0=lg1.focBeam.aNNZ(:,2);
 
 [rt,theta,phi]=ott13.xyz2rtp(scat1.x,scat1.y,scat1.z);
 
-R = ott13.z_rotation_matrix(theta,phi); %calculates an appropriate axis rotation off z.
+R = ott13.z_rotation_matrix(-theta,-phi); %calculates an appropriate axis rotation off z.
 D = ott13.wigner_rotation_matrix(Nmax,R);
 
 [A,B] = ott13.translate_z(Nmax,rt/wavelength);
@@ -65,7 +65,8 @@ d = cd(length(cd)/2+1:end);
 totalBeam1=totalBeam(n,m,a2,b2,p,q,c,d,scat1,lg1);
 % tmp=[n,m,a2,b2,p,q];tmp=full(tmp)
 tmp=[totalBeam1.focBeamS.aNNZ,totalBeam1.focBeamS.bNNZ(:,3)];tmp=full(tmp)
-tmp=[n0,m0,a0,b0];tmp=full(tmp)
+% tmp=[n0,m0,a0,b0];tmp=full(tmp);
+% tmp=[n,m,a2,b2];tmp=full(tmp)
 %% compare single point
 x=2.0; y=0.3; z=0.7;
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
