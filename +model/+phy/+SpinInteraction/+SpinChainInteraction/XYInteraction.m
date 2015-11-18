@@ -1,31 +1,15 @@
-classdef XYchainInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
-    %XYCHAININTERACTION Summary of this class goes here
+classdef XYInteraction < model.phy.SpinInteraction.SpinChainInteraction.AbstractSpinChainInteraction
+    %XYINTERACTION Summary of this class goes here
     %   Detailed explanation goes here
     
     properties
     end
     
     methods
-        function obj=XYchainInteraction(spin_collection, method, val)
-            nspin=spin_collection.getLength;
+        function obj=XYInteraction(spin_collection, para)
             iter=model.phy.SpinCollection.Iterator.ChainNeighbouringIterator(spin_collection);
-            switch method
-                case 'uniform'
-                    para.interaction=val*ones(1, nspin-1);
-                case 'random'
-                    lo=val(1); hi=val(2); d=hi-lo;
-                    para.interaction=d*rand(1, nspin-1)-lo;
-                otherwise
-                    error('%s is not supported', method);
-            end
-            obj@model.phy.SpinInteraction.AbstractSpinInteraction(para, iter);
+            obj@model.phy.SpinInteraction.SpinChainInteraction.AbstractSpinChainInteraction(spin_collection, para, iter);
             obj.nbody=2;
-        end
-        
-        function coeff=calculate_coeff(obj, spins)
-            spin1=spins{1}; 
-            spin_idx=str2double(spin1.name);
-            coeff=obj.parameter.interaction(spin_idx);
         end
         
         function mat=calculate_matrix(obj)
