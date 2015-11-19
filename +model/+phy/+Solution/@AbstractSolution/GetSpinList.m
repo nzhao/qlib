@@ -11,7 +11,7 @@ function spin_collection=GetSpinList(obj)
            spin_collection=SpinCollection( FromFile(...
                [INPUT_FILE_PATH, para.InputFile]));
        case 'Chain_1D'
-           spin_collection=SpinCollection(From1Dchain(para.nspin, 'E'));
+           spin_collection=SpinCollection(From1Dchain(para.nspin, para.spinType));
        case 'SpinList'
            error('not surported so far.');
     end

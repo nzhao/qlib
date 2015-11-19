@@ -1,4 +1,4 @@
-classdef XYModel < model.phy.Solution.AbstractSolution
+classdef SpinChain < model.phy.Solution.AbstractSolution
     %XYMODEL Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -6,7 +6,7 @@ classdef XYModel < model.phy.Solution.AbstractSolution
     end
     
     methods
-        function obj=XYModel(xml_file)
+        function obj=SpinChain(xml_file)
             obj@model.phy.Solution.AbstractSolution(xml_file);
         end
         
@@ -14,10 +14,11 @@ classdef XYModel < model.phy.Solution.AbstractSolution
             get_parameters@model.phy.Solution.AbstractSolution(obj, p);
             
             obj.parameters.SpinCollectionStrategy = p.get_parameter('SpinCollection', 'Source');
+            obj.parameters.spinType = p.get_parameter('SpinCollection', 'SpinType');
             obj.parameters.nspin  = p.get_parameter('SpinCollection', 'SpinNum');
             obj.parameters.onSite = p.get_parameter('Interaction', 'OnSite');
-            obj.parameters.xy_int = p.get_parameter('Interaction', 'XY');
-            obj.parameters.TimeList = p.get_parameter('Dynamics',       'TimeList');
+            obj.parameters.dqtInt = p.get_parameter('Interaction', 'DqtInt');
+            obj.parameters.TimeList = p.get_parameter('Dynamics',  'TimeList');
             
             %%iniital state
             tp=p.get_parameter('InitialState', 'Type');
@@ -48,7 +49,14 @@ classdef XYModel < model.phy.Solution.AbstractSolution
         
         
         function perform(obj)
-            disp(obj.timeTag);
+            spin_collection=obj.GetSpinList();
+            [hamiltonian, liouvillian] = obj.GetHamiltonianLiouvillian(spin_collection);
+            initial_state               = obj.GetInitialState(spin_collection);
+            observables                = obj.GetObservables(spin_collection);
+            dynamics                   = obj.StateEvolve(hamiltonian, liouvillian, initial_state);
+            mean_values                = obj.GetMeanValues(dynamics, observables);
+
+            obj.StoreKeyVariables(spin_collection, hamiltonian, liouvillian, initial_state, observables, dynamics, mean_values);
         end
     end
     
