@@ -64,7 +64,7 @@ d = cd(length(cd)/2+1:end);
 
 totalBeam1=totalBeam(n,m,a2,b2,p,q,c,d,scat1,lg1);
 % tmp=[n,m,a2,b2,p,q];tmp=full(tmp)
-tmp=[totalBeam1.focBeamS.aNNZ,totalBeam1.focBeamS.bNNZ(:,3)];tmp=full(tmp)
+tmp=[totalBeam1.focBeamS.aNNZ,totalBeam1.focBeamS.bNNZ(:,3)];tmp=full(tmp);
 % tmp=[n0,m0,a0,b0];tmp=full(tmp);
 % tmp=[n,m,a2,b2];tmp=full(tmp)
 %% compare single point
