@@ -9,7 +9,6 @@ classdef SumKronProd < handle
         domainsizes_matchQ=1
         rangesizes_matchQ=1
         
-        maxdim
         rangesizes
         domainsizes
     end
@@ -19,8 +18,6 @@ classdef SumKronProd < handle
             obj.kron_prod_cell=prod_cell;
             obj.nProd=length(prod_cell);
             obj.match_test();
-            
-            obj.maxdim=prod_cell{1}.maxdim;
             
             if obj.rangesizes_matchQ
                 obj.rangesizes=prod_cell{1}.rangesizes;
@@ -46,13 +43,21 @@ classdef SumKronProd < handle
         function match_test(obj)
             for ii=1:obj.nProd-1
                 prod1=obj.kron_prod_cell{ii}; prod2=obj.kron_prod_cell{ii+1}; 
-                
-                if ~ all(prod1.domainsizes==prod2.domainsizes)
-                    obj.domainsizes_matchQ=0;
+
+                if obj.domainsizes_matchQ
+                    try 
+                        obj.domainsizes_matchQ=all(prod1.domainsizes==prod2.domainsizes);
+                    catch
+                        obj.domainsizes_matchQ=0;
+                    end
                 end
                 
-                if ~ all(prod1.rangesizes==prod2.rangesizes)
-                    obj.rangesizes_matchQ=0;
+                if obj.rangesizes_matchQ
+                    try 
+                        obj.rangesizes_matchQ=all(prod1.rangesizes==prod2.rangesizes);
+                    catch
+                        obj.rangesizes_matchQ=0;
+                    end
                 end
                 
                 if ~ all(size(prod1)==size(prod2))
