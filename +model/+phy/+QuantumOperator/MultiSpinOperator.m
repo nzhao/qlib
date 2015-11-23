@@ -150,22 +150,38 @@
         function super_operator=sharp(obj)
             super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
             
-            Bmat=obj.getMatrix(); eyeMat=speye(obj.dim);
-            super_operator.setMatrix(kron(Bmat.', eyeMat));
+            if isa(obj.matrix_strategy, 'model.phy.QuantumOperator.MatrixStrategy.FromKronProd')
+                super_operator.name=[obj.name, '_sharp'];
+                super_operator.setMatrix(obj.sharp);
+            else
+                Bmat=obj.getMatrix(); eyeMat=speye(obj.dim);
+                super_operator.setMatrix(kron(Bmat.', eyeMat));
+            end
         end
         
         function super_operator=flat(obj)
             super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
             
-            Amat=obj.getMatrix(); eyeMat=speye(obj.dim);
-            super_operator.setMatrix(kron(eyeMat, Amat));
+            if isa(obj.matrix_strategy, 'model.phy.QuantumOperator.MatrixStrategy.FromKronProd')
+                super_operator.name=[obj.name, '_flat'];
+                super_operator.setMatrix(obj.flat);
+            else
+                Amat=obj.getMatrix(); eyeMat=speye(obj.dim);
+                super_operator.setMatrix(kron(eyeMat, Amat));
+            end
         end
         
         function super_operator=circleC(obj)
             super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
             
-            Cmat=obj.getMatrix(); eyeMat=speye(obj.dim);
-            super_operator.setMatrix(kron(eyeMat, Cmat)-kron(conj(Cmat), eyeMat));
+            if isa(obj.matrix_strategy, 'model.phy.QuantumOperator.MatrixStrategy.FromKronProd')
+                %super_operator.name=[obj.name, '_circleC'];
+                %super_operator.setMatrix(obj.circleC);
+                super_operator.generate_matrix(obj.circleC);
+            else
+                Cmat=obj.getMatrix(); eyeMat=speye(obj.dim);
+                super_operator.setMatrix(kron(eyeMat, Cmat)-kron(conj(Cmat), eyeMat));
+            end
         end
         
         function super_operator=flat_sharp(obj, sharp_op)
