@@ -50,6 +50,19 @@ classdef SpinCollection < handle
             end
         end
         
+        function res=dim_compression(obj, idx_list)
+            dimList=obj.getDimList;
+            len=length(idx_list);
+            idx_list1=[0, sort(idx_list)];
+            
+            res=zeros(1, 2*len+1);
+            for ii=1:len
+                res(2*ii-1)=prod(dimList(idx_list1(ii)+1: idx_list1(ii+1)-1));
+                res(2*ii)=dimList(idx_list1(ii+1));
+            end
+            res(2*len+1)=prod(dimList(idx_list1(end)+1:end));
+        end
+        
         
         function mat=calc_mat(obj, spin_index, spin_mat_str)
             if length(spin_index)~=length(spin_mat_str)

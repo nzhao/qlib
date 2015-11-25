@@ -13,7 +13,7 @@ function Save4GPU(obj, filename, path )
     st = obj.GetInitialState(sc);
     [hm, lv] = obj.GetHamiltonianLiouvillian(sc);
     
-    full_name=[path, filename, obj.solutionName, '_', obj.timeTag, '.dat'];
+    full_name=[path, filename, obj.solutionName, '.dat'];
     
     hm.export_interaction_data(full_name);
     st.export_vector(full_name);
