@@ -152,7 +152,7 @@
             
             if isa(obj.matrix_strategy, 'model.phy.QuantumOperator.MatrixStrategy.FromKronProd')
                 super_operator.name=[obj.name, '_sharp'];
-                super_operator.setMatrix(obj.sharp);
+                super_operator.setMatrix(obj.matrix.sharp);
             else
                 Bmat=obj.getMatrix(); eyeMat=speye(obj.dim);
                 super_operator.setMatrix(kron(Bmat.', eyeMat));
@@ -164,7 +164,7 @@
             
             if isa(obj.matrix_strategy, 'model.phy.QuantumOperator.MatrixStrategy.FromKronProd')
                 super_operator.name=[obj.name, '_flat'];
-                super_operator.setMatrix(obj.flat);
+                super_operator.setMatrix(obj.matrix.flat);
             else
                 Amat=obj.getMatrix(); eyeMat=speye(obj.dim);
                 super_operator.setMatrix(kron(eyeMat, Amat));
@@ -175,9 +175,8 @@
             super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
             
             if isa(obj.matrix_strategy, 'model.phy.QuantumOperator.MatrixStrategy.FromKronProd')
-                %super_operator.name=[obj.name, '_circleC'];
-                %super_operator.setMatrix(obj.circleC);
-                super_operator.generate_matrix(obj.circleC);
+                super_operator.name=[obj.name, '_circleC'];
+                super_operator.setMatrix(obj.matrix.circleC);
             else
                 Cmat=obj.getMatrix(); eyeMat=speye(obj.dim);
                 super_operator.setMatrix(kron(eyeMat, Cmat)-kron(conj(Cmat), eyeMat));
