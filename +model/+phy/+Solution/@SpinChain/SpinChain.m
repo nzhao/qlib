@@ -18,6 +18,7 @@ classdef SpinChain < model.phy.Solution.AbstractSolution
             obj.parameters.nspin  = p.get_parameter('SpinCollection', 'SpinNum');
             obj.parameters.onSite = p.get_parameter('Interaction', 'OnSite');
             obj.parameters.dqtInt = p.get_parameter('Interaction', 'DqtInt');
+            obj.parameters.xyInt = p.get_parameter('Interaction', 'XYInt');
             obj.parameters.TimeList = p.get_parameter('Dynamics',  'TimeList');
             
             %%iniital state
