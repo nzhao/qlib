@@ -12,9 +12,13 @@ classdef AbstractQuantumOperator < handle
     end
     
     methods
-        function generate_matrix(obj)
-            obj.matrix_strategy.initialize(obj);
-            obj.matrix=obj.matrix_strategy.calculate_matrix();
+        function generate_matrix(obj, mat)
+            if nargin > 1
+                obj.matrix=mat;
+            else
+                obj.matrix_strategy.initialize(obj);
+                obj.matrix=obj.matrix_strategy.calculate_matrix();
+            end
             obj.hasMatrix=1;
         end
         

@@ -28,7 +28,7 @@ classdef MatrixVectorEvolution < model.phy.Dynamics.AbstractEvolutionKernel
         end
         
         function state_out=evolve_step(obj, state_in, dt)
-            state_out=expv(dt, obj.matrix_prefactor*obj.matrix, state_in);
+            state_out=expv(obj.matrix_prefactor*dt, obj.matrix, state_in);
         end
         
         function state_out=calculate_evolution(obj, state_in, time_list)
