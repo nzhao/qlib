@@ -93,17 +93,13 @@ Mnew=Mnew*R;
 mt=(-1).^(Y-X);
 D1=D./mt
 
-%% test Ylm and Mlm with the D from OTT:OK
+%% test Ylm and Mlm with arbitrary D from original OTT: WRONG.
 % clc;
 n=1;m=1;Nmax=1;
 krL=0.5; thetaL=pi/3;phiL=pi/6;
 krP=0.5; thetaP=0;phiP=0;
 R = ott13.z_rotation_matrix(thetaL,phiL);
-D = ott13.wigner_rotation_matrix(Nmax,R);D=full(D.');
-[X,Y]=meshgrid([-1,0,1]);
-mt=(-1).^(Y-X);
-D=mt.*D;
-%D=full(D.')% This is the Zeng's D, m={-1,0,1} order.
+D = wigner_rotation_matrix1(Nmax,R);D=full(D.');
 %test Ylm
 MP1 = spharm(n,m,thetaP,phiP);%*(-1);MP1;
 ML1 = spharm(n,1,thetaL,phiL);
