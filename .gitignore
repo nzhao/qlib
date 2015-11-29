@@ -3,6 +3,8 @@
 *.mat
 *.xyz
 *.swp
+*.xml
+xml
 
 doc/output/
 
