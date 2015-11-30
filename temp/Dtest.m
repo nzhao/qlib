@@ -88,12 +88,8 @@ Mnew=D(1,3)*ML_1+D(2,3)*ML0+D(3,3)*ML1;[MP1;Mnew];
 R = ott13.z_rotation_matrix(thetaL,phiL);
 Mnew=Mnew*R;
 [MP1;Mnew]
-%% Now the field
-[X,Y]=meshgrid([-1,0,1]);
-mt=(-1).^(Y-X);
-D1=D./mt
 
-%% test Ylm and Mlm with arbitrary D from original OTT: WRONG.
+%% test Ylm and Mlm with arbitrary D from original OTT: OK.
 % clc;
 n=1;m=1;Nmax=1;
 krL=0.5; thetaL=pi/3;phiL=pi/6;
