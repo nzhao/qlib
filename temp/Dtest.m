@@ -95,7 +95,7 @@ n=1;m=1;Nmax=1;
 krL=0.5; thetaL=pi/3;phiL=pi/6;
 krP=0.5; thetaP=0;phiP=0;
 R = ott13.z_rotation_matrix(thetaL,phiL);
-D = wigner_rotation_matrix1(Nmax,R);D=full(D.');
+D = wignerD(Nmax,R);
 %test Ylm
 MP1 = spharm(n,m,thetaP,phiP);%*(-1);MP1;
 ML1 = spharm(n,1,thetaL,phiL);

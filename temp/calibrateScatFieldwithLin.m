@@ -47,7 +47,7 @@ m0=lg1.focBeam.aNNZ(:,2);
 [rt,theta,phi]=ott13.xyz2rtp(scat1.x,scat1.y,scat1.z);
 
 R = ott13.z_rotation_matrix(theta,phi); %calculates an appropriate axis rotation off z.
-D = wigner_rotation_matrix1(Nmax,R');
+D = wignerD(Nmax,R');
 
 [A,B] = ott13.translate_z(Nmax,rt/wavelength);
 a2 = D'*(  A * D*a +  B * D*b ); % Wigner matricies here are hermitian. Therefore in MATLAB the D' operator is the inverse of D.

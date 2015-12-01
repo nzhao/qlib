@@ -87,13 +87,13 @@ zeq=0;
 [rt,theta,phi]=ott13.xyz2rtp(r,0,zeq);
 Rx = ott13.z_rotation_matrix(pi/2,0);
 % Dx = ott13.wigner_rotation_matrix(Nmax,Rx);
-Dx = wigner_rotation_matrix1(Nmax,Rx');
+Dx = wignerD(Nmax,Rx');
 
 for nr = 1:length(r)
 %     nr
     R = ott13.z_rotation_matrix(theta(nr),phi(nr)); %calculates an appropriate axis rotation off z.
 %     D = ott13.wigner_rotation_matrix(Nmax,R);
-    D = wigner_rotation_matrix1(Nmax,R');
+    D = wignerD(Nmax,R');
     
     [A,B] = ott13.translate_z(Nmax,rt(nr));
     a2 = D'*(  A * D*a +  B * D*b ); % Wigner matricies here are hermitian. Therefore in MATLAB the D' operator is the inverse of D.
