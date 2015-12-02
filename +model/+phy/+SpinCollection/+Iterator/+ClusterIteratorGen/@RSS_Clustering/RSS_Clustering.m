@@ -12,8 +12,7 @@ classdef RSS_Clustering < model.phy.SpinCollection.Iterator.ClusterIteratorGen.A
         end
         function cluster_list=generate_clusters(obj)
             cluster_list=obj.generate_cluster_list();
-            obj.cluster_info.state_list=obj.generate_state_list();
-            [~]=obj.generate_xmm();
+            obj.cluster_info.state_list=obj.generate_state_list();            
         end
     end
 end

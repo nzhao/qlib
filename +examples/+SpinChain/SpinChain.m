@@ -10,14 +10,14 @@ sol=model.phy.Solution.SpinChain('SpinChain.xml');
 sol.perform();
 
 %% Load GPU result and calculate Mean value
-sol.LoadFromGPU([OUTPUT_FILE_PATH, 'Res_iFILE_Data_SpinChain.dat']);
-
-obsMat=sol.result.observables{1}.matrix;
-gpu_res=sol.result.GPU_Result;
-GPU_MeanValue=sum(conj(gpu_res).* (obsMat*gpu_res));
-
-
-%% comparison
-tlist=sol.parameters.TimeList;
-matlab_MeanValue=sol.result.mean_values('sz1');
-plot(tlist, GPU_MeanValue, 'r*-', tlist, matlab_MeanValue, 'bo');
+% sol.LoadFromGPU([OUTPUT_FILE_PATH, 'Res_iFILE_Data_SpinChain.dat']);
+% 
+% obsMat=sol.result.observables{1}.matrix;
+% gpu_res=sol.result.GPU_Result;
+% GPU_MeanValue=sum(conj(gpu_res).* (obsMat*gpu_res));
+% 
+% 
+% %% comparison
+% tlist=sol.parameters.TimeList;
+% matlab_MeanValue=sol.result.mean_values('sz1');
+% plot(tlist, GPU_MeanValue, 'r*-', tlist, matlab_MeanValue, 'bo'); 

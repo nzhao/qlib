@@ -52,12 +52,12 @@
     ncluster=size(cluster_list_current,1);
     obj.cluster_info.cluster_number=ncluster;
     obj.cluster_info.cluster_matrix=cluster_list_current;
-    disp('cluster matrix generated');
+    disp('cluster matrix generated.');
     toc
     
     cluster_list=cell(ncluster, 1);
     for k=1:ncluster
         cluster_list{k}=find(obj.cluster_info.cluster_matrix(k,:));
     end
-
+    disp([num2str(ncluster) ' clusters have been generated.'])
 end

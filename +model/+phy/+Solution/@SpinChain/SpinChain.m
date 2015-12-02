@@ -65,12 +65,14 @@ classdef SpinChain < model.phy.Solution.AbstractSolution
         
         
         function perform(obj)
+            
             spin_collection=obj.GetSpinList();
             obj.keyVariables('spin_collection')=spin_collection;
-            cluster_iterator           = obj.ClusteringStates;
             [hamiltonian, liouvillian] = obj.GetHamiltonianLiouvillian(spin_collection);
-            initial_state               = obj.GetInitialState(spin_collection);
-
+            
+            initial_state              = obj.GetInitialState(spin_collection);
+            
+             [~] = obj.GetStateInfo(spin_collection,initial_state);
             observables                = obj.GetObservables(spin_collection);
             dynamics                   = obj.StateEvolve(hamiltonian, liouvillian, initial_state);
             mean_values                = obj.GetMeanValues(dynamics, observables);

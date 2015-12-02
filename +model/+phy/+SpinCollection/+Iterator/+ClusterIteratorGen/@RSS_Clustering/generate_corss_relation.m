@@ -1,4 +1,4 @@
-function xmm=generate_xmm(obj)
+function xmm=generate_corss_relation(obj)
     %XMM_GEN Summary of this function goes here
     %   Detailed explanation goes here
 

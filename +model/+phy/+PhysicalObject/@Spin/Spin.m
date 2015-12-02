@@ -99,9 +99,20 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
             hami.generate_matrix();
         end
         
-        function ISTmat=IST(obj,state) %irreducible spherical tensors
+        function IST_state=IST(obj,state) %irreducible spherical tensors
             basis=SphericalTensor(obj.dim);
-            ISTmat=basis{state+1};
+            IST_state=basis{state+1};
+            
+        end
+        
+        function ISTmat=ISTmatrix(obj)
+            dim=obj.dim;
+            ISTmat=zeros(dim^2,dim^2);
+            basis=SphericalTensor(obj.dim);
+            for kk=1:dim^2
+                IST_state=basis{kk};
+                ISTmat(kk,:)=IST_state(:)';                
+            end
             
         end
         

@@ -75,11 +75,10 @@ classdef CCE_Clustering < model.phy.SpinCollection.Iterator.ClusterIteratorGen.A
             for k=1:nc
                 idx_list{k}=find(obj.cluster_info.cluster_matrix(k,:));
             end
-            obj.cluster_info.subcluster_list=obj.generate_subclusters();
             
         end
          %%  Building the cluster-cluster cross-membership matrix and generate sub clusters
-        function subcluster_list=generate_subclusters(obj)   
+        function subcluster_list=generate_corss_relation(obj)   
                 disp('building subclusters list...');
                 nclusters=obj.cluster_info.cluster_number;
                 num_list=obj.cluster_info.cluster_number_list;%the end point of every order
@@ -117,6 +116,7 @@ classdef CCE_Clustering < model.phy.SpinCollection.Iterator.ClusterIteratorGen.A
                 for k=1:nclusters
                     subcluster_list{k}=find(xmm(k,:));
                 end
+                obj.cluster_info.subcluster_list=subcluster_list;
                 disp('subcluster list generated');
         end
         
