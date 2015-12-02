@@ -8,7 +8,7 @@ classdef XYInteraction < model.phy.SpinInteraction.SpinChainInteraction.Abstract
     methods
         function obj=XYInteraction(spin_collection, para)
             iter=model.phy.SpinCollection.Iterator.ChainNeighbouringIterator(spin_collection);
-            obj@model.phy.SpinInteraction.SpinChainInteraction.AbstractSpinChainInteraction(spin_collection, para, iter);
+            obj@model.phy.SpinInteraction.SpinChainInteraction.AbstractSpinChainInteraction(para, iter);
             obj.nbody=2;
         end
         

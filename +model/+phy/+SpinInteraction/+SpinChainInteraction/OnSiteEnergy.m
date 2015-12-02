@@ -8,7 +8,7 @@ classdef OnSiteEnergy < model.phy.SpinInteraction.SpinChainInteraction.AbstractS
     methods
         function obj=OnSiteEnergy(spin_collection,para)
             iter=model.phy.SpinCollection.Iterator.SingleSpinIterator(spin_collection);
-            obj@model.phy.SpinInteraction.SpinChainInteraction.AbstractSpinChainInteraction(spin_collection, para, iter);
+            obj@model.phy.SpinInteraction.SpinChainInteraction.AbstractSpinChainInteraction(para, iter);
             obj.nbody=1;
         end
 

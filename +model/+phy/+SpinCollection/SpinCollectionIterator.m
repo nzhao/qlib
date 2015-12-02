@@ -40,7 +40,6 @@ classdef SpinCollectionIterator < handle
         
         
         function index = currentIndex(obj)
-            %index = obj.index_list(obj.cursor, :);
             index = obj.index_list{obj.cursor};
         end
         

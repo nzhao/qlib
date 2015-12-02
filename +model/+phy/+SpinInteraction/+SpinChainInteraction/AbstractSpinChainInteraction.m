@@ -6,7 +6,7 @@ classdef AbstractSpinChainInteraction < model.phy.SpinInteraction.AbstractSpinIn
     end
     
     methods
-        function obj=AbstractSpinChainInteraction(spin_collection, para, iter)
+        function obj=AbstractSpinChainInteraction(para, iter)
             obj@model.phy.SpinInteraction.AbstractSpinInteraction(para, iter);
         end
 
