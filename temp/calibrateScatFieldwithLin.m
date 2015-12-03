@@ -105,7 +105,7 @@ datapq=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'ExR');
 plot(r_sph(1)+data(:,1), real(data(:,4)+datapq(:,4)), 'r-');
 hold on;
 plot(data1(:,1),data1(:,4),'b--','Linewidth',2)
-
+%% 
 figure;
 data=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'EyR');
 datapq=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'EyR');

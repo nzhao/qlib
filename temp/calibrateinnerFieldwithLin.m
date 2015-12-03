@@ -1,4 +1,4 @@
-%% This is an example of calculate scatterred field with Lin
+%% This is an example of calculate field inside sphere with Lin
 %% The input parameters.
 clear; 
 clc;
@@ -30,7 +30,7 @@ scat1=model.phy.PhysicalObject.Scatterer.SphereScatter(r_sph,radius,scatter_medi
 
 k=lg1.focBeam.k;
 n_relative=scat1.scatter_medium.n/len.work_medium.n; %The relative unit is the wavelength in working medium of len.
-Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;Nmax=20;
+Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;Nmax=15;
 lg1.getVSWFcoeff(Nmax);
 
 %%calculation
@@ -42,7 +42,7 @@ m0=lg1.focBeam.aNNZ(:,2);
 [a1,b1,n1,m1]=abLin2Nie(a0,b0,n0,m0);
 [a,b,n,m] = ott13.make_beam_vector(a1,b1,n1,m1);
 
-[T, T2] = ott13.tmatrix_mie(Nmax,k,k*n_relative,scat1.radius);
+[T, T2] = tmatrix_sphere(Nmax,k,k*n_relative,scat1.radius);
 
 [rt,theta,phi]=ott13.xyz2rtp(scat1.x,scat1.y,scat1.z);
 
@@ -83,28 +83,25 @@ data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibrat
 rstart0=[-2,0.3,0.2];rstop0=[2,0.3,0.2];
 rstart=rstart0-r_sph;rstop=rstop0-r_sph;
 figure;
-data=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'ExR');
-datapq=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'ExR');
-plot(r_sph(1)+data(:,1), real(data(:,4)+datapq(:,4)), 'r-');
+data=totalBeam1.scatBeamcd.lineCut(rstart,rstop,50,'ExR');
+plot(r_sph(1)+data(:,1), real(data(:,4)), 'r-');
 hold on;
 plot(data1(:,1),data1(:,4),'b--','Linewidth',2)
 
-figure;
-data=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'EyR');
-datapq=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'EyR');
-plot(r_sph(1)+data(:,1), real(data(:,5)+datapq(:,5)), 'r-');
+%% figure;
+data=totalBeam1.scatBeamcd.lineCut(rstart,rstop,50,'EyR');
+plot(r_sph(1)+data(:,1), real(data(:,5)), 'r-');
 hold on;
 plot(data1(:,1),data1(:,5),'b--','Linewidth',2)
 
 figure;
-data=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'EzR');
-datapq=totalBeam1.scatBeampq.lineCut(rstart,rstop,50,'EzR');
-plot(r_sph(1)+data(:,1), real(data(:,6)+datapq(:,6)), 'r-');
+data=totalBeam1.scatBeamcd.lineCut(rstart,rstop,50,'EzR');
+plot(r_sph(1)+data(:,1), real(data(:,6)), 'r-');
 hold on;
 plot(data1(:,1),data1(:,6),'b--','Linewidth',2)
 
 figure;
-plot(data1(:,1),1e4*(real(data(:,6)+datapq(:,6))-data1(:,6)))
+plot(data1(:,1),1e4*(real(data(:,6))-data1(:,6)))
 
 % figure;
 % data=totalBeam1.focBeamS.lineCut(rstart,rstop,50,'Ea');
