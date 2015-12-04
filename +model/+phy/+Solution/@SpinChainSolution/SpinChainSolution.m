@@ -1,4 +1,4 @@
-classdef SpinChain < model.phy.Solution.AbstractSolution
+classdef SpinChainSolution < model.phy.Solution.AbstractSolution
     %XYMODEL Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -6,7 +6,7 @@ classdef SpinChain < model.phy.Solution.AbstractSolution
     end
     
     methods
-        function obj=SpinChain(xml_file)
+        function obj=SpinChainSolution(xml_file)
             obj@model.phy.Solution.AbstractSolution(xml_file);
         end
         
@@ -65,17 +65,21 @@ classdef SpinChain < model.phy.Solution.AbstractSolution
         
         
         function perform(obj)
+            import model.phy.QuantumOperator.MatrixStrategy.FromKronProd
             
             spin_collection=obj.GetSpinList();
             obj.keyVariables('spin_collection')=spin_collection;
-            [hamiltonian, liouvillian] = obj.GetHamiltonianLiouvillian(spin_collection);
             
-            initial_state              = obj.GetInitialState(spin_collection);
+            matrix_strategy=FromKronProd();
+            [hamiltonian, liouvillian] = obj.GetHamiltonianLiouvillian(spin_collection,matrix_strategy);
+            initial_state              = obj.GetInitialState(spin_collection,matrix_strategy);
+            observables                = obj.GetObservables(spin_collection,matrix_strategy);
+                         [~] = obj.GetStateInfo(spin_collection,initial_state);
             
-             [~] = obj.GetStateInfo(spin_collection,initial_state);
-            observables                = obj.GetObservables(spin_collection);
             dynamics                   = obj.StateEvolve(hamiltonian, liouvillian, initial_state);
             mean_values                = obj.GetMeanValues(dynamics, observables);
+                        
+%              [~] = obj.GetStateInfo(spin_collection,initial_state);
 
             obj.StoreKeyVariables(spin_collection, hamiltonian, liouvillian, initial_state, observables, dynamics, mean_values);
         end

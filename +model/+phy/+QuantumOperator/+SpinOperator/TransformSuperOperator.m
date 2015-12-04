@@ -34,7 +34,7 @@ classdef TransformSuperOperator < model.phy.QuantumOperator.MultiSpinSuperOperat
             for kk=2:nspin
                 str=[str ' * ISTmatrix()_' num2str(kk)];
             end
-            obj.addInteraction(model.phy.SpinInteraction.InteractionString(obj.spin_collection, str));
+            obj.addInteraction(model.phy.SpinInteraction.AdditionalSpinInteraction.SuperInteractionString(obj.spin_collection, str));
                         
         end
 

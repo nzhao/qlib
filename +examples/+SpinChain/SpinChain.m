@@ -6,7 +6,7 @@
 % in the folder specified by OUTPUT_FILE_PATH
 
 %% Direct evolution
-sol=model.phy.Solution.SpinChain('SpinChain.xml');
+sol=model.phy.Solution.SpinChainSolution('SpinChain.xml');
 sol.perform();
 
 %% Load GPU result and calculate Mean value

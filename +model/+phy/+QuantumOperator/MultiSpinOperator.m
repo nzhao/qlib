@@ -101,7 +101,18 @@
         
         function v=getVector(obj)
             mat=obj.getMatrix();
-            v=mat(:);
+            if isa(mat,'double')
+                v=mat(:);
+            elseif isa(mat,'KronProd' )
+                v=kron_prod2vector(mat); 
+            else isa(mat,'model.math.SumKronProd' )            
+                nProd=mat.nProd;
+                v=kron_prod2vector(mat.kron_prod_cell{1});
+                for kk=2:nProd
+                  v=v+kron_prod2vector(mat.kron_prod_cell{kk});
+                end
+            end
+
         end
                 
         function transform(obj, transform_operator)
@@ -199,5 +210,22 @@
 
     end
     
-end
+ end
+
+ function v=kron_prod2vector(kp_mat)
+      opset=kp_mat.opset;
+      opinds=kp_mat.opinds;
+      domainsizes=kp_mat.domainsizes;
+      maxdim=kp_mat.maxdim;
+      v=1;
+      for kk=1:maxdim
+          idx=opinds(kk);
+          mat=opset{idx};
+          if size(mat,2)==1
+              mat=speye(domainsizes(kk));
+          end
+          v=kron(mat(:),v);
+      end
+      v=kp_mat.scalarcoeff*v;
+ end
 

@@ -113,7 +113,7 @@ classdef Spin < model.phy.PhysicalObject.PhysicalObject
                 IST_state=basis{kk};
                 ISTmat(kk,:)=IST_state(:)';                
             end
-            
+            ISTmat=sparse(ISTmat);
         end
         
     end
