@@ -1,7 +1,7 @@
 %% This is an example of calculate field inside sphere with Lin
 %% The input parameters.
 clear; 
-clc;
+% clc;
 tic;
 import model.phy.PhysicalObject.Lens
 import model.phy.PhysicalObject.LaserBeam.ParaxialBeam.ParaxialLaguerreGaussianBeam
@@ -42,7 +42,8 @@ m0=lg1.focBeam.aNNZ(:,2);
 [a1,b1,n1,m1]=abLin2Nie(a0,b0,n0,m0);
 [a,b,n,m] = ott13.make_beam_vector(a1,b1,n1,m1);
 
-[T, T2] = tmatrix_sphere(Nmax,k,k*n_relative,scat1.radius);
+[T, T2] = ott13.tmatrix_mie(Nmax,k,k*n_relative,scat1.radius);
+T2=-T2;
 
 [rt,theta,phi]=ott13.xyz2rtp(scat1.x,scat1.y,scat1.z);
 
@@ -88,7 +89,7 @@ plot(r_sph(1)+data(:,1), real(data(:,4)), 'r-');
 hold on;
 plot(data1(:,1),data1(:,4),'b--','Linewidth',2)
 
-%% figure;
+figure;
 data=totalBeam1.scatBeamcd.lineCut(rstart,rstop,50,'EyR');
 plot(r_sph(1)+data(:,1), real(data(:,5)), 'r-');
 hold on;

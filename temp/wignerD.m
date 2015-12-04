@@ -52,7 +52,7 @@ D1 = D.';% This transpose is just done for the reuse of the code below, and
 %will transpose back at the end the function
 DD = D1;
 
-maxci = combined_index(nmax,nmax);
+maxci = ott13.combined_index(nmax,nmax);
 D = sparse(maxci,maxci);
 
 D(1:3,1:3) = D1;
@@ -91,8 +91,8 @@ for n = 2:nmax
 
     % Dump into final matrix
     
-    minci = combined_index(n,-n);
-    maxci = combined_index(n,n);
+    minci = ott13.combined_index(n,-n);
+    maxci = ott13.combined_index(n,n);
     
     D(minci:maxci,minci:maxci) = DDD;
     DD = DDD;
