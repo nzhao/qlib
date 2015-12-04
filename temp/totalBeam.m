@@ -40,7 +40,8 @@ classdef totalBeam < model.phy.PhysicalObject.PhysicalObject
             obj.scatBeamcd=model.phy.PhysicalObject.LaserBeam.LaserBeamPartialWave(...
                 'scatFieldInSphere',wavelength2, medium2.name);
             [ n1t,m1t,a1t,b1t ] = flatab2ab( n,m,c,d );[a0t,b0t,n0t,m0t]=abNie2Lin(a1t,b1t,n1t,m1t);
-            obj.scatBeamcd.aNNZ=[n0t,m0t,a0t];obj.scatBeamcd.bNNZ=[n0t,m0t,b0t];
+            obj.scatBeamcd.aNNZ=[n0t,m0t,a0t];obj.scatBeamcd.bNNZ=[n0t,m0t,b0t];% OK
+%             obj.scatBeamcd.aNNZ=[n0t,m0t,b0t];obj.scatBeamcd.bNNZ=[n0t,m0t,a0t];% myself
             obj.scatBeamcd.AmplitudeFactor=lg1.AmplitudeFactor;
             
         end
