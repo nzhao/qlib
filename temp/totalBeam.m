@@ -5,7 +5,7 @@ classdef totalBeam < model.phy.PhysicalObject.PhysicalObject
     properties
         focBeamS;%focused incident beam in the sphere frame:a2,b2
         scatBeampq;%pq
-        allBeam;%all beam outside sphere:a2b2+pq
+%         allBeam;%all beam outside sphere:a2b2+pq
         scatBeamcd;%beam inside the sphere:cd
         
     end

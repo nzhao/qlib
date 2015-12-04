@@ -70,6 +70,7 @@ tmp=[totalBeam1.focBeamS.aNNZ,totalBeam1.focBeamS.bNNZ(:,3)];tmp=full(tmp);
 % tmp=[n,m,a2,b2];tmp=full(tmp)
 %% compare single point
 x=0.6; y=0.3; z=0.2;
+totalfield([x,y,z],totalBeam1,scat1)
 x=x-r_sph(1);y=y-r_sph(2);z=z-r_sph(3);
 [eplus1s, hplus1s]=totalBeam1.scatBeamcd.wavefunction(x, y, z);
 r=[x,y,z];
@@ -78,6 +79,7 @@ Fldtmp=ott13.electromagnetic_field_xyz(r/wavelength,[n;m],[a2;b2],[p;q],[c;d],n_
 eplus1ott=Fldtmp.Einternal*lg1.focBeam.AmplitudeFactor;
 [eplus1s;eplus1ott]
 [abs(eplus1ott(1))/abs( eplus1s(1)),abs(eplus1ott(2))/abs( eplus1s(2))]
+
 
 %% Line compare
 data1=dlmread('D:\mywork\zhoulm\OpticalTrap\FScat\SphereScat\SphereScat\calibration1\03fld_all3_insidesphere.txt');

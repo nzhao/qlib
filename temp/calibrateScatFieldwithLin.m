@@ -69,6 +69,8 @@ tmp=[totalBeam1.focBeamS.aNNZ,totalBeam1.focBeamS.bNNZ(:,3)];tmp=full(tmp);
 % tmp=[n,m,a2,b2];tmp=full(tmp)
 %% compare single point
 x=2.0; y=0.3; z=0.7;
+[efield, hfield,efieldinc, hfieldinc,efieldscat, hfieldscat]=totalfield([x,y,z],totalBeam1,scat1);
+efieldinc
 [eplus1d, hplus1d]=lg1.wavefunction(x, y, z);
 [eplus1p, hplus1p]=lg1.focBeam.wavefunction(x, y, z);
 %a single point comparation with incident field.
