@@ -37,6 +37,7 @@ classdef TransformSuperOperator < model.phy.QuantumOperator.MultiSpinSuperOperat
             obj.addInteraction(model.phy.SpinInteraction.AdditionalSpinInteraction.SuperInteractionString(obj.spin_collection, str));
                         
         end
+        
 
     end
     
