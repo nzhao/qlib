@@ -4,6 +4,7 @@ classdef FromKronProd< model.phy.QuantumOperator.MatrixStrategy
     
     properties
         interaction_list
+        nProd
     end
     
     methods

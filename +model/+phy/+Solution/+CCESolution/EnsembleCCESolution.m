@@ -106,6 +106,7 @@ classdef EnsembleCCESolution < model.phy.Solution.CCESolution.AbstractCCESolutio
                cce=CCE_Clustering(spin_collection, clu_para);
 
                cluster_iterator=ClusterIterator(spin_collection,cce);
+               [~]=cluster_iterator.cross_relation_gen();
                obj.keyVariables('cluster_iterator')=cluster_iterator;
                save([OUTPUT_FILE_PATH, 'cluster_iterator', obj.timeTag, '.mat'],'cluster_iterator');
                toc
