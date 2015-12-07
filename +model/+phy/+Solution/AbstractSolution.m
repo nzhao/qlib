@@ -25,12 +25,14 @@ classdef AbstractSolution < handle
         function p=config_parser(obj, config_file)
             obj.configFile=config_file;
             p=controller.xmlparser.ParameterContainer();
-            p.importXML([INPUT_FILE_PATH, '+xml/', config_file]);
+            %          p.importXML([INPUT_FILE_PATH, '+xml/', config_file]);
+            p.importXML([pwd, '/', config_file]);
         end
         
         function save_solution(obj)
             eval([obj.solutionName, '=obj;']);
-            save([OUTPUT_FILE_PATH, obj.solutionName, obj.timeTag], obj.solutionName);
+                    %   save([OUTPUT_FILE_PATH, obj.solutionName, obj.timeTag], obj.solutionName);
+            save([pwd, '/', obj.solutionName, obj.timeTag], obj.solutionName);
         end
         
         function get_parameters(obj, p)
