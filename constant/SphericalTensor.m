@@ -3,7 +3,7 @@ function [ ist ] = SphericalTensor(dim)
 
     if dim==2
         ist=cell(dim^2);
-        ist{1}=[1,0;0,1]/sqrt(2);  ist{2}=[1 0; 0 -1]/sqrt(2);ist{3}=[0 1; 0 0]; ist{4}=[0 0; 1 0];
+        ist{1}=[1,0;0,1]/sqrt(2); ist{2}=[0 0; 1 0];ist{3}=[0 1; 0 0]; ist{4}=[1 0; 0 -1]/sqrt(2);
     elseif dim==3
         ist=cell(dim^2);
         ist{1}=[1,0,0;0,1,0;0,0,1]/sqrt(3);ist{2}=[1,0,0;0,0,0;0,0,-1]/sqrt(2);ist{3}=[1,0,0;0,-2,0;0,0,1]/sqrt(6);

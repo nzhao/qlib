@@ -19,16 +19,16 @@ classdef AbstractSpinInteraction < handle
         end
         
         function kp=kron_prod(obj, coeff, idx, mat)
-            len=length(idx);
+            len=length(idx);          
             dim_list1= obj.iter.spin_collection.dim_compression(idx);
             mat_cell1 = num2cell(ones(1, 2*len+1));
             for ii=1:len
                 mat_cell1{2*ii}=mat{ii};
             end
-            
+
             dim_list=dim_list1(dim_list1>1);
             mat_cell=mat_cell1(dim_list1>1);
-            kp=KronProd(mat_cell, fliplr(1:length(mat_cell)), fliplr(dim_list), coeff); 
+            kp=KronProd(mat_cell, fliplr(1:length(mat_cell)), fliplr(dim_list), coeff);            
         end
         
         function skp=skp_form(obj)
