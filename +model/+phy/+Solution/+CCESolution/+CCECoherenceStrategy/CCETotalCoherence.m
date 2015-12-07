@@ -64,8 +64,8 @@ classdef CCETotalCoherence < handle
 
            disp('calculate the cluster-coherence matrix ...');
            tic
+           parpool();
            parfor n=1:ncluster 
-%            for n=1:ncluster 
               Condition=model.phy.LabCondition.getCondition;
               Condition.setValue('magnetic_field',MagneticField);
               cluster=clu_cell{1,n};

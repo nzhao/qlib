@@ -77,13 +77,12 @@ classdef SpinCollection < handle
                 if length(ss) ~= length(spin_mat_str{k})
                     error('size does not match.');
                 end
-
-                mat1=1;
+                opset=cell(1,length(ss));
                 for q=1:length(ss)
-                    mat_q=eval(['ss{q}.',spin_mat_str{k}{q}]);                    
-                    mat1=kron(mat1, mat_q);
+                    opset{1,q}=eval(['ss{q}.',spin_mat_str{k}{q}]);                                        
                 end
-                mat{k}={mat1};
+                mat1=KronProd(opset,fliplr(1:length(ss)));
+                mat{k}=mat1;
             end
 
         end
