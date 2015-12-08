@@ -32,7 +32,7 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
         end
         
         function perform(obj)
-            import model.phy.PhysicalObject.Lens
+%             import model.phy.PhysicalObject.Lens
             
             lens          = obj.getLens();
             paraxial_beam = obj.getIncBeam();
@@ -40,7 +40,11 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
             
             focal_beam    = obj.makeFocalBeam(lens, paraxial_beam);
             
-            obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam);
+            [T, T2]       = obj.getTmatrix(focal_beam, sphere);
+            [total_beam, force]    = obj.makeTotalBeam(sphere,focal_beam, T, T2);
+%             force         = obj.calFoce(total_beam);
+            
+            obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam, T, T2, total_beam, force);
         end
     end
     

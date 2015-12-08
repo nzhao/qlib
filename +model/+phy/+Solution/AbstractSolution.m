@@ -31,7 +31,7 @@ classdef AbstractSolution < handle
         
         function save_solution(obj)
             eval([obj.solutionName, '=obj;']);
-                    %   save([OUTPUT_FILE_PATH, obj.solutionName, obj.timeTag], obj.solutionName);
+            %   save([OUTPUT_FILE_PATH, obj.solutionName, obj.timeTag], obj.solutionName);
             save([pwd, '/', obj.solutionName, obj.timeTag], obj.solutionName);
         end
         

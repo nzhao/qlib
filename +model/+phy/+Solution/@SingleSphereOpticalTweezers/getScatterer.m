@@ -1,4 +1,4 @@
-function sphere = getScatterer( obj )
+function scatterer = getScatterer( obj )
 %GETSCATTERER Summary of this function goes here
 %   Detailed explanation goes here
     import model.phy.PhysicalObject.Scatterer.SphereScatter
@@ -7,6 +7,6 @@ function sphere = getScatterer( obj )
     radius    = obj.parameters.SphereRadius;
     medium    = obj.parameters.SphereMedium;
     
-    sphere=SphereScatter(postition,radius,medium);
+    scatterer = SphereScatter(postition,radius,medium);
 end
 
