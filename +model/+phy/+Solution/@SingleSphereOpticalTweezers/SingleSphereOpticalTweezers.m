@@ -38,11 +38,11 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
             paraxial_beam = obj.getIncBeam();
             sphere        = obj.getScatterer();
             
-            focal_beam    = obj.makeFocalBeam(lens, paraxial_beam);
+            focal_beam    = obj.makeFocalBeam(lens, paraxial_beam);            
+            [T, T2]       = obj.getTmatrix(sphere);
             
-            [T, T2]       = obj.getTmatrix(focal_beam, sphere);
-            [total_beam, force]    = obj.makeTotalBeam(sphere,focal_beam, T, T2);
-%             force         = obj.calFoce(total_beam);
+            total_beam    = obj.makeTotalBeam(sphere,focal_beam, T, T2);
+            force         = obj.calForce(total_beam);
             
             obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam, T, T2, total_beam, force);
         end

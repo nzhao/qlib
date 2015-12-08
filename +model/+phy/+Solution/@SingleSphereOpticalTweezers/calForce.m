@@ -1,9 +1,9 @@
-function [force, torque] = calForce(obj, n,m,a2,b2,p,q, pwr)
+function [force, torque] = calForce(obj, total_beam)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
 % pwr = sqrt(sum( abs(a).^2 + abs(b).^2 ));
-% [n,m,a2,b2,p,q]=[total_beam.focBeamS.aNNZ,total_beam.focBeamS.bNNZ(:,3),total_beam.focBeamS.aNNZ];
+[n,m,a2,b2,p,q]=[total_beam.focBeamS.aNNZ,total_beam.focBeamS.bNNZ(:,3),total_beam.focBeamS.aNNZ];
 % [rt,theta,phi]=ott13.xyz2rtp(scatterer.x,scatterer.y,scatterer.z);
 
 %Fz
