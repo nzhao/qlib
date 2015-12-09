@@ -9,12 +9,12 @@ a0=focal_beam.focBeam.aNNZ(:,3);
 b0=focal_beam.focBeam.bNNZ(:,3);
 n0=focal_beam.focBeam.aNNZ(:,1);
 m0=focal_beam.focBeam.aNNZ(:,2);
-[a1,b1,n1,m1]=abLin2Nie(a0,b0,n0,m0);
+% [a1,b1,n1,m1]=abLin2Nie(a0,b0,n0,m0);
 %abLin2Nie function transform the [a0,b0] in Lin's note to Nieminen's.
-% pre=sqrt(4*pi);
-% a1=(1i).^(n0-1)*pre.*b0;
-% b1=(1i).^(n0-1)*pre.*a0;
-% n1=n0;m1=m0;
+pre=sqrt(4*pi);
+a1=(1i).^(n0-1)*pre.*b0;
+b1=(1i).^(n0-1)*pre.*a0;
+n1=n0;m1=m0;
 [a,b,n,m] = ott13.make_beam_vector(a1,b1,n1,m1);
 %root power for nomalization to a and b individually.
 pwr = sqrt(sum( abs(a).^2 + abs(b).^2 ));

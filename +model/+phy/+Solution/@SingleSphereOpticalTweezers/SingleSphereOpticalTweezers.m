@@ -31,7 +31,7 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
             obj.parameters.CutOffNMax = p.get_parameter('CutOff', 'NMax');
         end
         
-        function perform(obj)
+        function force=perform(obj)
 %             import model.phy.PhysicalObject.Lens
             
             lens          = obj.getLens();
@@ -46,6 +46,14 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
             
             obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam, T, T2, total_beam, force);
         end
+        
+        function field = wavefunction(obj,x,y,z)
+            obj.parameters.SpherePosition=[x,y,z];
+            force=obj.perform();            
+            field=force;           
+        end
+%         function [data, fig]= lineCut(obj, r0, r1, n, component)
+%         end
     end
     
 end
