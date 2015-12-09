@@ -12,7 +12,7 @@ classdef totalBeam < model.phy.PhysicalObject.PhysicalObject
         scatBeampq;%pq
 %         allBeam;%all beam outside sphere:a2b2+pq
         scatBeamcd;%beam inside the sphere:cd
-        nmabpqcd;%store the pure coefficents in OTT convention.
+        nmabpqcd;%store the pure coefficents in OTT convention for force and torque calculation.
         
     end
     
