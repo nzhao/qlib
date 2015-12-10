@@ -1,4 +1,4 @@
-classdef totalBeam < model.phy.PhysicalObject.PhysicalObject
+classdef totalBeam < model.phy.PhysicalObject.LaserBeam.OpticalField
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -10,15 +10,17 @@ classdef totalBeam < model.phy.PhysicalObject.PhysicalObject
     properties
         focBeamS;%focused incident beam in the sphere frame:a2,b2
         scatBeampq;%pq
-%         allBeam;%all beam outside sphere:a2b2+pq
+        %         allBeam;%all beam outside sphere:a2b2+pq
         scatBeamcd;%beam inside the sphere:cd
         nmabpqcd;%store the pure coefficents in OTT convention for force and torque calculation.
+        scatterer;
         
     end
     
     methods
         function obj=totalBeam(n,m,a2,b2,p,q,c,d,scat1,lg1)
             obj.nmabpqcd=[n,m,a2,b2,p,q,c,d];
+            obj.scatterer=scat1;
             medium2=lg1.lens.work_medium;
             wavelength2=lg1.incBeam.wavelength/medium2.n;
             %focBeamS
@@ -34,16 +36,16 @@ classdef totalBeam < model.phy.PhysicalObject.PhysicalObject
             obj.scatBeampq.aNNZ=[n0t,m0t,a0t];obj.scatBeampq.bNNZ=[n0t,m0t,b0t];
             obj.scatBeampq.AmplitudeFactor=lg1.AmplitudeFactor;
             obj.scatBeampq.beamtype=1;
-%             %allBeam
-%             obj.allBeam=model.phy.PhysicalObject.LaserBeam.LaserBeamPartialWave(...
-%                 'allFieldOutsideSphere',wavelength2, medium2.name);
-%             [ n1t,m1t,a1t,b1t ] = flatab2ab( n,m,a2+p,b2+q );[a0t,b0t,n0t,m0t]=abNie2Lin(a1t,b1t,n1t,m1t);
-%             obj.allBeam.aNNZ=[n0t,m0t,a0t];obj.allBeam.bNNZ=[n0t,m0t,b0t];
-%             obj.allBeam.AmplitudeFactor=lg1.AmplitudeFactor;
-%             obj.allBeam.beamtype=1;
+            %             %allBeam
+            %             obj.allBeam=model.phy.PhysicalObject.LaserBeam.LaserBeamPartialWave(...
+            %                 'allFieldOutsideSphere',wavelength2, medium2.name);
+            %             [ n1t,m1t,a1t,b1t ] = flatab2ab( n,m,a2+p,b2+q );[a0t,b0t,n0t,m0t]=abNie2Lin(a1t,b1t,n1t,m1t);
+            %             obj.allBeam.aNNZ=[n0t,m0t,a0t];obj.allBeam.bNNZ=[n0t,m0t,b0t];
+            %             obj.allBeam.AmplitudeFactor=lg1.AmplitudeFactor;
+            %             obj.allBeam.beamtype=1;
             %scatBeamcd
             medium2=scat1.scatter_medium;
-            wavelength2=lg1.incBeam.wavelength/medium2.n;            
+            wavelength2=lg1.incBeam.wavelength/medium2.n;
             obj.scatBeamcd=model.phy.PhysicalObject.LaserBeam.LaserBeamPartialWave(...
                 'scatFieldInSphere',wavelength2, medium2.name);
             [ n1t,m1t,a1t,b1t ] = flatab2ab( n,m,c,d );[a0t,b0t,n0t,m0t]=abNie2Lin(a1t,b1t,n1t,m1t);
@@ -51,6 +53,29 @@ classdef totalBeam < model.phy.PhysicalObject.PhysicalObject
             obj.scatBeamcd.AmplitudeFactor=lg1.AmplitudeFactor;
             
         end
+        
+        function [efield, hfield,efieldinc, hfieldinc,efieldscat, hfieldscat]=wavefunction(obj,x,y,z)
+            %This function output the total field after scattering
+            %
+            sphere=obj.scatterer;
+            radius=sphere.radius;
+            r_sph=[sphere.x,sphere.y,sphere.z];
+            r=[x,y,z];
+            r12=r-r_sph;
+            x=r12(1);y=r12(2);z=r12(3);
+            
+            if norm(r12)>=radius
+                [efieldinc, hfieldinc]=obj.focBeamS.wavefunction(x, y, z);
+                [efieldscat, hfieldscat]=obj.scatBeampq.wavefunction(x, y, z);
+                efield=efieldinc+efieldscat;
+                hfield=hfieldinc+hfieldscat;
+            else
+                efieldinc=[0,0,0]; hfieldinc=[0,0,0];
+                efieldscat=[0,0,0]; hfieldscat=[0,0,0];
+                [efield, hfield]=obj.scatBeamcd.wavefunction(x, y, z);
+            end
+        end
+        
     end
     
 end

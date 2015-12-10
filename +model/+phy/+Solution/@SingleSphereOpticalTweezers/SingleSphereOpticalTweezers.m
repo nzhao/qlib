@@ -3,6 +3,7 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
     %   Detailed explanation goes here
     
     properties
+        forcefield;
     end
     
     methods
@@ -46,7 +47,12 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
             
             obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam, T, T2, total_beam, force);
         end
-        
+%         
+%         function makeForceField(obj)
+%             import model.phy.PhysicalObject.VectorField
+%             obj.forcefield=VectorField();
+%         end
+            
         function field = wavefunction(obj,x,y,z)
             obj.parameters.SpherePosition=[x,y,z];
             force=obj.perform();            

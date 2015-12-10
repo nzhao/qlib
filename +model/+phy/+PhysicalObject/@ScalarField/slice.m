@@ -1,6 +1,8 @@
 function [data, fig] = slice( obj, r0, r1, r2, n1, n2)
 %SLICE Summary of this function goes here
 %   Detailed explanation goes here
+%
+%now slice is only for Scalarfield
     data=zeros( (2*n1+1)*(2*n2+1), 4);
     x=zeros( 1, (2*n1+1)*(2*n2+1));
     y=zeros( 1, (2*n1+1)*(2*n2+1));
