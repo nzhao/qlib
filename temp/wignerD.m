@@ -42,10 +42,11 @@ D = invC * R * C;
 %Normal includes Mish, Choi and zeng.
 % This is also the rotation sub-matrix for n = 1
 
-%for (-1)^m omitted convention.
+%If we use (-1)^m omitted convention 
 [X,Y]=meshgrid([-1,0,1]);
 mt=(-1).^(Y-X);
 D=mt.*D;
+%else go on.
 
 %iteration for D.
 D1 = D.';% This transpose is just done for the reuse of the code below, and
