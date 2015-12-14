@@ -4,14 +4,12 @@ function focal_beam = makeFocalBeam( obj, lens, incBeam )
     import model.phy.PhysicalObject.LaserBeam.AplanaticBeam.LinearCircularPol
     
     power=obj.parameters.IncBeamPower;
+%     Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;
+    Nmax=obj.parameters.CutOffNMax;
     
     focal_beam=LinearCircularPol(lens, incBeam);
     focal_beam.calcAmpFactor(power);
-
-%     k=lg1.focBeam.k;
-%     n_relative=scat1.scatter_medium.n/len.work_medium.n; %The relative unit is the wavelength in working medium of len.
-%     Nmax=ott13.ka2nmax(k*scat1.radius);Nmax=Nmax*5;Nmax=20;
-%     lg1.getVSWFcoeff(Nmax);
+    focal_beam.getVSWFcoeff(Nmax);
 
 end
 

@@ -3,6 +3,7 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
     %   Detailed explanation goes here
     
     properties
+        forcefield;
     end
     
     methods
@@ -31,17 +32,34 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
             obj.parameters.CutOffNMax = p.get_parameter('CutOff', 'NMax');
         end
         
-        function perform(obj)
-            import model.phy.PhysicalObject.Lens
+        function force=perform(obj)
+%             import model.phy.PhysicalObject.Lens
             
             lens          = obj.getLens();
             paraxial_beam = obj.getIncBeam();
             sphere        = obj.getScatterer();
             
-            focal_beam    = obj.makeFocalBeam(lens, paraxial_beam);
+            focal_beam    = obj.makeFocalBeam(lens, paraxial_beam);            
+            [T, T2]       = obj.getTmatrix(sphere);
             
-            obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam);
+            total_beam    = obj.makeTotalBeam(sphere,focal_beam, T, T2);
+            force         = obj.calForce(total_beam);
+            
+            obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam, T, T2, total_beam, force);
         end
+%         
+%         function makeForceField(obj)
+%             import model.phy.PhysicalObject.VectorField
+%             obj.forcefield=VectorField();
+%         end
+            
+        function field = wavefunction(obj,x,y,z)
+            obj.parameters.SpherePosition=[x,y,z];
+            force=obj.perform();            
+            field=force;           
+        end
+%         function [data, fig]= lineCut(obj, r0, r1, n, component)
+%         end
     end
     
 end
