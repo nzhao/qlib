@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+   <Name>
+      <SolutionName type="char">OpticalTweezers</SolutionName>
+   </Name>
+   <IncBeam>
+      <Center type="eval">[0, 0, 0]</Center>
+      <P_L type="eval">[0, 1]</P_L>
+      <Power type="double">0.1</Power>
+      <PxPy type="eval">[1.0, 0.0]</PxPy>
+      <Waist type="double">950</Waist>
+      <WaveLength type="double">1.064</WaveLength>
+   </IncBeam>
+   <Lens>
+      <FocalDistance type="double">1</FocalDistance>
+      <Medium type="char">vacuum</Medium>
+      <NA type="double">0.95</NA>
+   </Lens>
+   <MultiLayerSphereScatterer>
+      <Position type="eval">[0.5, 0.2, 0.1]</Position>
+      <Medium type="eval">{'diamond','silica'}</Medium>
+      <Radius type="eval">[0.05,0.5]</Radius>
+   </MultiLayerSphereScatterer>
+   <CutOff>
+       <NMax type="double">15</NMax>
+   </CutOff>
+</config>
