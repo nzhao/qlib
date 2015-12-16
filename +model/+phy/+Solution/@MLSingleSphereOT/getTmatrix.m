@@ -1,4 +1,4 @@
-function [T, T2] = getTmatrix( obj, scatterer)
+function [Tab, Tcd, Tfg] = getTmatrix( obj, scatterer)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -9,13 +9,13 @@ k=n*2*pi/obj.parameters.IncBeamWaveLength;
 N=length(scatterer.radius);
 n_relative=zeros(1,N);
 for ii=1:N
-n_relative(ii)=scatterer.scatter_medium_n(ii)/n;
+    medium_tmp=scatterer.scatter_medium{ii};
+    n_relative(ii)=medium_tmp.n;
+%     n_relative(ii)=scatterer.scatter_medium_n(ii)/n;
 end
 Nmax=obj.parameters.CutOffNMax;
 
-% [T, T2] = ott13.tmatrix_mie(Nmax,k,k*n_relative,scatterer.radius);
-% T2=-T2;% OTT added a minus '-', so add another to cancel it here.
-[T, T2] = tmatrix_MLSphere(Nmax,k,k*n_relative,scatterer.radius);
+[Tab, Tcd, Tfg] = tmatrix_MLSphere(Nmax,k,k*n_relative,scatterer.radius);
 
 end
 

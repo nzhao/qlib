@@ -43,7 +43,7 @@ classdef MLSingleSphereOT  < model.phy.Solution.AbstractSolution
             focal_beam    = obj.makeFocalBeam(lens, paraxial_beam);            
             [T, T2]       = obj.getTmatrix(sphere);
             
-            total_beam    = obj.makeTotalBeam(sphere,focal_beam, T, T2);
+            total_beam    = obj.makeTotalBeam(sphere,focal_beam, Tab, Tcd, Tfg);
             force         = obj.calForce(total_beam);
             
             obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam, T, T2, total_beam, force);

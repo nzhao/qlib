@@ -1,4 +1,4 @@
-function [Tab, Tcd, Tfg, a,b] = tmatrix_MLSphere(Nmax,k_medium,k_particle,radius)
+function [Tab, Tcd, Tfg] = tmatrix_MLSphere(Nmax,k_medium,k_particle,radius)
 %tmatrix_MLSphere calculates the T matrix of MultiLayerSphere
 %
 %we used the formualtion of Lin's note on Page 18: multiply-coated sphere.
@@ -6,11 +6,12 @@ import ott13.*
 n=(1:Nmax).';
 m = k_particle./k_medium;
 
-M=Nmax; N=length(m);
+M=Nmax; N=length(m); MM=2*(Nmax^2+2*Nmax);
 A=zeros(M,N);B=zeros(M,N);
 At=zeros(M,N);Bt=zeros(M,N);
 d=zeros(M,N);c=zeros(M,N);
 g=zeros(M,N);f=zeros(M,N);
+indexing=combined_index(1:Nmax^2+2*Nmax)';
 
 %% get A,B
 r0 = k_medium.* radius;%xj=k*r
@@ -54,7 +55,7 @@ D21 = j2d./j2; D22 = y2d./y2; D23 = h2d./h2;
 
 R=zeros(M,N);
 for jj=2:N
-    R(:,jj)    = j2(:,jj-1)./h2(:,jj-1).*h1(:,jj)./j1(:,jj);
+    R(:,jj) = j2(:,jj-1)./h2(:,jj-1).*h1(:,jj)./j1(:,jj);
 end
 
 %jj=1 is initial condition
@@ -69,27 +70,34 @@ end
 %% get a,b
 a = j0(:,N)./h0(:,N).*(At(:,N)-m(N)*D01(:,N))./(At(:,N)-m(N)*D03(:,N));
 b = j0(:,N)./h0(:,N).*(m(N)*Bt(:,N)-D01(:,N))./(m(N)*Bt(:,N)-D03(:,N));
-%if we don't care about inner field, we can pass the below part.
-%% get c,d,f,g
-S=zeros(M,N);T=zeros(M,N);
-for jj=N-1:-1:1
-    S(:,jj) = m(jj+1)/m(jj)*j2(:,jj)./h1(:,jj);
-    T(:,jj) = m(jj+1)/m(jj)*j2(:,jj)./j1(:,jj);
-end
+Tab=sparse(1:MM,1:MM,[a(indexing);b(indexing)]);
 
-%jj=N is inital condition
+%% get c,d,f,g
+if nargout>1 %if we don't care about inner field, we can pass the below part.
+    S=zeros(M,N);T=zeros(M,N);
+    for jj=N-1:-1:1
+        S(:,jj) = m(jj+1)/m(jj)*j2(:,jj)./h1(:,jj);
+        T(:,jj) = m(jj+1)/m(jj)*j2(:,jj)./j1(:,jj);
+    end
+    
+    %jj=N is inital condition
     d(:,N)=          T(:,N)./(1-A(:,N)).*(1-a.*h0./j0);
     g(:,N)= -S(:,N).*A(:,N)./(1-A(:,N)).*(1-a).*h0./j0;
     c(:,N)=  m(N)        .*T(:,N)./(1-B(:,N)).*(1-b).*h0./j0;
     f(:,N)= -m(N).*S(:,N).*B(:,N)./(1-B(:,N)).*(1-b).*h0./j0;
-for jj=N-1:-1:1
-    d(:,jj)=           T(:,jj)./(1-A(:,jj)).*(1-A(:,jj+1)./R(:,jj+1)).*d(:,jj+1);
-    g(:,jj)= -S(:,jj).*A(:,jj)./(1-A(:,jj)).*(1-A(:,jj+1)./R(:,jj+1)).*d(:,jj+1);
-    c(:,jj)=  m(jj)./m(jj+1)         .*T(:,jj)./(1-B(:,jj)).*(1-B(:,jj+1)./R(:,jj+1)).*c(:,jj+1);
-    f(:,jj)= -m(jj)./m(jj+1).*S(:,jj).*B(:,jj)./(1-B(:,jj)).*(1-B(:,jj+1)./R(:,jj+1)).*c(:,jj+1);
+    for jj=N-1:-1:1
+        d(:,jj)=           T(:,jj)./(1-A(:,jj)).*(1-A(:,jj+1)./R(:,jj+1)).*d(:,jj+1);
+        g(:,jj)= -S(:,jj).*A(:,jj)./(1-A(:,jj)).*(1-A(:,jj+1)./R(:,jj+1)).*d(:,jj+1);
+        c(:,jj)=  m(jj)./m(jj+1)         .*T(:,jj)./(1-B(:,jj)).*(1-B(:,jj+1)./R(:,jj+1)).*c(:,jj+1);
+        f(:,jj)= -m(jj)./m(jj+1).*S(:,jj).*B(:,jj)./(1-B(:,jj)).*(1-B(:,jj+1)./R(:,jj+1)).*c(:,jj+1);
+    end
+    %convert to diagonal matrix
+    Tcd=zeros(MM,MM,N);Tfg=zeros(MM,MM,N);Tcd=sparse(Tcd);Tfg=sparse(Tfg);
+    for jj=1:N
+        cc=c(:,jj);dd=d(:,jj);ff=f(:,jj);gg=g(:,jj);
+        Tcd(:,:,jj)=sparse(1:MM,1:MM,[cc(indexing);dd(indexing)]);
+        Tfg(:,:,jj)=sparse(1:MM,1:MM,[ff(indexing);gg(indexing)]);
+    end
 end
-%convert to diagonal matrix
-indexing=combined_index(1:Nmax^2+2*Nmax)';
-Tab=
 
 end
