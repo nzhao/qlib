@@ -7,7 +7,7 @@ classdef DecoherenceSuperOperator < model.phy.QuantumOperator.MultiSpinSuperOper
     %   The decoherence operator of the single spin is of the Lindblad form:
     %  L rho = (1/2)*Gamma_vertical*[f(omega)+1](2sigma_{-}*rho*sigma_{+} - rho*sigma_{+}sigma_{-} - sigma_{+}sigma_{-}*rho)
     %          +(1/2)*Gamma_vertical*f(omega)*(2sigma_{+}*rho*sigma_{-} - rho*sigma_{-}sigma_{+} - sigma_{-}sigma_{+}*rho)
-    %          -Gamma_parallel*sigma_{+}*rho*sigma_{+} - Gamma_parallel*sigma_{-}*rho*sigma_{-}
+    %          +(1/2)*Gamma_parallel*[sigma_{z}*rho*sigma_{z} - rho]
     % where sigma is the Pauli operator of the spin, Gamma_vertical (Gamma_vertical) describe the vertical (parallel) coupling 
     % between the spin and its bath, omega is the Zeeman splitting of the spin, and f(omega)=1/[exp(hbar*omega/kT)] is the 
     % occupation number of the bosonic mode with frequency omega.

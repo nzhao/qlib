@@ -8,7 +8,7 @@ classdef DQTInteraction < model.phy.SpinInteraction.SpinChainInteraction.Abstrac
     methods
         function obj=DQTInteraction(spin_collection, para)
             iter=model.phy.SpinCollection.Iterator.ChainNeighbouringIterator(spin_collection);
-            obj@model.phy.SpinInteraction.SpinChainInteraction.AbstractSpinChainInteraction(spin_collection, para, iter);
+            obj@model.phy.SpinInteraction.SpinChainInteraction.AbstractSpinChainInteraction(para, iter);
             obj.nbody=2;
         end
         
