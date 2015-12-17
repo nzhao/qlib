@@ -35,7 +35,7 @@ pq = Tab * [ a2; b2 ];
 p = pq(1:length(pq)/2);
 q = pq(length(pq)/2+1:end);%It's noticed that [a2,b2,p,q] are incident-scatter beam formula at sphere center.
 
-[M,N]=size(Tcd);M=M/2;
+[M,~,N]=size(Tcd);M=M/2;
 cc=zeros(M,N);dd=zeros(M,N);ff=zeros(M,N);gg=zeros(M,N);
 for jj=1:N
 cd = Tcd(:,:,jj) * [ a2; b2 ];
