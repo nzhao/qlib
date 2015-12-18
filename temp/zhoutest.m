@@ -8,8 +8,8 @@ force=sol.perform()
     =sol.result.total_beam.wavefunction(0.6,0.3,0.2)
 
 %% Line compare
-data1=dlmread('03fld_all3_insidesphere.txt');
-rstart=[-2,0.3,0.2];rstop=[2,0.3,0.2];
+data1=dlmread('03fld_all.txt');
+rstart=[-2,0.25,0.15];rstop=[2,0.25,0.15];
 
 figure;
 data=sol.result.total_beam.lineCut(rstart,rstop,50,'ExR');
