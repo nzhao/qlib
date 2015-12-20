@@ -17,7 +17,7 @@ indexing=combined_index(1:Nmax^2+2*Nmax)';
 %% get A,B
 r0 = k_medium.* radius;%xj=k*r
 r1 = k_particle.* radius;%mj*xj=mj*k*r=k_particle*r
-r2 = m(2:end)./m(1:end-1).*r1(1:end-1);r2=[r2,1];%The last element 1 only occupies vacancy.
+r2 = m(2:end)./m(1:end-1).*r1(1:end-1);r2=[r2,r0(end)];
 %Since M~100,N~10 is not large, we store all of them.
 j0=zeros(M,N);j1=zeros(M,N);j2=zeros(M,N);
 y0=zeros(M,N);y1=zeros(M,N);y2=zeros(M,N);
@@ -71,21 +71,22 @@ end
 %% get a,b
 a = j0(:,N)./h0(:,N).*(At(:,N)-m(N)*D01(:,N))./(At(:,N)-m(N)*D03(:,N));
 b = j0(:,N)./h0(:,N).*(m(N)*Bt(:,N)-D01(:,N))./(m(N)*Bt(:,N)-D03(:,N));
-Tab=sparse(1:MM,1:MM,[a(indexing);b(indexing)]);
+% Tab=sparse(1:MM,1:MM,[a(indexing);b(indexing)]);
+Tab=sparse(1:MM,1:MM,[-b(indexing);-a(indexing)]);
 
 %% get c,d,f,g
 if nargout>1 %if we don't care about inner field, we can pass the below part.
     S=zeros(M,N);T=zeros(M,N);
-    for jj=N-1:-1:1
-        S(:,jj) = m(jj+1)/m(jj)*j2(:,jj)./h1(:,jj);
-        T(:,jj) = m(jj+1)/m(jj)*j2(:,jj)./j1(:,jj);
+    for jj=N:-1:1
+        S(:,jj) = r2(jj)/r1(jj)*j2(:,jj)./h1(:,jj);
+        T(:,jj) = r2(jj)/r1(jj)*j2(:,jj)./j1(:,jj);
     end
     
     %jj=N is inital condition
-    d(:,N)=          T(:,N)./(1-A(:,N)).*(1-a.*h0(:,N)./j0(:,N));
-    g(:,N)= -S(:,N).*A(:,N)./(1-A(:,N)).*(1-a).*h0(:,N)./j0(:,N);
-    c(:,N)=  m(N)        .*T(:,N)./(1-B(:,N)).*(1-b).*h0(:,N)./j0(:,N);
-    f(:,N)= -m(N).*S(:,N).*B(:,N)./(1-B(:,N)).*(1-b).*h0(:,N)./j0(:,N);
+    d(:,N)=                T(:,N)./(1-A(:,N)).*(1-a.*h0(:,N)./j0(:,N));
+    g(:,N)=       -S(:,N).*A(:,N)./(1-A(:,N)).*(1-a.*h0(:,N)./j0(:,N));
+    c(:,N)=  m(N)        .*T(:,N)./(1-B(:,N)).*(1-b.*h0(:,N)./j0(:,N));
+    f(:,N)= -m(N).*S(:,N).*B(:,N)./(1-B(:,N)).*(1-b.*h0(:,N)./j0(:,N));
     for jj=N-1:-1:1
         d(:,jj)=           T(:,jj)./(1-A(:,jj)).*(1-A(:,jj+1)./R(:,jj+1)).*d(:,jj+1);
         g(:,jj)= -S(:,jj).*A(:,jj)./(1-A(:,jj)).*(1-A(:,jj+1)./R(:,jj+1)).*d(:,jj+1);
@@ -100,5 +101,8 @@ if nargout>1 %if we don't care about inner field, we can pass the below part.
         Tfg(:,:,jj)=sparse(1:MM,1:MM,[ff(indexing);gg(indexing)]);%Tfg=sparse(Tfg);
     end
 end
+
+[a,b]
+[c,d,f,g]
 
 end

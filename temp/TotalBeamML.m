@@ -7,7 +7,7 @@ classdef TotalBeamML < model.phy.PhysicalObject.LaserBeam.OpticalField
         scatBeampq;%pq
         scatBeamccdd;%beam inside the sphere:cd
         scatBeamffgg;%beam inside the sphere:fg
-        nmabpqcd;%store the pure coefficents in OTT convention for force and torque calculation.
+        nmabpqcd;%store the "pure" coefficents in OTT convention for force and torque calculation.
         scatterer;
         
     end
@@ -79,7 +79,6 @@ classdef TotalBeamML < model.phy.PhysicalObject.LaserBeam.OpticalField
                 efield=efieldinc+efieldscat;   hfield=hfieldinc+hfieldscat;
             else
                 tmp=find(~(norm(r12)>radius));jj=tmp(1);
-%                 tmpBeam=obj.scatBeamccdd;tmpBeam(jj)
                 scatBeamcd=obj.scatBeamccdd(jj);
                 scatBeamfg=obj.scatBeamffgg(jj);                
                 efieldinc=[0,0,0]; hfieldinc=[0,0,0];
