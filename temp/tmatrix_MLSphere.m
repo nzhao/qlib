@@ -102,7 +102,7 @@ if nargout>1 %if we don't care about inner field, we can pass the below part.
     end
 end
 
-[a,b]
-[c,d,f,g]
+% [a,b]
+% [c,d,f,g]
 
 end
