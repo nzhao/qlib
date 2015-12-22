@@ -4,7 +4,7 @@ function [data, fig] = slice( obj, r0, r1, r2, n1, n2,component)
 %
 % Field form: complex field Field(x,y,z).
 
-error('slice for scalar field is being added!');
+
 data=zeros( (n1+1)*(n2+1), 4);
 x=zeros( 1, (n1+1)*(n2+1));
 y=zeros( 1, (n1+1)*(n2+1));
@@ -25,7 +25,7 @@ for jj=0:n1
         y(qq)=y0tmp+kk*dr2Norm;
         z(qq)=obj.wavefunction(r(1), r(2), r(3));
         %         data(qq, :)=[r, z(qq)];
-        data(qq, :)=[0,x,y, z(qq)];
+        data(qq, :)=[0,x(qq),y(qq), z(qq)];
     end
 end
 

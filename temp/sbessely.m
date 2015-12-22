@@ -11,9 +11,9 @@ n=n(:);
 small_args = find( abs(kr) < 1e-15 );
 not_small_args = find( ~(abs(kr) < 1e-15) );
 
-if length(kr) == 1 & abs(kr) < 1e-15
+if length(kr) == 1 && abs(kr) < 1e-15
     yn = -1./kr.^(n+1) .* prod(1:2:(2*n-1));
-elseif length(kr) == 1 & ~(abs(kr) < 1e-15)
+elseif length(kr) == 1 && ~(abs(kr) < 1e-15)
     yn = sqrt(pi./(2*kr)) .* yn;
 elseif length(n) == 1
     yn(not_small_args) = ...

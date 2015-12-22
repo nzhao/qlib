@@ -2,7 +2,7 @@ function [data, fig]= lineCut(obj, r0, r1, n, component)
 %LINECUT Summary of this function goes here
 %   Detailed explanation goes here
 %
-%now lincut is only for Vectorfield
+error('slice for scalar field is being added!');
 
     x=zeros(n+1, 1);
     data=zeros(n+1,9);
