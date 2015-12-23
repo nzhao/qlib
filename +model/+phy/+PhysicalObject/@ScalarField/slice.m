@@ -24,8 +24,8 @@ for jj=0:n1
         x(qq)=x0tmp+jj*dr1Norm;
         y(qq)=y0tmp+kk*dr2Norm;
         z(qq)=obj.wavefunction(r(1), r(2), r(3));
-        %         data(qq, :)=[r, z(qq)];
-        data(qq, :)=[0,x(qq),y(qq), z(qq)];
+        data(qq, :)=[r, z(qq)];
+%         data(qq, :)=[0,x(qq),y(qq), z(qq)];
     end
 end
 

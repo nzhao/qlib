@@ -2,7 +2,8 @@ function [data, fig]= lineCut(obj, r0, r1, n,component)
 %LINECUT function will give out the field distribution of a SCALAR field
 %   along r0->r1 with n steps (i.e, n+1 points).
 %
-% Field form: complex field Field(x,y,z).
+% Field form: complex field Field(x,y,z) with output data=[r,Field].
+%fig plot with component options {real,imag, abs,angle}.
 
 x=zeros(n+1, 1);
 data=zeros(n+1,4);
