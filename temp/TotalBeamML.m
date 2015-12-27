@@ -57,7 +57,7 @@ classdef TotalBeamML < model.phy.PhysicalObject.LaserBeam.OpticalField
                 [a0t,b0t,n0t,m0t]=abNie2Lin(a1t,b1t,n1t,m1t);
                 scatBeamfg.aNNZ=[n0t,m0t,a0t];scatBeamfg.bNNZ=[n0t,m0t,b0t];
                 scatBeamfg.AmplitudeFactor=lg1.AmplitudeFactor;
-                scatBeamfg.beamtype=4;
+                scatBeamfg.beamtype=1;
                 obj.scatBeamffgg=[obj.scatBeamffgg,scatBeamfg];
             end
             

@@ -2,6 +2,10 @@ function [Tab, Tcd, Tfg] = tmatrix_MLSphere(Nmax,k_medium,k_particle,radius)
 %tmatrix_MLSphere calculates the T matrix of MultiLayerSphere
 %
 %we used Lin's note on Page 18: multiply-coated sphere.
+
+%This version also calcualted sbessely, Dn2(z), but not used here.
+%In the need of M4,N4 function, vswfcart1.m, vswf1.m were added.
+
 import ott13.*
 n=1:Nmax;%row vector will omit the .' in Line28-46. However, here we use the 
          % convention of OTT because the ott13.sbesselj has a n'.
@@ -20,18 +24,18 @@ r1 = k_particle.* radius;%mj*xj=mj*k*r=k_particle*r
 r2 = m(2:end)./m(1:end-1).*r1(1:end-1);r2=[r2,r0(end)];
 %Since M~100,N~10 is not large, we store all of them.
 j0=zeros(M,N);j1=zeros(M,N);j2=zeros(M,N);
-% y0=zeros(M,N);y1=zeros(M,N);y2=zeros(M,N);
+y0=zeros(M,N);y1=zeros(M,N);y2=zeros(M,N);
 h0=zeros(M,N);h1=zeros(M,N);h2=zeros(M,N);
 j0d=zeros(M,N);j1d=zeros(M,N);j2d=zeros(M,N);
-% y0d=zeros(M,N);y1d=zeros(M,N);y2d=zeros(M,N);
+y0d=zeros(M,N);y1d=zeros(M,N);y2d=zeros(M,N);
 h0d=zeros(M,N);h1d=zeros(M,N);h2d=zeros(M,N);
 for jj=1:N
     j0(:,jj) = (sbesselj(n,r0(jj))).';
     j1(:,jj) = (sbesselj(n,r1(jj))).';
     j2(:,jj) = (sbesselj(n,r2(jj))).';
-%     y0(:,jj) = (sbessely(n,r0(jj))).';
-%     y1(:,jj) = (sbessely(n,r1(jj))).';
-%     y2(:,jj) = (sbessely(n,r2(jj))).';
+    y0(:,jj) = (sbessely(n,r0(jj))).';
+    y1(:,jj) = (sbessely(n,r1(jj))).';
+    y2(:,jj) = (sbessely(n,r2(jj))).';
     h0(:,jj) = (sbesselh1(n,r0(jj))).';
     h1(:,jj) = (sbesselh1(n,r1(jj))).';
     h2(:,jj) = (sbesselh1(n,r2(jj))).';
@@ -39,9 +43,9 @@ for jj=1:N
     j0d(:,jj) = ((n+1).*sbesselj(n,r0(jj))./r0(jj) - sbesselj(n+1,r0(jj))).';
     j1d(:,jj) = ((n+1).*sbesselj(n,r1(jj))./r1(jj) - sbesselj(n+1,r1(jj))).';
     j2d(:,jj) = ((n+1).*sbesselj(n,r2(jj))./r2(jj) - sbesselj(n+1,r2(jj))).';
-%     y0d(:,jj) = ((n+1).*sbessely(n,r0(jj))./r0(jj) - sbessely(n+1,r0(jj))).';
-%     y1d(:,jj) = ((n+1).*sbessely(n,r1(jj))./r1(jj) - sbessely(n+1,r1(jj))).';
-%     y2d(:,jj) = ((n+1).*sbessely(n,r2(jj))./r2(jj) - sbessely(n+1,r2(jj))).';
+    y0d(:,jj) = ((n+1).*sbessely(n,r0(jj))./r0(jj) - sbessely(n+1,r0(jj))).';
+    y1d(:,jj) = ((n+1).*sbessely(n,r1(jj))./r1(jj) - sbessely(n+1,r1(jj))).';
+    y2d(:,jj) = ((n+1).*sbessely(n,r2(jj))./r2(jj) - sbessely(n+1,r2(jj))).';
     h0d(:,jj) = ((n+1).*sbesselh1(n,r0(jj))./r0(jj) - sbesselh1(n+1,r0(jj))).';
     h1d(:,jj) = ((n+1).*sbesselh1(n,r1(jj))./r1(jj) - sbesselh1(n+1,r1(jj))).';
     h2d(:,jj) = ((n+1).*sbesselh1(n,r2(jj))./r2(jj) - sbesselh1(n+1,r2(jj))).';
@@ -50,9 +54,9 @@ for jj=1:N
     % D11(:,jj) = j1d./j1; D12(:,jj) = y1d./y1; D13(:,jj) = h1d./h1;
     % D21(:,jj) = j2d./j2; D22(:,jj) = y2d./y2; D23(:,jj) = h2d./h2;
 end
-D01 = j0d./j0;  D03 = h0d./h0; %D02 = y0d./y0;
-D11 = j1d./j1;  D13 = h1d./h1; %D12 = y1d./y1; 
-D21 = j2d./j2;  D23 = h2d./h2; %D22 = y2d./y2;
+D01 = j0d./j0; D02 = y0d./y0; D03 = h0d./h0;
+D11 = j1d./j1; D12 = y1d./y1; D13 = h1d./h1;
+D21 = j2d./j2; D22 = y2d./y2; D23 = h2d./h2;
 
 R=zeros(M,N);% The R needs at least jj and jj-1, so we shoule at least store all of them before.
 for jj=2:N
