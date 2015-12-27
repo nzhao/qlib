@@ -6,7 +6,7 @@ classdef MLSphereScatter < model.phy.PhysicalObject.PhysicalObject
         x=0
         y=0
         z=0
-        Nlayer=1;
+        Nlayer;
         scatter_medium; %default SiO2.
 %         scatter_medium_n; %default SiO2.
         radius;

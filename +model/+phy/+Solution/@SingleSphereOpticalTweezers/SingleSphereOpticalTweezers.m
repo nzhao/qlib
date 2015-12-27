@@ -53,10 +53,9 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
 %             obj.forcefield=VectorField();
 %         end
             
-        function field = wavefunction(obj,x,y,z)
+        function force = wavefunction(obj,x,y,z)
             obj.parameters.SpherePosition=[x,y,z];
-            force=obj.perform();            
-            field=force;           
+            force=obj.perform();                 
         end
 %         function [data, fig]= lineCut(obj, r0, r1, n, component)
 %         end
