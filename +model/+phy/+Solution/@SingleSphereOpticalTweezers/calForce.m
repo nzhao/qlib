@@ -2,6 +2,8 @@ function [force, torque] = calForce(obj, total_beam, focalPower)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
+import model.math.misc.wignerD
+
 Nmax=obj.parameters.CutOffNMax;
 tmp=total_beam.nmabpqcd;
 n=tmp(:,1);m=tmp(:,2);a2=tmp(:,3);b2=tmp(:,4);

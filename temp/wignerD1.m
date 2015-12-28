@@ -1,4 +1,4 @@
-function [D,Dnmax] = wignerD( nmax, R)
+function [D,Dnmax] = wignerD( nmax, R,flag)
 % wignerD.m
 % Rotation matrix for rotation of spherical harmonics or T-matrices
 %
@@ -14,7 +14,7 @@ function [D,Dnmax] = wignerD( nmax, R)
 % D (and Dnmax) are sparse
 %
 % This method from Choi et al., J. Chem. Phys. 111: 8825-8831 (1999).
-% Code adapted from ott by Nieminen.
+% Code adapted from ott by Nieminen(JOA,196-203(2007)).
 %
 % PACKAGE INFO
 
@@ -30,23 +30,25 @@ function [D,Dnmax] = wignerD( nmax, R)
 % s = x C / r
 
 C = [  1/sqrt(2) 0 -1/sqrt(2);
-      -i/sqrt(2) 0 -i/sqrt(2);
-       0         1  0 ];
+    -i/sqrt(2) 0 -i/sqrt(2);
+    0         1  0 ];
 invC = [ 1/sqrt(2) i/sqrt(2) 0;
-         0         0         1;
-        -1/sqrt(2) i/sqrt(2) 0 ];
+    0         0         1;
+    -1/sqrt(2) i/sqrt(2) 0 ];
 
 % Since x' = x R, s' -> x' C = s invC R C -> s' = s (invC R C)
-D = invC * R * C; 
+D = invC * R * C;
 %This is the normal D(l=1) for row vectors{-1,0,1}, can be verified by EQ(5.23) on P.109.
 %Normal includes Mish, Choi and zeng.
 % This is also the rotation sub-matrix for n = 1
 
-%If we use (-1)^m omitted convention 
-[X,Y]=meshgrid([-1,0,1]);
-mt=(-1).^(Y-X);
-D=mt.*D;
-%else go on.
+%We used (-1)^m omitted convention for wignerD in Optical tweezers
+%problem. The nomral wignerD shoulb set flag=1.
+if nargin<3
+    [X,Y]=meshgrid([-1,0,1]);
+    mt=(-1).^(Y-X);
+    D=mt.*D;
+end
 
 %iteration for D.
 D1 = D.';% This transpose is just done for the reuse of the code below, and
@@ -64,7 +66,7 @@ for n = 2:nmax
     DDD = zeros(2*n+1);
     
     % Fill in whole block except for top and bottom row
-
+    
     m0 = ones(2*n-1,1) * (-n:n);
     m1 = ((-n+1):(n-1)).' * ones(1,2*n+1);
     a = sqrt( (n+m0) .* (n-m0) ./ ( (n+m1) .* (n-m1) ) );
@@ -89,7 +91,7 @@ for n = 2:nmax
     DDD(end,2:end-1) = D1(3,2) * c(2:end-1) .* DD(end,:);
     DDD(end,3:end) = DDD(end,3:end) + D1(3,3) * d(3:end) .* DD(end,:);
     DDD(end,1:end-2) = DDD(end,1:end-2) + D1(3,1) * fliplr(d(3:end)) .* DD(end,:);
-
+    
     % Dump into final matrix
     
     minci = ott13.combined_index(n,-n);

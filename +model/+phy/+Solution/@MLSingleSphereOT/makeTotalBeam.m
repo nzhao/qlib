@@ -2,7 +2,8 @@ function total_beam = makeTotalBeam ( obj, scatterer,focal_beam, Tab,Tcd,Tfg)
 %UNTITLED2 Summary of this function goes here
 %   Detailed explanation goes here
 
-import model.phy.PhysicalObject.LaserBeam.totalBeam
+import model.phy.PhysicalObject.LaserBeam.TotalBeamML
+import model.math.misc.wignerD
 
 Nmax=obj.parameters.CutOffNMax;
 wavelength=obj.parameters.IncBeamWaveLength;%should be wavlenth in working_medium of lens?
