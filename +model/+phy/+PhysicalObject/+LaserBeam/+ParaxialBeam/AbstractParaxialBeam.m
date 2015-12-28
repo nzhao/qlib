@@ -1,4 +1,4 @@
-classdef AbstractParaxialBeam < model.phy.PhysicalObject.LaserBeam.OpticalField
+classdef AbstractParaxialBeam < model.phy.PhysicalObject.ScalarField
     %GAUSSIANBEAM Summary of this class goes here
     %   Detailed explanation goes here
     

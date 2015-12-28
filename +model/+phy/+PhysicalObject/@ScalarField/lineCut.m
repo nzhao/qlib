@@ -1,53 +1,50 @@
-function [data, fig]= lineCut(obj, r0, r1, n, component)
-%LINECUT Summary of this function goes here
-%   Detailed explanation goes here
+function [data, fig]= lineCut(obj, r0, r1, n,component)
+%LINECUT function will give out the field distribution of a SCALAR field
+%   along r0->r1 with n steps (i.e, n+1 points).
 %
-%now lincut is only for Vectorfield
+% Field form: complex field Field(x,y,z) with output data=[r,Field].
+%fig plot with component options {real,imag, abs,angle}.
 
-    x=zeros(n+1, 1);
-    data=zeros(n+1,9);
-    dr=(r1-r0)/n;
-    drNorm=norm(dr);
-    
-    indx=find(dr);
-    xtmp=(dr(1)==0)+(dr(2)==0)+(dr(3)==0);
-    if xtmp==3
-        print('Input is a single point!');
-    elseif xtmp==2 %along an axis
-        for kk=1:n+1
-            r=r0+(kk-1)*dr;
-            x(kk)=r0(indx)+(kk-1)*drNorm;% for index axis only
-            Field=obj.wavefunction(r(1), r(2), r(3));
-            data(kk,:)=[r, Field];
-        end
-    else
-        for kk=1:n+1
-            r=r0+(kk-1)*dr;
-            x(kk)=(kk-1)*drNorm;
-            Field=obj.wavefunction(r(1), r(2), r(3));
-            data(kk,:)=[r, Field];
-        end
+x=zeros(n+1, 1);
+data=zeros(n+1,4);
+dr=(r1-r0)/n;
+drNorm=norm(dr);
+
+indx=find(dr);indx=indx(1);
+%xtmp=(dr(1)==0)+(dr(2)==0)+(dr(3)==0);
+xtmp=sum(~logical(dr));
+if xtmp==3
+    print('Input is a single point!');
+elseif xtmp==2 %If along an axis, show the figure x axis labeled with axis value
+    r0tmp=r0(indx);
+    for kk=1:n+1
+        r=r0+(kk-1)*dr;
+        x(kk)=r0tmp+(kk-1)*drNorm;% for index axis only
+        Field=obj.wavefunction(r(1), r(2), r(3));
+        data(kk,:)=[r, Field];
     end
-    
-    if nargin>4
-    Ex=data(:, 4); Ey=data(:, 5); Ez=data(:, 6); Ea=conj(Ex).*Ex+conj(Ey).*Ey+conj(Ez).*Ez;
+else           %not along an axis, show the figure x axis label with step number.
+    for kk=1:n+1
+        r=r0+(kk-1)*dr;
+        x(kk)=(kk-1)*drNorm;
+        Field=obj.wavefunction(r(1), r(2), r(3));
+        data(kk,:)=[r, Field];
+    end
+end
+
+if nargin>4
+    Field=data(:, 4);
     switch char(component)
-        case 'ExR'
-            fig=plot(x, real(Ex), 'r-');
-        case 'ExI'
-            fig=plot(x, imag(Ex), 'r-');
-        case 'EyR'
-            fig=plot(x, real(Ey), 'r-');
-        case 'EyI'
-            fig=plot(x, imag(Ey), 'r-');
-        case 'EzR'
-            fig=plot(x, real(Ez), 'r-');
-        case 'EzI'
-            fig=plot(x, imag(Ez), 'r-');
-        case 'Ea'
-            fig=plot(x, Ea, 'r-');
+        case 'real'
+            fig=plot(x, real(Field), 'r-');
+        case 'imag'
+            fig=plot(x, imag(Field), 'r-');
+        case 'abs'
+            fig=plot(x, abs(Field), 'r-');
+        case 'angle'
+            fig=plot(x, angle(Field), 'r-');
     end
-    end
+end
 
 end
 

@@ -1,4 +1,4 @@
-classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
+classdef MLSingleSphereOT  < model.phy.Solution.AbstractSolution
     %SINGLESPHEREOPTICALTWEEZERS Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -7,7 +7,7 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
     end
     
     methods
-        function obj=SingleSphereOpticalTweezers(xml_file)
+        function obj=MLSingleSphereOT(xml_file)
             obj@model.phy.Solution.AbstractSolution(xml_file);
         end
         
@@ -25,9 +25,10 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
             obj.parameters.IncBeamWaist  = p.get_parameter('IncBeam', 'Waist');
             obj.parameters.IncBeamWaveLength  = p.get_parameter('IncBeam', 'WaveLength');
             
-            obj.parameters.SpherePosition  = p.get_parameter('SphereScatterer', 'Position');
-            obj.parameters.SphereRadius    = p.get_parameter('SphereScatterer', 'Radius');
-            obj.parameters.SphereMedium    = p.get_parameter('SphereScatterer', 'Medium');
+            obj.parameters.SpherePosition = p.get_parameter('MultiLayerSphereScatterer', 'Position');
+%             obj.parameters.SphereNLayers  = p.get_parameter('MultiLayerSphereScatterer', 'NLayers');
+            obj.parameters.SphereRadius   = p.get_parameter('MultiLayerSphereScatterer', 'Radius');
+            obj.parameters.SphereMedium   = p.get_parameter('MultiLayerSphereScatterer', 'Medium');
             
             obj.parameters.CutOffNMax = p.get_parameter('CutOff', 'NMax');
         end
@@ -40,12 +41,12 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
             sphere        = obj.getScatterer();
             
             focal_beam    = obj.makeFocalBeam(lens, paraxial_beam);            
-            [T, T2]       = obj.getTmatrix(sphere);
+            [Tab, Tcd, Tfg]       = obj.getTmatrix(sphere);
             
-            total_beam    = obj.makeTotalBeam(sphere,focal_beam, T, T2);
+            total_beam    = obj.makeTotalBeam(sphere,focal_beam, Tab, Tcd, Tfg);
             force         = obj.calForce(total_beam);
             
-            obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam, T, T2, total_beam, force);
+            obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam, total_beam, force);
         end
 %         
 %         function makeForceField(obj)
@@ -53,9 +54,10 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
 %             obj.forcefield=VectorField();
 %         end
             
-        function force = wavefunction(obj,x,y,z)
+        function field = wavefunction(obj,x,y,z)
             obj.parameters.SpherePosition=[x,y,z];
-            force=obj.perform();                 
+            force=obj.perform();            
+            field=force;           
         end
 %         function [data, fig]= lineCut(obj, r0, r1, n, component)
 %         end
