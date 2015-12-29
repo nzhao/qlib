@@ -32,7 +32,7 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
             obj.parameters.CutOffNMax = p.get_parameter('CutOff', 'NMax');
         end
         
-        function force=perform(obj)
+        function [force,torque]=perform(obj)
 %             import model.phy.PhysicalObject.Lens
             
             lens          = obj.getLens();
@@ -43,7 +43,7 @@ classdef SingleSphereOpticalTweezers  < model.phy.Solution.AbstractSolution
             [T, T2]       = obj.getTmatrix(sphere);
             
             total_beam    = obj.makeTotalBeam(sphere,focal_beam, T, T2);
-            force         = obj.calForce(total_beam);
+            [force,torque]= obj.calForce(total_beam);
             
             obj.StoreKeyVariables(lens, paraxial_beam, sphere, focal_beam, T, T2, total_beam, force);
         end
