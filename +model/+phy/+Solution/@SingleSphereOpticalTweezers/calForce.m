@@ -12,22 +12,22 @@ pwr = sqrt(sum( abs(a2).^2 + abs(b2).^2 ));%pwr2=pwr
 %normalizing to pwr(a2,b2) is slight different from normalizing to
 %pwr(a,b) in Lin, which can be neglected.
 %Fz
-fz = ott13.force_z(n,m,a2,b2,p,q);
-fqz=fz/pwr^2;
+[fz,tz] = ott13.force_z(n,m,a2,b2,p,q);
 %Fx
 Rx = ott13.z_rotation_matrix(pi/2,0);
 Dx = wignerD(Nmax,Rx');
-fx = ott13.force_z(n,m,Dx*a2,Dx*b2,Dx*p,Dx*q); %Dx makes the z-force calculation the x-force calculation.
-fqx=fx/pwr^2;
+[fx,tx] = ott13.force_z(n,m,Dx*a2,Dx*b2,Dx*p,Dx*q); %Dx makes the z-force calculation the x-force calculation.
 %Fy
 Ry = ott13.z_rotation_matrix(pi/2,pi/2);
 Dy = wignerD(Nmax,Ry');
-fy = ott13.force_z(n,m,Dy*a2,Dy*b2,Dy*p,Dy*q); %Dx makes the z-force calculation the x-force calculation.
-fqy=fy/pwr^2;
-force=[fqx,fqy,fqz];
-% force=[fx,fy,fz];
+[fy,ty] = ott13.force_z(n,m,Dy*a2,Dy*b2,Dy*p,Dy*q); %Dx makes the z-force calculation the x-force calculation.
 
-torque=[0,0,0];
+force=[fx,fy,fz];
+force=force./pwr^2;
+
+torque=[tx,ty,tz];
+torque=torque./pwr^2;
+torque=full(torque);
 
 if nargin>2
     force=focalPower*force;
