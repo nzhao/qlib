@@ -1,12 +1,18 @@
 *.m~
+
 *.asv
-*.mat
-*.xyz
 
-+controller/+input/+xml/EnsembleCCE_hBNLayer.xml
+*.swp
 
-+controller/+output/BenzeneDynamics20150608_122343.mat
+xml
 
-+controller/+output/ButaneDynamics20150608_122702.mat
+doc/output/
+
++controller/+input/+xml/*.xml
+
++controller/+input/+xyz/*.xyz
+
++controller/+output/*.mat
+
 
 

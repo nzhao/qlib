@@ -1,4 +1,4 @@
-classdef NMRData
+ classdef NMRData
     %NMRDATA Summary of this class goes here
     %   Detailed explanation goes here
     % the electic quadrupole coupling constant :e^2*q*Q/hbar (unit: rad/s)

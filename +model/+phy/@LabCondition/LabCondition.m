@@ -15,6 +15,7 @@ classdef LabCondition < handle
         function obj = LabCondition()
             obj.value=containers.Map();
             obj.value('magnetic_field')=[0 0 0];
+            obj.value('temperature')=300;
         end
     end
 
