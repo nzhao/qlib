@@ -33,7 +33,7 @@ classdef AtomicStructure
                     parameters.te1=25.5e-9;          %spontaneous P1/2 lifetime in s  J=1.5
                     parameters.lamJ2=7947e-10;        %D1 wavelength in m    J=0.5
                     parameters.te2=28.5e-9;          %spontaneous P1/2 lifetime in when J=0.5
-                    parameters.hf_gs=3417.35;   % hf coeff of ground state S_1/2 in MHz
+                    parameters.hf_gs=3417.35;   %  hf coeff of ground state S_1/2 in MHz
                     parameters.hf_es1=406.12;       %hf coeff of excited state P_1/2 in MHz
                     parameters.hf_es2A=84.72;       %hf coeff_A of excited state P_3/2 state in MHz
                     parameters.hf_es2B=12.50;       %hf coeff_B of excited state P_3/2 state in MHz
