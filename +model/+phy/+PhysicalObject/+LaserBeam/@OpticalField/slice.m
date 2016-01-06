@@ -1,11 +1,14 @@
-function [data, fig] = slice( obj, r0, r1, r2, n1, n2)
+function [data, fig,data3] = slice( obj, r0, r1, r2, n1, n2)
 %SLICE Summary of this function goes here
 %   Detailed explanation goes here
 % This is a vector field with [E,H] computed simutaneously and plot E
 %with abs(E).
 %and store [r,E] in data.
+%
+%This function will be more powerful to add 'component' as linecut.
 
 data=zeros( (n1+1)*(n2+1), 6);
+data3=zeros( (n1+1)*(n2+1), 3);
 x=zeros( 1, (n1+1)*(n2+1));
 y=zeros( 1, (n1+1)*(n2+1));
 z=zeros( 1, (n1+1)*(n2+1));
@@ -25,13 +28,14 @@ for jj=0:n1
         y(qq)=y0tmp+kk*dr2Norm;
         Field=obj.wavefunction(r(1), r(2), r(3));
         z(qq)=norm(Field);
-        data(qq, :)=[r, Field];%data(qq, :)=[0,x(qq),y(qq), z(qq)];
+        data(qq, :)=[r, Field];
+        data3(qq, :)=[x(qq),y(qq),z(qq)];
     end
 end
 
-X=reshape(x, [n1+1, n2+1]);
-Y=reshape(y, [n1+1, n2+1]);
-Z=reshape(z, [n1+1, n2+1]);
+X=reshape(x, [n2+1, n1+1]);
+Y=reshape(y, [n2+1, n1+1]);
+Z=reshape(z, [n2+1, n1+1]);
 fig=surf(X, Y, Z);
 
 end
