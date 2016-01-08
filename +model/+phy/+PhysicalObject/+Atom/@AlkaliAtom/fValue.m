@@ -1,3 +1,4 @@
+function f=fValue(obj,J,magB)
 if J==1.5
     gJ=obj.e2Spin.dim;
     ge=obj.dimE2;
@@ -26,5 +27,6 @@ end
 uIJ=matdot(aIje,gJj);%uncoupled I.J
 fSquare=I*(I+1)+J*(J+1)+uIJ;
 gsHami=rb.gsHamiltonian(magB);
-[gsV, gsD]=eig(gsHami);
-fValue=gsV'*fSquare*gsV; 
+[gsV, ~]=eig(gsHami);
+f=gsV'*fSquare*gsV; 
+end
