@@ -3,11 +3,20 @@ function Dj=happerMatrixCoupled(obj,J,magB, projection)
 if nargin<4
     projection='cartesian';
 end
-
-I=obj.parameters.spin_I;
+if J==1.5
+    ge=obj.dimE2;
+    ele=obj.e2Spin;
+elseif J==0.5
+    ge=obj.dimE1;
+    ele=obj.e1Spin;
+else 
+    disp('Error J')
+end
 S=obj.parameters.spin_S;
-%statistical weights
-gI=2*I+1; gS=2*S+1; gJ=2*J+1;gg=gS*gI;ge=gJ*gI;
+gg=obj.dimG;
+gS=obj.gSpin.dim;
+gJ=ele.dim;
+gI=obj.nSpin.dim;
 [~,Ug,~,Ue]=obj.eigenValueVector(J,magB);
 sDs=zeros(gS,gJ,3); %spherical projections in electronic space
 for k=J:-1:-J

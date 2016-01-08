@@ -44,29 +44,75 @@
             nInt=length(data);
 
             fileID = fopen(filename,'w');
-            fwrite(fileID, nSpin,'int');
-            fwrite(fileID, nInt,'int');
+            fwrite(fileID, nSpin,'uint64');
+            fwrite(fileID, nInt,'uint64');
+            fwrite(fileID, obj.dim,'uint64');
             
+            spin_dim=zeros(1, nSpin);
+            for ii=1:nSpin
+                spin=obj.spin_collection.spin_list{ii};
+                spin_dim(ii)=spin.dim;
+            end
+            fwrite(fileID, spin_dim,'uint64');
+            
+            coeff_list=zeros(1, nInt);
+            nbody_list=zeros(1, nInt);
             for ii=1:nInt
                 data_i=data{ii};
-                
-                coeff=data_i{1};  fwrite(fileID, coeff,'double');
-                nbody=data_i{2};  fwrite(fileID, nbody,'int');
-                for kk=0:nbody-1
-                    pos_k=data_i{3+kk*3}; fwrite(fileID, pos_k,'int');
-                    dim_k=data_i{3+kk*3+1}; fwrite(fileID, dim_k,'int');
-                    mat_k=data_i{3+kk*3+2}; fwrite(fileID, real(mat_k),'double'); fwrite(fileID, imag(mat_k),'double');
+                coeff_list(ii)=data_i{1};
+                nbody_list(ii)=data_i{2};
+            end
+            total_nbody=sum(nbody_list);
+            fwrite(fileID, coeff_list,'double');
+            fwrite(fileID, nbody_list,'uint64');
+            
+            idx=1;
+            pos_list=zeros(1, total_nbody);
+            dim_list=zeros(1, total_nbody);
+            for ii=1:nInt 
+                data_i=data{ii};
+                for kk=0:nbody_list(ii)-1
+                    pos_list(idx)=data_i{3+kk*3};
+                    dim_list(idx)=data_i{3+kk*3+1};
+                    idx=idx+1;
+                end
+            end
+            fwrite(fileID, pos_list-1,'uint64');%for C applications: count from 0 
+            fwrite(fileID, dim_list,'uint64');
+
+            for ii=1:nInt
+                data_i=data{ii};
+                for kk=0:nbody_list(ii)-1
+                    mat_k=data_i{3+kk*3+2}; 
+                    fwrite(fileID, real(mat_k),'double'); 
+                end
+            end
+            for ii=1:nInt
+                data_i=data{ii};
+                for kk=0:nbody_list(ii)-1
+                    mat_k=data_i{3+kk*3+2}; 
+                    fwrite(fileID, imag(mat_k),'double'); 
                 end
             end
             
             fclose(fileID);
- 
         end
             
         
         function v=getVector(obj)
             mat=obj.getMatrix();
-            v=mat(:);
+            if isa(mat,'double')
+                v=mat(:);
+            elseif isa(mat,'KronProd' )
+                v=kron_prod2vector(mat); 
+            else isa(mat,'model.math.SumKronProd' )            
+                nProd=mat.nProd;
+                v=kron_prod2vector(mat.kron_prod_cell{1});
+                for kk=2:nProd
+                  v=v+kron_prod2vector(mat.kron_prod_cell{kk});
+                end
+            end
+
         end
                 
         function transform(obj, transform_operator)
@@ -115,22 +161,37 @@
         function super_operator=sharp(obj)
             super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
             
-            Bmat=obj.getMatrix(); eyeMat=speye(obj.dim);
-            super_operator.setMatrix(kron(Bmat.', eyeMat));
+            if isa(obj.matrix_strategy, 'model.phy.QuantumOperator.MatrixStrategy.FromKronProd')
+                super_operator.name=[obj.name, '_sharp'];
+                super_operator.setMatrix(obj.matrix.sharp);
+            else
+                Bmat=obj.getMatrix(); eyeMat=speye(obj.dim);
+                super_operator.setMatrix(kron(Bmat.', eyeMat));
+            end
         end
         
         function super_operator=flat(obj)
             super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
             
-            Amat=obj.getMatrix(); eyeMat=speye(obj.dim);
-            super_operator.setMatrix(kron(eyeMat, Amat));
+            if isa(obj.matrix_strategy, 'model.phy.QuantumOperator.MatrixStrategy.FromKronProd')
+                super_operator.name=[obj.name, '_flat'];
+                super_operator.setMatrix(obj.matrix.flat);
+            else
+                Amat=obj.getMatrix(); eyeMat=speye(obj.dim);
+                super_operator.setMatrix(kron(eyeMat, Amat));
+            end
         end
         
         function super_operator=circleC(obj)
             super_operator=model.phy.QuantumOperator.MultiSpinSuperOperator(obj.spin_collection, obj.interaction_list);
             
-            Cmat=obj.getMatrix(); eyeMat=speye(obj.dim);
-            super_operator.setMatrix(kron(eyeMat, Cmat)-kron(conj(Cmat), eyeMat));
+            if isa(obj.matrix_strategy, 'model.phy.QuantumOperator.MatrixStrategy.FromKronProd')
+                super_operator.name=[obj.name, '_circleC'];
+                super_operator.setMatrix(obj.matrix.circleC);
+            else
+                Cmat=obj.getMatrix(); eyeMat=speye(obj.dim);
+                super_operator.setMatrix(kron(eyeMat, Cmat)-kron(conj(Cmat), eyeMat));
+            end
         end
         
         function super_operator=flat_sharp(obj, sharp_op)
@@ -149,5 +210,22 @@
 
     end
     
-end
+ end
+
+ function v=kron_prod2vector(kp_mat)
+      opset=kp_mat.opset;
+      opinds=kp_mat.opinds;
+      domainsizes=kp_mat.domainsizes;
+      maxdim=kp_mat.maxdim;
+      v=1;
+      for kk=1:maxdim
+          idx=opinds(kk);
+          mat=opset{idx};
+          if size(mat,2)==1
+              mat=speye(domainsizes(kk));
+          end
+          v=kron(mat(:),v);
+      end
+      v=kp_mat.scalarcoeff*v;
+ end
 

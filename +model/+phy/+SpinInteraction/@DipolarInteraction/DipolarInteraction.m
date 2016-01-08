@@ -49,6 +49,24 @@ classdef DipolarInteraction < model.phy.SpinInteraction.AbstractSpinInteraction
             coeff = obj.axis * coeff_mat * obj.axis';
         end
         
+        function skp=single_skp_term(obj)
+            spins=obj.iter.currentItem();
+            idx=obj.iter.currentIndex();
+            spin1=spins{1}; spin2=spins{2};
+            dip=obj.calculate_coeff(spins);
+            
+            mat1=spin1.sx; mat2=dip(1,1)*spin2.sx + dip(1,2)*spin2.sy +dip(1,3)*spin2.sz;
+            xTerm=obj.kron_prod(1.0, idx, {mat1, mat2});
+            
+            mat1=spin1.sy; mat2=dip(2,1)*spin2.sx + dip(2,2)*spin2.sy +dip(2,3)*spin2.sz;
+            yTerm=obj.kron_prod(1.0, idx, {mat1, mat2});
+            
+            mat1=spin1.sz; mat2=dip(3,1)*spin2.sx + dip(3,2)*spin2.sy +dip(3,3)*spin2.sz;
+            zTerm=obj.kron_prod(1.0, idx, {mat1, mat2});
+            
+            skp=xTerm+yTerm+zTerm;
+        end
+        
         function mat=calculate_matrix(obj)
             spins=obj.iter.currentItem();
             spin1=spins{1}; spin2=spins{2};

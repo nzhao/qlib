@@ -25,14 +25,19 @@ classdef GeneralSpinInteraction < model.phy.SpinInteraction.AbstractSpinInteract
         
         function mat=calculate_matrix(obj)
             coeff=obj.calculate_coeff();
-            matCell=obj.parameter.spin_mat{obj.iter.getCursor};
-            lenMat=length(matCell);
+            mat1=obj.parameter.spin_mat{obj.iter.getCursor};
+%            Here, we request all the matrix in the parameter.spin_mat
+%            should be a KronProd class. So, there is no need to kron all
+%            the matrix in the matCell as following.
             
-            mat1=1;
-            for k=1:lenMat
-                mat1=kron(mat1, matCell{k});
-            end
-            mat=coeff*mat1;
+%             matCell=obj.parameter.spin_mat{obj.iter.getCursor};
+%             lenMat=length(matCell);
+%             
+%             mat1=1;
+%             for k=1:lenMat
+%                 mat1=kron(mat1, matCell{k});
+%             end
+            mat=full(coeff*mat1);
         end
     end
     
