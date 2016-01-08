@@ -33,6 +33,9 @@ classdef MediumData
                 case 'diamond'
                     epsilon_M = 2.418^2;% Tongcang Li's thesis P180.
                     mu_M      = 1.0;
+                case 'diamond_a'
+                    epsilon_M = 2.418^2+0.1*1i;% Tongcang Li's thesis P180.
+                    mu_M      = 1.0;
                 case 'ice'
                     epsilon_M = 1.31^2;% Tongcang Li's thesis P180.
                     mu_M      = 1.0;
