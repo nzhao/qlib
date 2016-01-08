@@ -17,6 +17,11 @@ classdef ClusterIterator < model.phy.SpinCollection.SpinCollectionIterator
             obj.parameters=obj.index_generator.parameters;
             obj.cluster_info=obj.index_generator.cluster_info;
         end
+
+        function res = cross_relation_gen(obj)
+            res=obj.index_generator.generate_corss_relation();
+            obj.cluster_info=obj.index_generator.cluster_info;
+        end
     end
     
 end

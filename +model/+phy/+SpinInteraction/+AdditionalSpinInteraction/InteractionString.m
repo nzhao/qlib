@@ -1,4 +1,4 @@
-classdef InteractionString < model.phy.SpinInteraction.GeneralSpinInteraction
+classdef InteractionString < model.phy.SpinInteraction.AdditionalSpinInteraction.GeneralSpinInteraction
     %STRINGTOINTERACTION Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -15,7 +15,7 @@ classdef InteractionString < model.phy.SpinInteraction.GeneralSpinInteraction
 
             len=length(strCell);
 
-            spin_index=cell(1, len);
+            spin_index=cell(len, 1);
             spin_mat_str=cell(1, len);
             spin_coeff=cell(1, len);
 
@@ -28,8 +28,29 @@ classdef InteractionString < model.phy.SpinInteraction.GeneralSpinInteraction
             
             new_mat=spin_collection.calc_mat(spin_index, spin_mat_str);
 
-            obj@model.phy.SpinInteraction.GeneralSpinInteraction(spin_collection, spin_index, new_mat, spin_coeff)
+            obj@model.phy.SpinInteraction.AdditionalSpinInteraction.GeneralSpinInteraction(spin_collection, spin_index, new_mat, spin_coeff)
             
+        end
+        
+        function skp=single_skp_term(obj)
+            cursor=obj.iter.cursor;
+            coeff=obj.parameter.spin_coeff{cursor};
+            idx=obj.iter.currentIndex();
+            nspin=obj.iter.spin_collection.getLength;
+            
+            mat_kp=obj.parameter.spin_mat{cursor}; 
+            mat_cell=mat_kp.opset;
+            
+            opset=cell(1,nspin);
+            for kk=1:nspin
+                opset{kk}=1;%speye(dim_list(kk))                
+            end
+            for kk=1:length(idx)
+                opset{idx(kk)}=mat_cell{kk};
+            end
+            
+            opinds=1:nspin;
+            skp=obj.kron_prod(coeff, opinds, opset);
         end
                 
     end

@@ -13,5 +13,10 @@ function [hami, liou]=GetHamiltonianLiouvillian(obj, spin_collection)
     if para.IsSecularApproximation
         hami.apply_approximation( SpinSecularApproximation(spin_collection) );
     end
-    %liou=hami.circleC();            
+    
+    if strcmp(obj.parameters.InitialStateType, 'MixedState')
+        liou=hami.circleC();
+    else
+        liou=[];
+    end
 end

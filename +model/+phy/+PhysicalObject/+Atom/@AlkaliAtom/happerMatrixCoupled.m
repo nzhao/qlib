@@ -3,6 +3,7 @@ function Dj=happerMatrixCoupled(obj,J,magB, projection)
         projection='cartesian';
     end
 
+<<<<<<< HEAD
     I=obj.parameters.spin_I;
     S=obj.parameters.spin_S;
     %statistical weights
@@ -15,6 +16,32 @@ function Dj=happerMatrixCoupled(obj,J,magB, projection)
                 if k+l==m
                     sDs(S-m+1,J-k+1,2-l)=sqrt(3/gS)*cg(J,k,1,l,S,m);
                 end
+=======
+if nargin<4
+    projection='cartesian';
+end
+if J==1.5
+    ge=obj.dimE2;
+    ele=obj.e2Spin;
+elseif J==0.5
+    ge=obj.dimE1;
+    ele=obj.e1Spin;
+else 
+    disp('Error J')
+end
+S=obj.parameters.spin_S;
+gg=obj.dimG;
+gS=obj.gSpin.dim;
+gJ=ele.dim;
+gI=obj.nSpin.dim;
+[~,Ug,~,Ue]=obj.eigenValueVector(J,magB);
+sDs=zeros(gS,gJ,3); %spherical projections in electronic space
+for k=J:-1:-J
+    for l=1:-1:-1
+        for m=S:-1:-S
+            if k+l==m
+                sDs(S-m+1,J-k+1,2-l)=sqrt(3/gS)*cg(J,k,1,l,S,m);
+>>>>>>> master
             end
         end
     end
