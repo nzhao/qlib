@@ -29,3 +29,5 @@ for i=1:length(blist)
     vlist(:,i)=eig(rb.gsHamiltonian(blist(i)));
 end
 plot(blist, vlist')
+
+
