@@ -13,3 +13,5 @@ rb.setBeam( 'D1', kVec, pol, Sl)
 
 tV=rb.electricDipoleInteraction(j, magB);clc
 
+
+%test
