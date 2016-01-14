@@ -26,6 +26,7 @@ idx=[1 4 2 5 3 7 6 8];
 reOrder_h1=h1coupled_representation(idx,idx);
 
 gsValue1=diag(gsD1);
+gsValuee=gsValue/2/pi;
 diffF1=diff(gsValue1(1:3))/2/pi;
 diffF2=diff(gsValue1(4:end))/2/pi;
 

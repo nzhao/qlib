@@ -15,12 +15,10 @@ magB1=0.0001;
 gsHami1=cs.gsHamiltonian(magB1);
 [gsV1, gsD1]=eig(gsHami1);
 h1coupled_representation=gsV1'*gsHami1*gsV1;
-idx=[1 4 2 5 3 7 6 8];
-reOrder_h1=h1coupled_representation(idx,idx);
 
 gsValue1=diag(gsD1);
-diffF1=diff(gsValue1(1:3))/2/pi;
-diffF2=diff(gsValue1(4:end))/2/pi;
+diffF1=diff(gsValue1(1:7))/2/pi;
+diffF2=diff(gsValue1(8:end))/2/pi;
 
 
 blist=0:0.0010:1.0000;
