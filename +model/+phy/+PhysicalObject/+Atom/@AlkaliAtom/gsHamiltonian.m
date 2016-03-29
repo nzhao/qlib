@@ -28,7 +28,7 @@ function uHg = gsHamiltonian( obj, magB )
     end
 
     for k=1:3;% uncoupled magnetic moment operators
-        umug(:,:,k)=gammaG*gSj(:,:,k)+gammaN*aIjg(:,:,k);
+        umug(:,:,k)=-gammaG*gSj(:,:,k)-gammaN*aIjg(:,:,k);
     end
     uIS=matdot(aIjg,gSj);%uncoupled I.S
     uHg=Ag*uIS+umug(:,:,3)*magB*1e-6;%uncoupled Hamiltonian, in [MHz]

@@ -41,7 +41,6 @@ I=obj.parameters.spin_I;
     end
 
     for k=1:3;% uncoupled magnetic moment operators
-        umue(:,:,k)=gammaE*gJj(:,:,k)+gammaN*aIje(:,:,k);
     end
     uIJ=matdot(aIje,gJj);%uncoupled I.J
     uHe=Ae*uIJ +umue(:,:,3)*magB*1e-6;%Hamiltonian without quadrupole interaction, in [MHz]
