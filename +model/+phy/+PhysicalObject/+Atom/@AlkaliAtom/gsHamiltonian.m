@@ -7,7 +7,7 @@ function uHg = gsHamiltonian( obj, magB )
     gI=nuc.dim; gammaN=nuc.gamma; %gammaN's unit is Hz/T
     gS=ele.dim; gammaG=ele.gamma;%gammaG's unit is Hz/T
     
-    Ag=obj.parameters.hf_gs;
+    Ag=obj.parameters.hf_gs*2*pi;
 
     sIj(:,:,1)=nuc.sx;
     sIj(:,:,2)=nuc.sy;
@@ -28,9 +28,9 @@ function uHg = gsHamiltonian( obj, magB )
     end
 
     for k=1:3;% uncoupled magnetic moment operators
-        umug(:,:,k)=gammaG*gSj(:,:,k)+gammaN*aIjg(:,:,k);
+        umug(:,:,k)=-gammaG*gSj(:,:,k)-gammaN*aIjg(:,:,k);
     end
     uIS=matdot(aIjg,gSj);%uncoupled I.S
-    uHg=Ag*uIS-umug(:,:,3)*magB*1e-6;%uncoupled Hamiltonian, in [MHz]
+    uHg=Ag*uIS+umug(:,:,3)*magB*1e-6;%uncoupled Hamiltonian, in [MHz]
 end
 
