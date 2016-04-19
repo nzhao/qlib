@@ -2,6 +2,7 @@
 *.asv
 *.mat
 *.xyz
+*.swp
 
 doc/output/
 
